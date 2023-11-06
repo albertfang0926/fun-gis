@@ -3,19 +3,18 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Viewer,
-  Cartesian3,
-  ImageryLayer,
-  TileMapServiceImageryProvider,
-  buildModuleUrl
-} from "cesium"
+import { Viewer, Cartesian3, Ion } from "cesium"
 import { onMounted, ref } from "vue"
 import { useViewerStore } from "@/stores/cesiumViewer"
+import { DEFAULT_ACCESS_TOKEN, DEFAULT_HOME_POSITION } from "@/components/CesiumViewer/default"
+import type { ICoord3d } from "@/components/CesiumViewer/types"
+
 const viewerRef = ref()
+Ion.defaultAccessToken = DEFAULT_ACCESS_TOKEN
 onMounted(async () => {
   const viewer = new Viewer(viewerRef.value, {
-    animation: false,
+    animation: true,
+    shouldAnimate: true,
     homeButton: true,
     geocoder: true,
     baseLayerPicker: false,
@@ -26,17 +25,15 @@ onMounted(async () => {
     navigationInstructionsInitiallyVisible: false,
     navigationHelpButton: false,
     selectionIndicator: false
+    // baseLayer: new ImageryLayer(
+    //   await TileMapServiceImageryProvider.fromUrl(buildModuleUrl("Assets/Textures/NaturalEarthII")),
+    //   {}
+    // )
   })
   ;(viewer.cesiumWidget.creditContainer as any).style.display = "none"
-  // viewer.scene.base
-  // const viewer = new Viewer(viewerRef.value, {
-  //   baseLayer: new ImageryLayer(
-  //     await TileMapServiceImageryProvider.fromUrl(buildModuleUrl("Assets/Textures/NaturalEarthII")),
-  //     {}
-  //   )
-  // })
-  const homeCoord: [number, number, number] = [117.43111, 32.100556, 1e6]
+  const homeCoord: ICoord3d = DEFAULT_HOME_POSITION
   viewer.camera.setView({ destination: Cartesian3.fromDegrees(...homeCoord) })
+  // provide("cesium-viewer", viewer)
   useViewerStore().setViewer(viewer)
 })
 </script>
