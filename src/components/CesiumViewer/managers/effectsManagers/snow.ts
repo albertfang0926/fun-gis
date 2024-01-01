@@ -18,7 +18,10 @@ const homePosition = Cartesian3.fromDegrees(...DEFAULT_HOME_POSITION)
 const snowParticleSize = 12.0
 const snowRadius = 100000.0
 const minimumSnowImageSize = new Cartesian2(snowParticleSize, snowParticleSize)
-const maximumSnowImageSize = new Cartesian2(snowParticleSize * 2.0, snowParticleSize * 2.0)
+const maximumSnowImageSize = new Cartesian2(
+  snowParticleSize * 2.0,
+  snowParticleSize * 2.0
+)
 let snowGravityScratch = new Cartesian3()
 
 export function startSnow(viewer: Viewer) {
@@ -28,13 +31,20 @@ export function startSnow(viewer: Viewer) {
   scene.globe.depthTestAgainstTerrain = true
   scene.primitives.removeAll()
   const snowUpdate = function (particle: Particle, dt: any) {
-    snowGravityScratch = Cartesian3.normalize(particle.position, snowGravityScratch)
+    snowGravityScratch = Cartesian3.normalize(
+      particle.position,
+      snowGravityScratch
+    )
     Cartesian3.multiplyByScalar(
       snowGravityScratch,
       cMath.randomBetween(-30.0, -300.0),
       snowGravityScratch
     )
-    particle.velocity = Cartesian3.add(particle.velocity, snowGravityScratch, particle.velocity)
+    particle.velocity = Cartesian3.add(
+      particle.velocity,
+      snowGravityScratch,
+      particle.velocity
+    )
     const distance = Cartesian3.distance(homePosition, particle.position)
     // if (distance > snowRadius) {
     //   particle.endColor.alpha = 0.0
@@ -50,7 +60,11 @@ export function startSnow(viewer: Viewer) {
       maximumSpeed: 0.0,
       lifetime: 15.0,
       emitter: new BoxEmitter(
-        Cartesian3.fromDegrees(DEFAULT_HOME_POSITION[0], DEFAULT_HOME_POSITION[1], 1e4)
+        Cartesian3.fromDegrees(
+          DEFAULT_HOME_POSITION[0],
+          DEFAULT_HOME_POSITION[1],
+          1e4
+        )
       ), // new SphereEmitter(snowRadius),
       startScale: 0.5,
       endScale: 1.0,

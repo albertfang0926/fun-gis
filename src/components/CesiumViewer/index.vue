@@ -6,7 +6,10 @@
 import { Viewer, Cartesian3, Ion } from "cesium"
 import { onMounted, ref } from "vue"
 import { useViewerStore } from "@/stores/cesiumViewer"
-import { DEFAULT_ACCESS_TOKEN, DEFAULT_HOME_POSITION } from "@/components/CesiumViewer/default"
+import {
+  DEFAULT_ACCESS_TOKEN,
+  DEFAULT_HOME_POSITION
+} from "@/components/CesiumViewer/default"
 import type { ICoord3d } from "@/components/CesiumViewer/types"
 
 const viewerRef = ref()
