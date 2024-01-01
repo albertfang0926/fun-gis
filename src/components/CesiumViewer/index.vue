@@ -13,10 +13,10 @@ const viewerRef = ref()
 Ion.defaultAccessToken = DEFAULT_ACCESS_TOKEN
 onMounted(async () => {
   const viewer = new Viewer(viewerRef.value, {
-    animation: true,
+    animation: false,
     shouldAnimate: true,
     homeButton: true,
-    geocoder: true,
+    geocoder: false,
     baseLayerPicker: false,
     timeline: false,
     fullscreenButton: false,

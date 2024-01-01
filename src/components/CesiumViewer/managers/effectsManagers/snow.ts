@@ -7,6 +7,7 @@ import {
   Matrix4,
   Color,
   SphereEmitter,
+  BoxEmitter,
   Math as cMath
 } from "cesium"
 
@@ -35,11 +36,12 @@ export function startSnow(viewer: Viewer) {
     )
     particle.velocity = Cartesian3.add(particle.velocity, snowGravityScratch, particle.velocity)
     const distance = Cartesian3.distance(homePosition, particle.position)
-    if (distance > snowRadius) {
-      particle.endColor.alpha = 0.0
-    } else {
-      particle.endColor.alpha = 1.0 / (distance / snowRadius + 0.1)
-    }
+    // if (distance > snowRadius) {
+    //   particle.endColor.alpha = 0.0
+    // } else {
+    //   particle.endColor.alpha = 1.0 / (distance / snowRadius + 0.1)
+    // }
+    particle.endColor.alpha = 1.0 / (distance / snowRadius + 0.1)
   }
   scene.primitives.add(
     new ParticleSystem({
@@ -47,7 +49,9 @@ export function startSnow(viewer: Viewer) {
       minimumSpeed: -1.0,
       maximumSpeed: 0.0,
       lifetime: 15.0,
-      emitter: new SphereEmitter(snowRadius),
+      emitter: new BoxEmitter(
+        Cartesian3.fromDegrees(DEFAULT_HOME_POSITION[0], DEFAULT_HOME_POSITION[1], 1e4)
+      ), // new SphereEmitter(snowRadius),
       startScale: 0.5,
       endScale: 1.0,
       image: snowFlake,
@@ -59,10 +63,4 @@ export function startSnow(viewer: Viewer) {
       updateCallback: snowUpdate
     })
   )
-
-  //   scene.skyAtmosphere.hueShift = -0.8
-  //   scene.skyAtmosphere.saturationShift = -0.7
-  //   scene.skyAtmosphere.brightnessShift = -0.33
-  //   scene.fog.density = 0.001
-  //   scene.fog.minimumBrightness = 0.8
 }
