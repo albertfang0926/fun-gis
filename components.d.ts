@@ -8,7 +8,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     CesiumViewer: typeof import('./src/components/CesiumViewer/index.vue')['default']
-    Effects: typeof import('./src/components/CesiumViewer/components/effects.vue')['default']
+    Child: typeof import('./src/components/CesiumViewer/components/child.vue')['default']
+    ChildComponent: typeof import('./src/components/CesiumViewer/components/child-component.vue')['default']
     EffectsView: typeof import('./src/components/CesiumViewer/components/effectsView.vue')['default']
     LeftSide: typeof import('./src/components/LeftSide/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
