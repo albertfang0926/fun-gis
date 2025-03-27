@@ -1,0 +1,18 @@
+{
+  // 开发环境：tsconfig.json
+  "type": "module",
+  "files": ["./src/index.ts"],
+  "include": ["src/**/*", "playground/**/*"],
+  "compilerOptions": {
+    "types": ["vite/client"],
+    "lib": ["esnext", "dom"],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "outDir": "./dist/types",
+    "declaration": true,
+    "emitDeclarationOnly": true
+  }
+}
