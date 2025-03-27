@@ -168,13 +168,10 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  '@babel/parser@7.27.0':
     resolution: {integrity: sha512-iaepho73/2Pz7w2eMS0Q5f83+0RKI7i4xmiYeBmDzfRVbQtTOG7Ts0S4HzJVsTMGI9keU8rNfuZr8DKfSt7Yyg==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  '@babel/runtime@7.23.2':
-    resolution: {integrity: sha512-mM8eg4yl5D6i3lu2QKPuPH4FArvJ8KhTofbE7jwMUv9KX5mBvwPAqnV3MlyBNqdp9RyRKP6Yck8TrfYrPvX3bg==}
     engines: {node: '>=6.9.0'}
 
   '@babel/types@7.22.5':
@@ -3258,14 +3255,11 @@ snapshots:
       protobufjs: 7.2.4
       rbush: 3.0.1
       topojson-client: 3.1.0
-      urijs: 1.19.11
 
   '@cesium/widgets@3.0.1':
     dependencies:
       '@cesium/engine': 3.0.1
       nosleep.js: 0.12.0
-
-  '@ctrl/tinycolor@3.6.1': {}
 
   '@emotion/hash@0.9.1': {}
 
