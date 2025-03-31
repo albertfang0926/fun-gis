@@ -1,11 +1,11 @@
 {
-  "name": "f-cesium",
+  "name": "@fesium/core",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build"
+    "build": "vite build"
   },
   "files": [
     "dist",
@@ -15,16 +15,17 @@
   "module": "./dist/counter.js",
   "types": "./index.d.ts",
   "exports": {
-    "types": "./index.d.ts",
-    "import": "./dist/counter.js",
-    "require": "./dist/counter.umd.cjs"
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.js",
+    "require": "./dist/index.umd.cjs"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
     "typescript": "^5.4.5",
     "unplugin-vue-components": "^0.25.2",
     "vite": "^5.2.10",
-    "vite-plugin-cesium": "^1.2.22"
+    "vite-plugin-cesium": "^1.2.22",
+    "vue-draggable-plus": "^0.5.3"
   },
   "dependencies": {
     "cesium": "^1.107.2"

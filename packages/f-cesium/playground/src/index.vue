@@ -1,10 +1,15 @@
 <template>
   <div id="map-container"></div>
+  <BasePanel></BasePanel>
 </template>
 
 <script setup lang="ts">
-import { CesiumViewer } from "../../src/index" // "@/index" //
+// third-parties
 import { onMounted } from "vue"
+// customs
+import { CesiumViewer } from "../../src/index"
+// components
+import { BasePanel } from "../../src/components/index"
 
 onMounted(() => {
   new CesiumViewer("map-container").initMap()
