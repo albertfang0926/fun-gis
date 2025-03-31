@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host",
-    "build": "vite build"
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc && vite build"
   },
   "files": [
     "dist",

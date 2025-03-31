@@ -1,0 +1,17 @@
+{
+  "type": "module",
+  "files": ["./src/index.ts"],
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "types": ["vite/client", "index.d.ts"],
+    "lib": ["esnext", "dom"],
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "module": "esnext",
+    "moduleResolution": "node",
+    "outDir": "./dist/types",
+    "declaration": true,
+    "emitDeclarationOnly": true
+  }
+}
