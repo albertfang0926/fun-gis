@@ -1,7 +1,7 @@
 /**
  * managers
  */
-export * from "./managers/initMap/index"
+export * from "./core/initMap/index"
 
 /**
  * types
