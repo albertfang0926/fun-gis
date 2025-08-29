@@ -2,3 +2,9 @@ packages:
   - packages/**
   - playground
   - docs
+
+ignoredBuiltDependencies:
+  - core-js
+  - esbuild
+  - protobufjs
+  - vue-demi
