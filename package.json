@@ -1,5 +1,5 @@
 {
-  "name": "fesium",
+  "name": "fun-gis",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -10,7 +10,9 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "preinstall": "npx only-allow pnpm"
+    "preinstall": "npx only-allow pnpm",
+    "predeploy": "pnpm -F gh-pages-demo run build",
+    "deploy": "gh-pages -d apps/gh-pages-demo/dist"
   },
   "dependencies": {
     "ant-design-vue": "4.x",
@@ -30,6 +32,7 @@
     "@vue/tsconfig": "^0.4.0",
     "eslint": "^8.39.0",
     "eslint-plugin-vue": "^9.11.0",
+    "gh-pages": "^6.3.0",
     "less": "^4.1.3",
     "less-loader": "^11.1.3",
     "lodash": "^4.17.21",
