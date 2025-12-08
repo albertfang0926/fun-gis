@@ -3,8 +3,6 @@ import libConfig from "./vite.lib.config"
 import type { ConfigEnv } from "vite"
 
 export default ({ mode }: ConfigEnv) => {
-  console.log("mode", mode)
-
   switch (mode) {
     case "development":
       return devConfig

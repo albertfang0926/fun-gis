@@ -4,8 +4,6 @@ import type { ConfigEnv } from "vite"
 
 // https://vite.dev/config/
 export default ({ mode }: ConfigEnv) => {
-  console.log("mode", mode)
-
   switch (mode) {
     case "development":
       return devConfig
