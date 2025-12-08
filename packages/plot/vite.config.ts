@@ -2,6 +2,7 @@ import devConfig from "./vite.dev.config"
 import libConfig from "./vite.lib.config"
 import type { ConfigEnv } from "vite"
 
+// https://vite.dev/config/
 export default ({ mode }: ConfigEnv) => {
   console.log("mode", mode)
 
