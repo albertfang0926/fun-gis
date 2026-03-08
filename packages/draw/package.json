@@ -1,5 +1,5 @@
 {
-  "name": "@f-cesium/draw",
+  "name": "@fun-gis/draw",
   "version": "1.0.0",
   "description": "标绘功能集合",
   "type": "module",
