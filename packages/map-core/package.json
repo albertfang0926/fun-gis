@@ -1,5 +1,5 @@
 {
-  "name": "@fun-gis/core",
+  "name": "@fun-gis/map-core",
   "private": true,
   "version": "0.0.0",
   "type": "module",
