@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import PanoramicPhoto from "./components/PanoramicPhoto.vue"
 </script>
 
 <template>
-  <HelloWorld />
+  <PanoramicPhoto />
 </template>
