@@ -28,6 +28,6 @@
     "vue-draggable-plus": "^0.5.3"
   },
   "dependencies": {
-    "cesium": "^1.107.2"
+    "cesium": "^1.133.1"
   }
 }

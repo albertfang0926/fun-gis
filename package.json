@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "ant-design-vue": "4.x",
-    "cesium": "^1.107.2",
+    "cesium": "^1.133.1",
     "pinia": "^2.1.3",
     "vue": "^3.4.31",
     "vue-router": "^4.2.2"

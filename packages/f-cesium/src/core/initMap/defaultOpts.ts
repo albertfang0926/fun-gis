@@ -25,19 +25,19 @@ const defaultViewerOpts = {
   navigationHelpButton: false, // 右上角帮助按钮
   shouldAnimate: true,
   useBrowserRecommendedResolution: false,
-  maximumRenderTimeChange: Infinity, // 静止时不刷新,减少系统消耗
-  baseLayer: new ImageryLayer(
-    new WebMapTileServiceImageryProvider({
-      url:
-        "http://t0.tianditu.com/vec_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=vec&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles&tk=" +
-        tdtKey.browser,
-      layer: "tdtVecBasicLayer",
-      style: "default",
-      format: "image/jpeg",
-      tileMatrixSetID: "GoogleMapsCompatible"
-    }),
-    {}
-  )
+  maximumRenderTimeChange: Infinity // 静止时不刷新,减少系统消耗
+  // baseLayer: new ImageryLayer(
+  //   new WebMapTileServiceImageryProvider({
+  //     url:
+  //       "http://t0.tianditu.com/vec_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=vec&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles&tk=" +
+  //       tdtKey.browser,
+  //     layer: "tdtVecBasicLayer",
+  //     style: "default",
+  //     format: "image/jpeg",
+  //     tileMatrixSetID: "GoogleMapsCompatible"
+  //   }),
+  //   {}
+  // )
 }
 const DEFAULT_HOME_POSITION: ICoord3d = [117.43111, 32.100556, 1e6]
 
