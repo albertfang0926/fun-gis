@@ -5,7 +5,7 @@
 
 <script setup lang="ts">
 // third-parties
-import { Cartesian3 } from "cesium"
+import { Cartesian3, Ion } from "cesium"
 import { onMounted } from "vue"
 // customs
 import { CesiumViewer } from "../../src/index"
@@ -17,6 +17,10 @@ import * as Cesium from "cesium"
 const DEFAULT_HOME_POSITION: [number, number, number] = [
   116.391333, 39.90731, 1e3
 ]
+
+Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN
+
+console.log("VITE_CESIUM_ION_TOKEN", import.meta.env.VITE_CESIUM_ION_TOKEN)
 
 const flightRoute = new FlightRoute()
 
