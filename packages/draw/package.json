@@ -25,14 +25,12 @@
   },
   "publishConfig": {
     "access": "public",
-    "registry": "http://nexus.zazncn.com/repository/npm-hosted/"
   },
   "keywords": [
-    "zazn-gis",
     "three.js",
     "3d"
   ],
-  "author": "zazn-giser",
+  "author": "giser",
   "license": "ISC",
   "devDependencies": {
     "@turf/turf": "^7.2.0",

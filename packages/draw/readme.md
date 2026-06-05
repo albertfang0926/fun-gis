@@ -32,7 +32,6 @@ npm i {path/to/this/package}
 使用图形标绘库首先需要初始化，图形管理器：
 
 ```typescript
-import { itemManager } from "@zazn-gis/draw-methods"
 
 itemManager.init(viewer)
 ```

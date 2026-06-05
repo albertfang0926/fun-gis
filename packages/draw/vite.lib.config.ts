@@ -22,7 +22,7 @@ export default defineConfig({
     assetsDir: "./dist/assets",
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
-      name: "@zazn-gis/draw-methods",
+      name: "@gis/draw-methods",
       fileName: "index",
       formats: ["es"]
     },

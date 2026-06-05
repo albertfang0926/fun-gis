@@ -1,6 +1,7 @@
 import { EventEmitter } from "../event"
 import { DataManager } from "../data-management"
 
+/** @deprecated 使用 layer-system 模块中的 LayerModel 替代 */
 export interface LayerOptions {
   id?: string
   name: string
@@ -9,6 +10,7 @@ export interface LayerOptions {
   properties?: Record<string, any>
 }
 
+/** @deprecated 使用 layer-system 模块中的 LayerModel 替代 */
 export abstract class BaseLayer extends EventEmitter {
   readonly id: string
   name: string

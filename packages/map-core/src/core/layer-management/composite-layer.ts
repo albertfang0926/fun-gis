@@ -5,6 +5,7 @@ export interface CompositeLayerOptions extends LayerOptions {
   compositeType?: CompositeType
 }
 
+/** @deprecated 使用 layer-system 模块中的 EntityLayerProvider 替代 */
 export class CompositeLayer extends BaseLayer {
   private compositeType: CompositeType
 

@@ -37,11 +37,18 @@ The project uses pnpm workspaces to manage multiple packages and applications fo
 - Includes `itemManager` for primitive management
 - Located in `src/drawMethods/` with subdirectories: `core/`, `middleware/`, `manager/`, `widgets/`, `utils/`
 
-**@fesium/core** (`packages/f-cesium/`)
+**@fesium/core** (`packages/f-cesium/`) / **@fun-gis/map-core** (`packages/map-core/`)
 - Core Cesium viewer wrapper and utilities
-- Modules: `initMap/` (viewer initialization), `camera/`, `event/`, `draw/`, `layer-management/`, `data-management/`, `visualization/`
+- Modules: `initMap/` (viewer initialization), `camera/`, `event/`, `draw/`, `layer-management/` (deprecated), `data-management/`, `visualization/`
+- **Layer System** (`layer-system/`): New comprehensive layer management with tree structure, serialization, multi-viewer sync, and filtering
+  - `LayerModel`: Serializable layer state (no Cesium dependencies)
+  - `LayerStore`: Shared state center supporting multi-viewer sync
+  - `ViewerBridge`: Per-viewer adapter connecting Cesium Viewer to LayerStore
+  - `LayerManager`: High-level facade for all layer operations
+  - Providers: Entity, Imagery, Terrain, Tileset, GeoJSON, KML, CZML
+  - Filters: PropertyFilter (attribute-based), SpatialFilter (bbox/circle/polygon)
 - Includes `plot/` subdirectory with arrow and polygon implementations (mirrors plot package)
-- Main class: `CesiumViewer` for map initialization
+- Main class: `CesiumViewer` for map initialization (now includes `layerManager` property)
 
 **plot** (`packages/plot/`)
 - Standalone geometric plotting library
@@ -148,4 +155,3 @@ This is a **learning and experience-sharing project**. When contributing or deve
 - **Performance**: For large datasets, use DataSource instead of direct Entity creation; consider LOD and pagination
 - **WebGL context**: Code should handle potential WebGL context loss
 - **Browser compatibility**: Test WebGL support across browsers, especially for mobile
-- **Publishing**: `@f-cesium/draw` is configured to publish to a private npm registry (nexus.zazncn.com)

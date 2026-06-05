@@ -1,3 +1,4 @@
+/** @deprecated 使用 layer-system 模块中的 LayerManager 替代 */
 import { Scene } from "cesium"
 import { EventEmitter } from "../event"
 import { DataManager } from "../data-management"

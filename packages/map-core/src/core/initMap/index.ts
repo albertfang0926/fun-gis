@@ -2,16 +2,16 @@
 import { IonImageryProvider, Viewer } from "cesium"
 // customs
 import { defaultViewerOpts } from "./defaultOpts"
-// types
-
-// Ion.defaultAccessToken =
-//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyZDdkZWVhZC1kMWI1LTQwNGItYWE2Yy1jMzM5NmUxODhkZjgiLCJpZCI6MTMzNDEwLCJzdWIiOiJBbGJlcnRGYW5nIiwiaXNzIjoiaHR0cHM6Ly9hcGkuY2VzaXVtLmNvbSIsImF1ZCI6IkFsYmVydEZhbmdfZGVmYXVsdCIsImlhdCI6MTc3OTYwMzIzMH0.vAev-U85oQoN2kZH8RnDYoZcUHJstl-FiFMbS4GNhg8"
+import { LayerManager } from "../layer-system"
 
 class CesiumViewer {
   container: string
   viewer: Viewer | null = null
+  layerManager: LayerManager
+
   constructor(container: string) {
     this.container = container
+    this.layerManager = new LayerManager()
   }
 
   /**
@@ -22,6 +22,23 @@ class CesiumViewer {
     this.viewer.scene.imageryLayers.addImageryProvider(
       await IonImageryProvider.fromAssetId(3)
     )
+    this.layerManager.attachViewer("main", this.viewer)
+  }
+
+  /**
+   * 附加额外的 Viewer（如小地图）
+   */
+  attachViewer(viewerId: string, viewer: Viewer) {
+    this.layerManager.attachViewer(viewerId, viewer)
+  }
+
+  /**
+   * 销毁资源
+   */
+  destroy() {
+    this.layerManager.detachViewer("main")
+    this.viewer?.destroy()
+    this.viewer = null
   }
 }
 

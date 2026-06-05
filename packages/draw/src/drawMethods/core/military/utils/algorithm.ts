@@ -275,7 +275,7 @@ export function getPointByAngleDistance(lng: number, lat: number, angle: number,
     latitude: lat2 * (180 / Math.PI)
   }
 }
-// 已知点根据角度和距离求取另一点坐标（二三维，zazn）  注：WGS84坐标系
+// 已知点根据角度和距离求取另一点坐标（二三维）  注：WGS84坐标系
 export function getExtensionPoint(startPoint: number[], azimuth_: number, distance: number) {
   // 从目标点出发根据方位角和距离计算目标点
   const R = 6378137
