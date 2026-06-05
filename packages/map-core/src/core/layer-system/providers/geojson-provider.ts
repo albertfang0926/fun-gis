@@ -20,10 +20,10 @@ export class GeoJsonLayerProvider extends BaseLayerProvider {
       geoConfig.url || geoConfig.data,
       {
         clampToGround: geoConfig.clampToGround ?? true,
-        fill: style.fill || geoConfig.fill,
-        stroke: style.stroke || geoConfig.stroke,
-        strokeWidth: style.strokeWidth || geoConfig.strokeWidth ?? 2,
-        markerSize: style.markerSize || geoConfig.markerSize ?? 48
+        fill: style.fill ?? geoConfig.fill,
+        stroke: style.stroke ?? geoConfig.stroke,
+        strokeWidth: (style.strokeWidth || geoConfig.strokeWidth) ?? 2,
+        markerSize: (style.markerSize || geoConfig.markerSize) ?? 48
       }
     )
 

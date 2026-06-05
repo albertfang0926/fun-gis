@@ -18,7 +18,7 @@ export class EntityLayerProvider extends BaseLayerProvider {
   }
 
   async addToViewer(
-    viewer: Viewer,
+    _viewer: Viewer,
     config: ILayerSourceConfig,
     _style: Record<string, any>
   ): Promise<string[]> {

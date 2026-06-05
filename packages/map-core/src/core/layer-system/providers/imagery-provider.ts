@@ -75,9 +75,15 @@ export class ImageryLayerProvider extends BaseLayerProvider {
 
     switch (config.providerType) {
       case "wmts":
-        return await WebMapTileServiceImageryProvider.fromUrl(config.url, opts)
+        return new WebMapTileServiceImageryProvider({
+          url: config.url,
+          ...opts
+        } as any)
       case "wms":
-        return await WebMapServiceImageryProvider.fromUrl(config.url, opts)
+        return new WebMapServiceImageryProvider({
+          url: config.url,
+          ...opts
+        } as any)
       case "tms":
         return new UrlTemplateImageryProvider({
           url: config.url,

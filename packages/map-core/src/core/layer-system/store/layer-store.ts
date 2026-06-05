@@ -2,10 +2,8 @@ import { EventEmitter } from "../../event"
 import { LayerModel } from "../model/layer-model"
 import { LayerTreeNode } from "../model/layer-tree-node"
 import {
-  ILayerModel,
   ILayerStoreSnapshot,
-  ILayerTreeNodeSnapshot,
-  LayerDataSourceType
+  ILayerTreeNodeSnapshot
 } from "../types"
 
 export class LayerStore extends EventEmitter {

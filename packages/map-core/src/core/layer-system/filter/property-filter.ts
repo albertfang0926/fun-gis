@@ -1,8 +1,5 @@
 import { BaseLayerFilter } from "./base-filter"
-import {
-  IPropertyFilterExpression,
-  FilterOperator
-} from "../types"
+import { IPropertyFilterExpression } from "../types"
 
 export class PropertyFilter extends BaseLayerFilter {
   readonly type = "property"

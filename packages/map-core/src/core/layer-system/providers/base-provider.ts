@@ -18,7 +18,7 @@ export abstract class BaseLayerProvider implements ILayerProvider {
     style: Record<string, any>
   ): void
 
-  setVisibility(viewer: Viewer, handle: any, visible: boolean): void {
+  setVisibility(_viewer: Viewer, handle: any, visible: boolean): void {
     if (handle && typeof handle.show !== "undefined") {
       handle.show = visible
     }

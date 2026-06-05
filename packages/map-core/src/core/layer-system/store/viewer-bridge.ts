@@ -2,7 +2,6 @@ import { Viewer } from "cesium"
 import { EventEmitter } from "../../event"
 import { LayerStore } from "./layer-store"
 import { ProviderRegistry } from "../providers"
-import { LayerDataSourceType, ILayerFilterState } from "../types"
 
 export class ViewerBridge extends EventEmitter {
   private viewer: Viewer

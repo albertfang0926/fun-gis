@@ -17,8 +17,7 @@ export class TilesetLayerProvider extends BaseLayerProvider {
     const tilesetConfig = config as ITilesetSourceConfig
     const tileset = await Cesium3DTileset.fromUrl(tilesetConfig.url, {
       maximumScreenSpaceError:
-        tilesetConfig.maximumScreenSpaceError ?? 16,
-      maximumMemoryUsage: tilesetConfig.maximumMemoryUsage
+        tilesetConfig.maximumScreenSpaceError ?? 16
     })
 
     if (style.maximumScreenSpaceError !== undefined) {

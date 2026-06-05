@@ -1,7 +1,6 @@
 import {
   Cartesian3,
   Math as CesiumMath,
-  BoundingSphere,
   Rectangle,
   Ellipsoid
 } from "cesium"
@@ -69,9 +68,8 @@ export class SpatialFilter extends BaseLayerFilter {
     if (coordinates.length < 2 || !radius) return false
 
     const center = Cartesian3.fromDegrees(coordinates[0], coordinates[1])
-    const sphere = new BoundingSphere(center, radius)
 
-    return BoundingSphere.contains(sphere, position)
+    return Cartesian3.distance(center, position) <= radius
   }
 
   private inPolygon(
