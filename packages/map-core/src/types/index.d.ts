@@ -1,6 +1,4 @@
-import type { ICoord3d } from "../types/geometry"
-
-export type { ICoord3d }
+export type { ICoord3d } from "./geometry"
 
 export interface IMapConfig {
   homePosition: ICoord3d

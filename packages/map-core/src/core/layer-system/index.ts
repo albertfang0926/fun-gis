@@ -2,7 +2,7 @@
 export * from "./constants"
 
 // 类型
-export * from "./types"
+export type * from "./types"
 
 // 模型
 export { LayerModel } from "./model/layer-model"
