@@ -5,10 +5,10 @@ import {
 } from "cesium"
 import { BaseLayerProvider } from "./base-provider"
 import {
-  LayerDataSourceType,
   ILayerSourceConfig,
   ITerrainSourceConfig
 } from "../types"
+import { LayerDataSourceType } from "../constants"
 
 export class TerrainLayerProvider extends BaseLayerProvider {
   readonly dataSourceType = LayerDataSourceType.Terrain

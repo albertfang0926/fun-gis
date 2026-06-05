@@ -1,8 +1,9 @@
 import { Viewer } from "cesium"
 import { ILayerProvider, ILayerSourceConfig, ILayerFilterState } from "../types"
+import type { LayerDataSourceType } from "../constants"
 
 export abstract class BaseLayerProvider implements ILayerProvider {
-  abstract readonly dataSourceType: import("../types").LayerDataSourceType
+  abstract readonly dataSourceType: LayerDataSourceType
 
   abstract addToViewer(
     viewer: Viewer,

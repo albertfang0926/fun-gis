@@ -1,6 +1,6 @@
 import { Entity } from "cesium"
 import { BaseVisualizer, VisualizerOptions } from "./base-visualizer"
-import { CompositeEntity, CompositeType } from "../data-management"
+import { CompositeEntity, CompositeType } from "../data-manager"
 
 export class CompositeVisualizer extends BaseVisualizer<CompositeEntity> {
   private visualizers: Map<CompositeType, BaseVisualizer<any>> = new Map()

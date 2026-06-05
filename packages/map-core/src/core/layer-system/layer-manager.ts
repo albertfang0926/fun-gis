@@ -17,9 +17,9 @@ import {
   ILayerFilterState,
   ILayerTreeNodeSnapshot,
   ILayerStoreSnapshot,
-  ICreateLayerOptions,
-  LayerDataSourceType
+  ICreateLayerOptions
 } from "./types"
+import { LayerDataSourceType } from "./constants"
 
 export class LayerManager extends EventEmitter {
   private store: LayerStore

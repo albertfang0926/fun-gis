@@ -1,10 +1,10 @@
 import { Viewer, KmlDataSource } from "cesium"
 import { BaseLayerProvider } from "./base-provider"
 import {
-  LayerDataSourceType,
   ILayerSourceConfig,
   IKmlSourceConfig
 } from "../types"
+import { LayerDataSourceType } from "../constants"
 
 export class KmlLayerProvider extends BaseLayerProvider {
   readonly dataSourceType = LayerDataSourceType.Kml

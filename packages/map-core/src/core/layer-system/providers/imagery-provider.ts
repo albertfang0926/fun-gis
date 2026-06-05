@@ -10,10 +10,10 @@ import {
 } from "cesium"
 import { BaseLayerProvider } from "./base-provider"
 import {
-  LayerDataSourceType,
   ILayerSourceConfig,
   IImagerySourceConfig
 } from "../types"
+import { LayerDataSourceType } from "../constants"
 
 export class ImageryLayerProvider extends BaseLayerProvider {
   readonly dataSourceType = LayerDataSourceType.Imagery

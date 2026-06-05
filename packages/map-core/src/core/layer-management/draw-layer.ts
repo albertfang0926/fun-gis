@@ -1,5 +1,5 @@
 import { BaseLayer, LayerOptions } from "./base-layer"
-import { DataManager } from "../data-management"
+import { DataManager } from "../data-manager"
 
 export interface DrawLayerOptions extends LayerOptions {
   drawType?: string

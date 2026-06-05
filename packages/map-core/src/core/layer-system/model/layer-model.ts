@@ -2,9 +2,9 @@ import { EventEmitter } from "../../event"
 import {
   ILayerModel,
   ILayerSourceConfig,
-  ILayerFilterState,
-  LayerDataSourceType
+  ILayerFilterState
 } from "../types"
+import { LayerDataSourceType } from "../constants"
 
 export class LayerModel extends EventEmitter {
   private state: ILayerModel

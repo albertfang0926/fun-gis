@@ -1,12 +1,12 @@
 import { Viewer } from "cesium"
 import { BaseLayerProvider } from "./base-provider"
 import {
-  LayerDataSourceType,
   ILayerSourceConfig,
   IEntitySourceConfig,
   ILayerFilterState
 } from "../types"
-import { DataManager } from "../../data-management"
+import { LayerDataSourceType } from "../constants"
+import { DataManager } from "../../data-manager"
 
 export class EntityLayerProvider extends BaseLayerProvider {
   readonly dataSourceType = LayerDataSourceType.Entity
@@ -42,11 +42,7 @@ export class EntityLayerProvider extends BaseLayerProvider {
     })
   }
 
-  setVisibility(
-    _viewer: Viewer,
-    handle: string[],
-    visible: boolean
-  ): void {
+  setVisibility(_viewer: Viewer, handle: string[], visible: boolean): void {
     handle.forEach((id) => {
       this.dataManager.setEntityVisibility(id, visible)
     })
@@ -73,29 +69,15 @@ export class EntityLayerProvider extends BaseLayerProvider {
     })
   }
 
-  private evaluateFilter(
-    entity: any,
-    filter: ILayerFilterState
-  ): boolean {
+  private evaluateFilter(entity: any, filter: ILayerFilterState): boolean {
     const { expression } = filter
     const props = entity.properties || {}
     for (const [field, condition] of Object.entries(expression)) {
       const value = this.getNestedValue(props, field)
       if (typeof condition === "object" && condition !== null) {
-        if (
-          condition.op === "gt" &&
-          !(value > condition.value)
-        )
-          return false
-        if (
-          condition.op === "lt" &&
-          !(value < condition.value)
-        )
-          return false
-        if (
-          condition.op === "in" &&
-          !condition.value.includes(value)
-        )
+        if (condition.op === "gt" && !(value > condition.value)) return false
+        if (condition.op === "lt" && !(value < condition.value)) return false
+        if (condition.op === "in" && !condition.value.includes(value))
           return false
         if (
           condition.op === "between" &&

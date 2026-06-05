@@ -1,10 +1,10 @@
 import { Viewer, GeoJsonDataSource } from "cesium"
 import { BaseLayerProvider } from "./base-provider"
 import {
-  LayerDataSourceType,
   ILayerSourceConfig,
   IGeoJsonSourceConfig
 } from "../types"
+import { LayerDataSourceType } from "../constants"
 
 export class GeoJsonLayerProvider extends BaseLayerProvider {
   readonly dataSourceType = LayerDataSourceType.GeoJson

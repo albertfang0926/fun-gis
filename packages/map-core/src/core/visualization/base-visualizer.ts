@@ -1,5 +1,5 @@
 import { Entity, Viewer } from "cesium"
-import { BaseEntity } from "../data-management"
+import { BaseEntity } from "../data-manager"
 
 // 可视化选项接口
 export interface VisualizerOptions {

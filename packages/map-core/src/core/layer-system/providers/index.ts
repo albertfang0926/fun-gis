@@ -1,4 +1,5 @@
-import { LayerDataSourceType, ILayerProvider } from "../types"
+import { LayerDataSourceType } from "../constants"
+import type { ILayerProvider } from "../types"
 
 export class ProviderRegistry {
   private providers: Map<LayerDataSourceType, ILayerProvider> = new Map()

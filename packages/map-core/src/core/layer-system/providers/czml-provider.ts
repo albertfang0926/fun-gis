@@ -1,10 +1,10 @@
 import { Viewer, CzmlDataSource } from "cesium"
 import { BaseLayerProvider } from "./base-provider"
 import {
-  LayerDataSourceType,
   ILayerSourceConfig,
   ICzmlSourceConfig
 } from "../types"
+import { LayerDataSourceType } from "../constants"
 
 export class CzmlLayerProvider extends BaseLayerProvider {
   readonly dataSourceType = LayerDataSourceType.Czml

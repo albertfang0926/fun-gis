@@ -1,5 +1,5 @@
 import { EventEmitter } from "../event"
-import { DataManager } from "../data-management"
+import { DataManager } from "../data-manager"
 
 /** @deprecated 使用 layer-system 模块中的 LayerModel 替代 */
 export interface LayerOptions {
