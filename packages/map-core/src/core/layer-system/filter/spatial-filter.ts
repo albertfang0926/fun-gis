@@ -1,11 +1,11 @@
 import {
   Cartesian3,
+  Ellipsoid,
   Math as CesiumMath,
-  Rectangle,
-  Ellipsoid
-} from "cesium"
-import { BaseLayerFilter } from "./base-filter"
+  Rectangle} from "cesium"
+
 import { ISpatialFilterExpression } from "../types"
+import { BaseLayerFilter } from "./base-filter"
 
 export class SpatialFilter extends BaseLayerFilter {
   readonly type = "spatial"

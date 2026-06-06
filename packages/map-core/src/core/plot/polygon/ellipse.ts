@@ -1,9 +1,9 @@
-import Base from '../base';
-import * as Utils from '../utils';
 // @ts-ignore
 import { Cartesian3 } from 'cesium';
 
+import Base from '../base';
 import { PolygonStyle } from '../interface';
+import * as Utils from '../utils';
 
 export default class Ellipse extends Base {
   points: Cartesian3[] = [];

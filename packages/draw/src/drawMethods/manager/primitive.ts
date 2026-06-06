@@ -1,8 +1,9 @@
 // components
-import contextMenuPanel from "../widgets/contextMenu/contextMenu.vue"
 // types
 import type { Viewer } from "mars3d-cesium"
 import type { Component } from "vue"
+
+import contextMenuPanel from "../widgets/contextMenu/contextMenu.vue"
 
 /**
  * 绘制实体的管理器

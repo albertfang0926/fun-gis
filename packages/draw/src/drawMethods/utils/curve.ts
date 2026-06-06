@@ -1,5 +1,6 @@
 import * as turf from "@turf/turf"
 import * as Cesium from "mars3d-cesium"
+
 import type { Coordinate } from "../types/coordinate"
 
 export interface CurveSplineOption {

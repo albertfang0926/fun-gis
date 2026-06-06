@@ -1,6 +1,7 @@
-import Base from "../base"
 // @ts-ignore
 import { Cartesian3 } from "cesium"
+
+import Base from "../base"
 import { PolygonStyle } from "../src/interface"
 
 export default class FreehandLine extends Base {

@@ -1,9 +1,11 @@
 // third-parties
-import { createApp } from "vue"
-// customs
-import Playground from "./index.vue"
 // style
 import "./assets/style.css"
+
+import { createApp } from "vue"
+
+// customs
+import Playground from "./index.vue"
 
 // 定义特性标志
 // @ts-ignore

@@ -6,6 +6,7 @@
  * @Last Modified time: 2023-01-13 14:29:28
  */
 import * as Cesium from "mars3d-cesium"
+
 import type { Coordinate } from "../../types/coordinate"
 /**
  * 获取屏幕中心点坐标，参数传空返回笛卡尔坐标
@@ -186,14 +187,13 @@ const calculateOrientation = (cartesian: any, hpr: number[]) => {
   return orientation
 }
 export {
+  calculateAngle,
+  calculateOrientation,
   getCameraCentor,
   getCatesian3FromPX,
-  transformWGS84ToCartesian,
   transformCartesianToWGS84,
   transformDegreeToDMS,
   transformDMSToDegree,
-  transformWGS84ToDMS,
   transformDMSToWGS84,
-  calculateAngle,
-  calculateOrientation
-}
+  transformWGS84ToCartesian,
+  transformWGS84ToDMS}

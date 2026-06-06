@@ -1,36 +1,36 @@
 import {
-  Viewer,
-  Cartesian3,
+  ArcType,
+  Billboard,
   BillboardCollection,
-  Primitive,
-  VerticalOrigin,
-  NearFarScalar,
-  HeightReference,
-  ScreenSpaceEventHandler,
-  ScreenSpaceEventType,
+  Cartesian3,
+  Color,
   GeometryInstance,
+  HeightReference,
+  Material,
+  NearFarScalar,
   PolylineGeometry,
   PolylineMaterialAppearance,
-  ArcType,
-  Material,
-  Color,
-  Billboard
-} from "mars3d-cesium"
-// customs
-import { coordinateToCartesian3, cartesian3ToCoordinate } from "../utils"
-import { drawPoint } from "../core"
-import { createTextLabel, createTextLabelImg } from "../core/point/textLabel"
-import { itemManager } from "../manager/primitive"
-import { helperPrimitives } from "./utils/dragHelper"
-import { onRightClick } from "./utils/mouse"
+  Primitive,
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType,
+  VerticalOrigin,
+  Viewer} from "mars3d-cesium"
+
 // assets
 import defaultPoint from "../../assets/images/primitives/point.png" // "../assets/images/primitives/location_type1.png"
 import helpPoint from "../../assets/images/primitives/point_focused.png" // "../assets/images/primitives/location_type1.png"
 import highlightHelpPoint from "../../assets/images/primitives/point_focused.png" // "../assets/images/primitives/location_type1.png"
-import { Coordinate } from "../types/coordinate"
+import { drawPoint } from "../core"
+import { createTextLabel, createTextLabelImg } from "../core/point/textLabel"
+import { itemManager } from "../manager/primitive"
 // types
 import type { I_ContextMenu } from "../types/contextMenu"
+import { Coordinate } from "../types/coordinate"
+// customs
+import { cartesian3ToCoordinate,coordinateToCartesian3 } from "../utils"
 import type { BaseEntity } from "./baseEntity"
+import { helperPrimitives } from "./utils/dragHelper"
+import { onRightClick } from "./utils/mouse"
 
 class Label {
   public id: string
@@ -164,7 +164,7 @@ class Label {
   onDrag() {
     this.dragHandler.setInputAction((e) => {
       if (!this.editing) return
-      let pickedControlPoint = this.viewer.scene.pick(e.position)
+      const pickedControlPoint = this.viewer.scene.pick(e.position)
       if (
         pickedControlPoint &&
         helperPrimitives.contains(pickedControlPoint.primitive) &&

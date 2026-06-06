@@ -23,7 +23,7 @@
     "@vitejs/plugin-vue": "^4.2.3",
     "typescript": "^5.4.5",
     "unplugin-vue-components": "^0.25.2",
-    "vite": "^5.2.10",
+    "vite": "^7.1.9",
     "vite-plugin-cesium": "^1.2.22",
     "vue-draggable-plus": "^0.5.3"
   },

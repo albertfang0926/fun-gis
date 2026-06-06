@@ -1,7 +1,8 @@
-import type { Coordinate } from "../types/coordinate"
 import * as turf from "@turf/turf"
-import { Math as CMath, Cartesian3, Cartographic } from "mars3d-cesium"
-import { min, max } from "lodash"
+import { max,min } from "lodash"
+import { Cartesian3, Cartographic,Math as CMath } from "mars3d-cesium"
+
+import type { Coordinate } from "../types/coordinate"
 
 // #region 计算点、线。面等要素的长度、面积等属性
 

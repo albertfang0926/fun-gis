@@ -1,46 +1,45 @@
 // types
-import type { Coordinate } from "../../types/coordinate"
+import { push } from "echarts/types/src/component/dataZoom/history.js"
 import {
   Cartesian3,
+  Cartographic,
   CircleOutlineGeometry,
-  Transforms,
-  Viewer,
-  Matrix4,
   EllipsoidGeodesic,
-  Cartographic
-} from "mars3d-cesium"
+  Matrix4,
+  Transforms,
+  Viewer} from "mars3d-cesium"
 // third-parties
 import {
-  Primitive,
+  ArcType,
+  Color,
+  defaultValue,
   EllipseGeometry,
   GeometryInstance,
-  PointPrimitiveCollection,
-  ScreenSpaceEventHandler,
-  ScreenSpaceEventType,
-  defaultValue,
-  Color,
   Material,
-  PrimitiveCollection,
-  ArcType,
   MaterialAppearance,
-  Math as czmMath
-} from "mars3d-cesium"
+  Math as czmMath,
+  PointPrimitiveCollection,
+  Primitive,
+  PrimitiveCollection,
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType} from "mars3d-cesium"
+
+import type { Coordinate } from "../../types/coordinate"
 // customs
 // import Cursor from "../../utils/cursor"
 // import Tooltip from "../../utils/tooltip"
 import {
-  Cursor,
-  Tooltip,
-  createUid,
+  cartesian3ToCoordinate,
   convertArea,
+  coordinatesToCartesian3Array,
+  coordinateToCartesian3,
+  createUid,
+  Cursor,
   getCoordinateArea,
   getRectangleCoorByTwoPoints,
-  windowPositionToEllipsoidCartesian,
-  cartesian3ToCoordinate,
-  coordinatesToCartesian3Array,
   isSameCoordinate,
-  coordinateToCartesian3
-} from "../../utils"
+  Tooltip,
+  windowPositionToEllipsoidCartesian} from "../../utils"
 // import { Settings } from "../config"
 // import { createUid } from "../../utils"
 // import { convertArea } from "../utils"
@@ -52,7 +51,6 @@ import {
 //   isSameCoordinate
 // } from "../../utils/coordinate"
 import { getPolylinePrimitive } from "../polyline/utils"
-import { push } from "echarts/types/src/component/dataZoom/history.js"
 
 const DEFAULT_COLOR_STRING = "#ffffff"
 /**

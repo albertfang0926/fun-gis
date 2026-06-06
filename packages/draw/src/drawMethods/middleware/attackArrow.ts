@@ -1,33 +1,33 @@
 import {
-  Viewer,
-  Cartesian3,
+  ArcType,
   BillboardCollection,
-  Primitive,
-  VerticalOrigin,
-  NearFarScalar,
-  HeightReference,
-  ScreenSpaceEventHandler,
-  ScreenSpaceEventType,
+  Cartesian3,
+  Color,
   GeometryInstance,
+  HeightReference,
+  Material,
+  NearFarScalar,
   PolylineGeometry,
   PolylineMaterialAppearance,
-  ArcType,
-  Material,
-  Color
-} from "mars3d-cesium"
-// customs
-import { coordinateToCartesian3, cartesian3ToCoordinate } from "../utils"
-import { drawCustomMilitary } from "../core"
-import { itemManager } from "../manager/primitive"
-import { getAttackArrowPoints } from "../core/military/utils/creatMilitary"
-import { helperPrimitives } from "./utils/dragHelper"
-import { onRightClick } from "./utils/mouse"
+  Primitive,
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType,
+  VerticalOrigin,
+  Viewer} from "mars3d-cesium"
+
 // assets
 import helpPoint from "../../assets/images/primitives/location_type1.png" // "../assets/images/primitives/location_type1.png"
 import highlightHelpPoint from "../../assets/images/primitives/point_selected.png" // "../assets/images/primitives/location_type1.png"
-import { Coordinate } from "../types/coordinate"
+import { drawCustomMilitary } from "../core"
+import { getAttackArrowPoints } from "../core/military/utils/creatMilitary"
+import { itemManager } from "../manager/primitive"
 // types
 import type { I_ContextMenu } from "../types/contextMenu"
+import { Coordinate } from "../types/coordinate"
+// customs
+import { cartesian3ToCoordinate,coordinateToCartesian3 } from "../utils"
+import { helperPrimitives } from "./utils/dragHelper"
+import { onRightClick } from "./utils/mouse"
 // const helperPrimitives = new BillboardCollection()
 
 class AttackArrow {
@@ -140,7 +140,7 @@ class AttackArrow {
     this.dragHandler.setInputAction((e) => {
       if (!this.editing) return
 
-      let pickedControlPoint = this.viewer.scene.pick(e.position)
+      const pickedControlPoint = this.viewer.scene.pick(e.position)
 
       if (
         pickedControlPoint &&

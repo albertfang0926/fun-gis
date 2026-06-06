@@ -1,7 +1,8 @@
+import type { Viewer } from "mars3d-cesium"
+
 import sight from "../../assets/drawMethods/cursor/sight.png"
 import pen from "../../assets/drawMethods/cursor/sight.png"
 import cross from "../../assets/drawMethods/cursor/sight.png"
-import type { Viewer } from "mars3d-cesium"
 
 export class Cursor {
   static _table = {

@@ -11,10 +11,12 @@
 </template>
 
 <script setup lang="ts">
-import { Viewer } from "@photo-sphere-viewer/core"
-import TestPhoto from "../assets/大疆天空之城全景图.jpg"
 import "@photo-sphere-viewer/core/index.css"
+
+import { Viewer } from "@photo-sphere-viewer/core"
 import { onMounted, ref } from "vue"
+
+import TestPhoto from "../assets/大疆天空之城全景图.jpg"
 import { getPanoramaMetadata } from "../utils/index"
 
 const currentPosition = ref<any>({ yaw: 0, pitch: 0 })

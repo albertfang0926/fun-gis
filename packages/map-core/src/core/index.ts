@@ -1,12 +1,12 @@
 import {
-  Scene,
-  Viewer,
   Cartesian3,
-  PolylineCollection,
   Polyline,
+  PolylineCollection,
+  Scene,
   ScreenSpaceEventHandler,
-  ScreenSpaceEventType
-} from "cesium"
+  ScreenSpaceEventType,
+  Viewer} from "cesium"
+
 import { EventEmitter } from "./event"
 
 export class LineDrawer extends EventEmitter {

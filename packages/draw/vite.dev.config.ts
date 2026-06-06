@@ -1,15 +1,14 @@
 // /** @type {import("vite").UserConfig} */
+import vue from "@vitejs/plugin-vue"
 import { resolve } from "path"
-import { defineConfig } from "vite"
-// plugins
-import {
-  createStyleImportPlugin,
-  AndDesignVueResolve
-} from "vite-plugin-style-import"
 import { AntDesignVueResolver } from "unplugin-vue-components/resolvers"
 import Components from "unplugin-vue-components/vite"
-import vue from "@vitejs/plugin-vue"
+import { defineConfig } from "vite"
 import { mars3dPlugin } from "vite-plugin-mars3d"
+// plugins
+import {
+  AndDesignVueResolve,
+  createStyleImportPlugin} from "vite-plugin-style-import"
 
 export default defineConfig({
   // define: {

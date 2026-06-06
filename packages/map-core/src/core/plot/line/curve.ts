@@ -1,8 +1,9 @@
-import * as Utils from '../utils';
-import Base from '../base';
 // @ts-ignore
 import { Cartesian3 } from 'kmap-3d-engine';
+
+import Base from '../base';
 import { LineStyle } from '../interface';
+import * as Utils from '../utils';
 
 export default class Curve extends Base {
 	points: Cartesian3[] = [];

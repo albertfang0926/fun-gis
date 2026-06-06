@@ -1,31 +1,29 @@
 // types
-import type { Coordinate } from "../../types/coordinate"
 import type { Viewer } from "mars3d-cesium"
 // third-parties
 import {
-  PointPrimitiveCollection,
-  ScreenSpaceEventHandler,
-  ScreenSpaceEventType,
-  defaultValue,
-  Color,
+  ArcType,
   Cartesian3,
+  Color,
+  defaultValue,
   Material,
+  PointPrimitiveCollection,
   PrimitiveCollection,
-  ArcType
-} from "mars3d-cesium"
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType} from "mars3d-cesium"
+
+import type { Coordinate } from "../../types/coordinate"
 // customs
 import {
-  Cursor,
-  Tooltip,
-  createUid,
-  convertArea,
-  getCoordinateArea,
-  windowPositionToEllipsoidCartesian,
   cartesian3ToCoordinate,
+  convertArea,
+  createUid,
+  Cursor,
+  getCoordinateArea,
+  getParallelogramVertices,
   isSameCoordinate,
-  getParallelogramVertices
-} from "../../utils"
-
+  Tooltip,
+  windowPositionToEllipsoidCartesian} from "../../utils"
 import { getPolylinePrimitive } from "./utils"
 
 const DEFAULT_COLOR_STRING = "#ffffff"

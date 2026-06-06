@@ -1,10 +1,11 @@
-import { Viewer, Cesium3DTileset } from "cesium"
-import { BaseLayerProvider } from "./base-provider"
+import { Cesium3DTileset,Viewer } from "cesium"
+
+import { LayerDataSourceType } from "../constants"
 import {
   ILayerSourceConfig,
   ITilesetSourceConfig
 } from "../types"
-import { LayerDataSourceType } from "../constants"
+import { BaseLayerProvider } from "./base-provider"
 
 export class TilesetLayerProvider extends BaseLayerProvider {
   readonly dataSourceType = LayerDataSourceType.Tileset

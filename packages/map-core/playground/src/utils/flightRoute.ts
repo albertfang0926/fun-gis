@@ -1,13 +1,12 @@
 import {
-  Viewer,
   Cartesian3,
+  Color,
+  GeometryInstance,
+  Material,
   PolylineGeometry,
   PolylineMaterialAppearance,
-  Material,
-  Color,
   Primitive,
-  GeometryInstance
-} from "cesium"
+  Viewer} from "cesium"
 
 import arrow from "../assets/images/arrow.png"
 

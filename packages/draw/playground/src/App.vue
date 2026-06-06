@@ -5,13 +5,15 @@
 </template>
 
 <script setup lang="ts">
+import "mars3d/mars3d.css"
+
 import * as mars3d from "mars3d"
 import * as Cesium from "mars3d-cesium"
-import "mars3d/mars3d.css"
-import { onMounted, provide, shallowRef, ref } from "vue"
+import { onMounted, provide, ref,shallowRef } from "vue"
+
+import { itemManager } from "../../src/drawMethods/manager/primitive"
 // components
 import DemoPanel from "./components/demoPanel.vue"
-import { itemManager } from "../../src/drawMethods/manager/primitive"
 
 const viewer = shallowRef<Cesium.Viewer | undefined>()
 const mapMounted = ref(false)

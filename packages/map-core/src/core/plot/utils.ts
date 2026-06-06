@@ -53,7 +53,7 @@ export const getCircleCenterOfThreePoints = (point1, point2, point3) => {
   const pntB = [pntA[0] - point1[1] + point2[1], pntA[1] + point1[0] - point2[0]];
   const pntC = [(point1[0] + point3[0]) / 2, (point1[1] + point3[1]) / 2];
   const pntD = [pntC[0] - point1[1] + point3[1], pntC[1] + point1[0] - point3[0]];
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+   
   return getIntersectPoint(pntA, pntB, pntC, pntD);
 };
 
@@ -151,7 +151,7 @@ export const getPointOnLine = (t, startPnt, endPnt) => {
  * @returns {[*,*]}
  */
 export const getCubicValue = (t, startPnt, cPnt1, cPnt2, endPnt) => {
-  // eslint-disable-next-line no-param-reassign
+   
   t = Math.max(Math.min(t, 1), 0);
   const [tp, t2] = [1 - t, t * t];
   const t3 = t2 * t;
@@ -209,7 +209,7 @@ export const getArcPoints = (center, radius, startAngle, endAngle) => {
  * @returns {[*,*]}
  */
 export const getBisectorNormals = (t, pnt1, pnt2, pnt3) => {
-  // eslint-disable-next-line
+   
   const normal = getNormal(pnt1, pnt2, pnt3);
   let [bisectorNormalRight, bisectorNormalLeft, dt, x, y] = [null, null, null, null, null];
   const dist = Math.sqrt(normal[0] * normal[0] + normal[1] * normal[1]);
@@ -390,7 +390,7 @@ export const getBezierPoints = function (points) {
   for (let t = 0; t <= 1; t += 0.01) {
     let [x, y] = [0, 0];
     for (let index = 0; index <= n; index++) {
-      // eslint-disable-next-line
+       
       const factor = getBinomialFactor(n, index);
       const a = t ** index;
       const b = (1 - t) ** (n - index);
@@ -459,7 +459,7 @@ export const getQBSplinePoints = (points) => {
     for (let t = 0; t <= 1; t += 0.05) {
       let [x, y] = [0, 0];
       for (let k = 0; k <= n; k++) {
-        // eslint-disable-next-line
+         
         const factor = getQuadricBSplineFactor(k, t);
         x += factor * points[i + k][0];
         y += factor * points[i + k][1];
@@ -499,9 +499,9 @@ export const getuuid = () => {
     s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
   }
   s[14] = '4';
-  // eslint-disable-next-line no-bitwise
+   
   s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);
-  // eslint-disable-next-line no-multi-assign
+   
   s[8] = s[13] = s[18] = s[23] = '-';
   return s.join('');
 };
@@ -548,7 +548,7 @@ export const isObject = (value) => {
  * @returns {*}
  */
 export const merge = (a, b) => {
-  // eslint-disable-next-line no-restricted-syntax
+   
   for (const key in b) {
     if (isObject(b[key]) && isObject(a[key])) {
       merge(a[key], b[key]);
@@ -560,7 +560,7 @@ export const merge = (a, b) => {
 };
 
 export function preventDefault(e) {
-  // eslint-disable-next-line no-param-reassign
+   
   e = e || window.event;
   if (e.preventDefault) {
     e.preventDefault();

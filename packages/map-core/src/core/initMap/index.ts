@@ -1,8 +1,9 @@
 // third-parties
 import { IonImageryProvider, Viewer } from "cesium"
+
+import { LayerManager } from "../layer-system"
 // customs
 import { defaultViewerOpts } from "./defaultOpts"
-import { LayerManager } from "../layer-system"
 
 class CesiumViewer {
   container: string
@@ -20,7 +21,7 @@ class CesiumViewer {
   async initMap() {
     this.viewer = new Viewer(this.container, defaultViewerOpts)
     this.viewer.scene.imageryLayers.addImageryProvider(
-      await IonImageryProvider.fromAssetId(3)
+      await IonImageryProvider.fromAssetId(2)
     )
     this.layerManager.attachViewer("main", this.viewer)
   }

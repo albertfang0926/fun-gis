@@ -1,12 +1,12 @@
 import { Viewer } from "cesium"
-import { BaseLayerProvider } from "./base-provider"
-import {
-  ILayerSourceConfig,
-  IEntitySourceConfig,
-  ILayerFilterState
-} from "../types"
-import { LayerDataSourceType } from "../constants"
+
 import { DataManager } from "../../data-manager"
+import { LayerDataSourceType } from "../constants"
+import {
+  IEntitySourceConfig,
+  ILayerFilterState,
+  ILayerSourceConfig} from "../types"
+import { BaseLayerProvider } from "./base-provider"
 
 export class EntityLayerProvider extends BaseLayerProvider {
   readonly dataSourceType = LayerDataSourceType.Entity

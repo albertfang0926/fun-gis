@@ -1,14 +1,14 @@
 import {
-  Viewer,
   CesiumTerrainProvider,
-  EllipsoidTerrainProvider
-} from "cesium"
-import { BaseLayerProvider } from "./base-provider"
+  EllipsoidTerrainProvider,
+  Viewer} from "cesium"
+
+import { LayerDataSourceType } from "../constants"
 import {
   ILayerSourceConfig,
   ITerrainSourceConfig
 } from "../types"
-import { LayerDataSourceType } from "../constants"
+import { BaseLayerProvider } from "./base-provider"
 
 export class TerrainLayerProvider extends BaseLayerProvider {
   readonly dataSourceType = LayerDataSourceType.Terrain

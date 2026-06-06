@@ -1,8 +1,9 @@
-import Base from "../base"
-import * as Utils from "../utils"
 // @ts-ignore
 import { Cartesian3 } from "cesium"
+
+import Base from "../base"
 import { PolygonStyle } from "../interface"
+import * as Utils from "../utils"
 type Position = [number, number]
 
 export default class DoubleArrow extends Base {
@@ -278,8 +279,8 @@ export default class DoubleArrow extends Base {
     const neckWidth = Utils.MathDistance(neckLeft, neckRight)
     const widthDif = (tailWidth - neckWidth) / 2
     let tempLen: number = 0
-    let leftBodyPnts: Position[] = []
-    let rightBodyPnts: Position[] = []
+    const leftBodyPnts: Position[] = []
+    const rightBodyPnts: Position[] = []
     for (let i = 1; i < points.length - 1; i++) {
       const angle =
         Utils.getAngleOfThreePoints(points[i - 1], points[i], points[i + 1]) / 2

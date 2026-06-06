@@ -49,7 +49,11 @@
 
 <script setup lang="ts">
 // third-parties
+import type { Viewer } from "mars3d-cesium"
+// types
+import type { ShallowRef } from "vue"
 import { computed, inject, ref, shallowRef, watch } from "vue"
+
 // customs
 // import {
 //   // drawPoints,
@@ -60,27 +64,23 @@ import { computed, inject, ref, shallowRef, watch } from "vue"
 //   drawAttackArrow
 // } from "../../../src/drawMethods_2/primitives" // "../../../src/index"
 import { drawCustomMilitary, drawPoint } from "../../../src/drawMethods/core"
-import { Point } from "../../../src/drawMethods/middleware/point"
+import { itemManager } from "../../../src/drawMethods/manager/primitive"
+import { Arc } from "../../../src/drawMethods/middleware/arc"
+import { Arch } from "../../../src/drawMethods/middleware/arch"
+import { AttackArrow } from "../../../src/drawMethods/middleware/attackArrow"
+import type { BaseEntity } from "../../../src/drawMethods/middleware/baseEntity"
+import { Circle } from "../../../src/drawMethods/middleware/circle"
+import { CloseCurve } from "../../../src/drawMethods/middleware/closeCurve"
+import { Curve } from "../../../src/drawMethods/middleware/curve"
 import { Label } from "../../../src/drawMethods/middleware/label"
 import { Parallelogram } from "../../../src/drawMethods/middleware/parallelogram"
-import { Arc } from "../../../src/drawMethods/middleware/arc"
-import { Sector } from "../../../src/drawMethods/middleware/sector"
-import { AttackArrow } from "../../../src/drawMethods/middleware/attackArrow"
-import { Arch } from "../../../src/drawMethods/middleware/arch"
-import { Curve } from "../../../src/drawMethods/middleware/curve"
-import { CloseCurve } from "../../../src/drawMethods/middleware/closeCurve"
-import { Polyline } from "../../../src/drawMethods/middleware/polyline"
-import { Segment } from "../../../src/drawMethods/middleware/segment"
+import { Point } from "../../../src/drawMethods/middleware/point"
 import { Polygon } from "../../../src/drawMethods/middleware/polygon"
+import { Polyline } from "../../../src/drawMethods/middleware/polyline"
 import { Rectangle } from "../../../src/drawMethods/middleware/rectangle"
-import { Circle } from "../../../src/drawMethods/middleware/circle"
-import { itemManager } from "../../../src/drawMethods/manager/primitive"
-
-// types
-import type { ShallowRef } from "vue"
-import type { Viewer } from "mars3d-cesium"
+import { Sector } from "../../../src/drawMethods/middleware/sector"
+import { Segment } from "../../../src/drawMethods/middleware/segment"
 import type { I_ContextMenu } from "../../../src/drawMethods/types/contextMenu" // "@/drawMethods/types/contextMenu"
-import type { BaseEntity } from "../../../src/drawMethods/middleware/baseEntity"
 
 const viewer: ShallowRef<Viewer> = inject("cesium-viewer")
 const panelVisible = ref(false)

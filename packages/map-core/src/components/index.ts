@@ -1,10 +1,11 @@
 // types
-import type { Plugin, App } from "vue"
+import type { App,Plugin } from "vue"
+
 // components
 import BasePanel from "./basePanel.vue"
 
 const components = [BasePanel]
-const FCesiumPlugin: Plugin = {
+const FunGISPlugin: Plugin = {
   install(app: App) {
     components.forEach((component) => {
       if (!component.name) {
@@ -15,5 +16,5 @@ const FCesiumPlugin: Plugin = {
   }
 }
 
-export default FCesiumPlugin
+export default FunGISPlugin
 export { BasePanel }

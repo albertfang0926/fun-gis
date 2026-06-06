@@ -1,16 +1,15 @@
+import type { Billboard, Viewer } from "cesium"
+import { Cartesian2,Color, Primitive } from "cesium"
+
+import type { Coordinate } from ".."
+import { MaterialTable } from "../material"
+import { coordinatesToCartesian3Array,coordinateToCartesian3 } from "../utils/coordinate"
 import type {
   BillBoardTextureOptions, PolylineTextureOptions,
   TextLabelTextOptions
 } from "./interface"
-import type { Coordinate } from ".."
-import type { Billboard, Viewer } from "cesium"
-
-
-import { Color, Primitive, Cartesian2 } from "cesium"
-import { MaterialTable } from "../material"
 import { createTextLabelImg } from "./point/textLabel"
 import { getPolylinePrimitive, type PolylinePrimitiveOptions } from "./polyline/utils"
-import { coordinateToCartesian3, coordinatesToCartesian3Array } from "../utils/coordinate"
 
 
 // 修改样式

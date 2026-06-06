@@ -1,34 +1,34 @@
 import {
-  Viewer,
+  ArcType,
   Cartesian3,
-  Primitive,
-  VerticalOrigin,
-  NearFarScalar,
-  HeightReference,
-  ScreenSpaceEventHandler,
-  ScreenSpaceEventType,
+  Cartographic,
+  Color,
   GeometryInstance,
+  HeightReference,
+  Material,
+  NearFarScalar,
   PolylineGeometry,
   PolylineMaterialAppearance,
-  ArcType,
-  Material,
-  Color,
-  Cartographic
-} from "mars3d-cesium"
-// customs
-import { coordinateToCartesian3, cartesian3ToCoordinate } from "../utils"
-import { drawCustomMilitary } from "../core"
-import { itemManager } from "../manager/primitive"
-import { calculateArcPoints } from "../core/military/utils/creatMilitary"
-import { helperPrimitives } from "./utils/dragHelper"
-import { updateSectorVertices } from "./utils/sectorHelper"
-import { onRightClick } from "./utils/mouse"
+  Primitive,
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType,
+  VerticalOrigin,
+  Viewer} from "mars3d-cesium"
+
 // assets
 import helpPoint from "../../assets/images/primitives/location_type1.png" // "../assets/images/primitives/location_type1.png"
 import highlightHelpPoint from "../../assets/images/primitives/point_selected.png" // "../assets/images/primitives/location_type1.png"
+import { drawCustomMilitary } from "../core"
+import { calculateArcPoints } from "../core/military/utils/creatMilitary"
+import { itemManager } from "../manager/primitive"
+import type { I_ContextMenu } from "../types/contextMenu"
 // types
 import type { Coordinate } from "../types/coordinate"
-import type { I_ContextMenu } from "../types/contextMenu"
+// customs
+import { cartesian3ToCoordinate,coordinateToCartesian3 } from "../utils"
+import { helperPrimitives } from "./utils/dragHelper"
+import { onRightClick } from "./utils/mouse"
+import { updateSectorVertices } from "./utils/sectorHelper"
 
 // const helperPrimitives = new BillboardCollection()
 
@@ -143,7 +143,7 @@ class Arc {
     this.dragHandler.setInputAction((e) => {
       if (!this.editing) return
 
-      let pickedControlPoint = this.viewer.scene.pick(e.position)
+      const pickedControlPoint = this.viewer.scene.pick(e.position)
 
       if (
         pickedControlPoint &&
@@ -166,7 +166,7 @@ class Arc {
             if (focusedIndex === 0) {
               this.controlPoints[2] = updateSectorVertices(position, this.controlPoints[1], this.controlPoints[2])
             } else {
-              let fixedIndex = 3 - focusedIndex
+              const fixedIndex = 3 - focusedIndex
               this.controlPoints[fixedIndex] = updateSectorVertices(
                 this.controlPoints[0],
                 position,

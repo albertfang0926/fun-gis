@@ -1,19 +1,19 @@
 // third-parties
+// types
+import type { Viewer } from "mars3d-cesium"
 import {
+  SceneTransforms,
   ScreenSpaceEventHandler,
-  ScreenSpaceEventType,
-  SceneTransforms
-} from "mars3d-cesium"
+  ScreenSpaceEventType} from "mars3d-cesium"
+
 // customs
 import { itemManager } from "../../manager/primitive"
+import type { I_ContextMenu } from "../../types/contextMenu"
 import ContextMenuManager from "../../widgets/contextMenu/contextMenu"
+import type { BaseEntity } from "../baseEntity"
 // components
 // import ContextMenuPanel from "../../widgets/contextMenu/contextMenu.vue"
 import { helperPrimitives } from "./dragHelper"
-// types
-import type { Viewer } from "mars3d-cesium"
-import type { I_ContextMenu } from "../../types/contextMenu"
-import type { BaseEntity } from "../baseEntity"
 
 interface I_Graphic {
   viewer: Viewer
@@ -34,7 +34,7 @@ function onRightClick<T extends I_Graphic>(
 ) {
   graphic.dragHandler.setInputAction(
     (e: ScreenSpaceEventHandler.PositionedEvent) => {
-      let picked = graphic.viewer.scene.pick(e.position)
+      const picked = graphic.viewer.scene.pick(e.position)
       const position = graphic.viewer.camera.pickEllipsoid(
         e.position,
         graphic.viewer.scene.globe.ellipsoid

@@ -1,6 +1,7 @@
-import type { TextLabelOptions, TextLabelTextOptions } from "../interface"
 import { BillboardCollection, Cartesian2, Cartesian3, defaultValue } from "mars3d-cesium"
+
 import { createUid } from "../../utils"
+import type { TextLabelOptions, TextLabelTextOptions } from "../interface"
 
 /**
  * 在地图上创建标签billboard

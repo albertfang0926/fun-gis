@@ -1,5 +1,5 @@
-import * as Cesium from "mars3d-cesium"
 import { flatten } from "lodash"
+import * as Cesium from "mars3d-cesium"
 
 const tailedAttackArrowDefualParam: any = {
   headHeightFactor: 0.18,

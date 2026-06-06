@@ -1,8 +1,9 @@
-import * as Utils from "../utils"
-import Base from "../base"
 // @ts-ignore
 import { Cartesian3 } from "cesium"
+
+import Base from "../base"
 import { LineStyle } from "../interface"
+import * as Utils from "../utils"
 
 export default class CurvedArrow extends Base {
   points: Cartesian3[] = []
@@ -39,7 +40,7 @@ export default class CurvedArrow extends Base {
    */
   updateMovingPoint(cartesian: Cartesian3) {
     const tempPoints = [...this.points, cartesian]
-    let geometryPoints = this.createGraphic(tempPoints)
+    const geometryPoints = this.createGraphic(tempPoints)
     this.setGeometryPoints(geometryPoints)
     this.drawLine()
   }

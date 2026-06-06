@@ -1,17 +1,18 @@
 // @ts-ignore
 import * as CesiumTypeOnly from 'cesium';
-import {
-  State,
-  GeometryStyle,
-  PolygonStyle,
-  LineStyle,
-  EventType,
-  EventListener,
-  VisibleAnimationOpts,
-  GrowthAnimationOpts,
-} from './interface';
-import EventDispatcher from './events';
 import cloneDeep from 'lodash.clonedeep';
+
+import EventDispatcher from './events';
+import {
+  EventListener,
+  EventType,
+  GeometryStyle,
+  GrowthAnimationOpts,
+  LineStyle,
+  PolygonStyle,
+  State,
+  VisibleAnimationOpts,
+} from './interface';
 // import merge from 'lodash.merge';
 import * as Utils from './utils';
 
@@ -574,7 +575,7 @@ export default class Base {
     setTimeout(() => {
       const graphics = entity.polygon || entity.polyline || entity.billboard;
       let startAlpha: number;
-      let material = graphics.material;
+      const material = graphics.material;
       if (material) {
         if (material.image && material.color.alpha !== undefined) {
           // Texture material, setting the alpha channel in the color of the custom ImageFlowMaterialProperty.
@@ -712,7 +713,7 @@ export default class Base {
           // The face-arrow determined by three points, with the animation starting from the midpoint of the line connecting the first two points.
           startPoint = this.cesium.Cartesian3.midpoint(points[0], points[1], new this.cesium.Cartesian3());
         }
-        let endPoint = points[movingPointIndex];
+        const endPoint = points[movingPointIndex];
         // To dynamically add points between the startPoint and endPoint, consistent with the initial drawing logic,
         // update the point at index movingPointIndex in the points array with the newPosition,
         // generate the arrow, and execute the animation.
@@ -754,12 +755,12 @@ export default class Base {
         const startPointLeft = this.cesium.Cartesian3.midpoint(points[0], midPoint, new this.cesium.Cartesian3());
 
         const startPointRight = this.cesium.Cartesian3.midpoint(midPoint, points[1], new this.cesium.Cartesian3());
-        let endPointLeft = points[3];
-        let endPointRight = points[2];
+        const endPointLeft = points[3];
+        const endPointRight = points[2];
         const t = elapsedTime / duration;
         const controlPoint = this.getBezierControlPointforGrowthAnimation();
-        let curveControlPointsLeft = [startPointLeft, controlPoint.left, endPointLeft];
-        let curveControlPointsRight = [startPointRight, controlPoint.right, endPointRight];
+        const curveControlPointsLeft = [startPointLeft, controlPoint.left, endPointLeft];
+        const curveControlPointsRight = [startPointRight, controlPoint.right, endPointRight];
         const newPositionLeft = this.getNewPosition(curveControlPointsLeft, t);
         const newPositionRight = this.getNewPosition(curveControlPointsRight, t);
 
@@ -800,7 +801,7 @@ export default class Base {
       return this.cesium.Cartesian3.fromDegrees(p[0], p[1]);
     });
 
-    let newPosition = this.interpolateAlongCurve(curvePoints, t);
+    const newPosition = this.interpolateAlongCurve(curvePoints, t);
     return newPosition;
   }
 

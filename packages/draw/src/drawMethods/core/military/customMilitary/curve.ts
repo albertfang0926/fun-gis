@@ -1,41 +1,40 @@
 import type { Viewer } from "mars3d-cesium"
-import type { Coordinate } from "../../../types/coordinate"
 import {
-  PointPrimitiveCollection,
-  ScreenSpaceEventHandler,
-  ScreenSpaceEventType,
-  defaultValue,
-  Color,
-  Cartesian3,
-  Material,
-  PrimitiveCollection,
   ArcType,
+  Cartesian3,
+  Color,
+  defaultValue,
   GeometryInstance,
+  Material,
+  PointPrimitiveCollection,
   PolylineGeometry,
+  PolylineMaterialAppearance,
   Primitive,
-  PolylineMaterialAppearance
-} from "mars3d-cesium"
+  PrimitiveCollection,
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType} from "mars3d-cesium"
+
+import type { Coordinate } from "../../../types/coordinate"
 // customs
 import {
-  Tooltip,
-  Cursor,
   cartesian3ToCoordinate,
   convertLength,
-  createUid,
-  getDistance,
-  windowPositionToEllipsoidCartesian,
+  coordinatesToCartesian3Array,
   coordinateToCartesian3,
+  createUid,
+  Cursor,
+  getDistance,
+  hermiteSplineCornerCurve,
   isSameCoordinate,
   linearSplineCurve,
-  coordinatesToCartesian3Array,
-  hermiteSplineCornerCurve
-} from "../../../utils"
+  Tooltip,
+  windowPositionToEllipsoidCartesian} from "../../../utils"
 // import Tooltip from "../../../utils/tooltip"
 // import Cursor from "../../../utils/cursor"
 import { Settings } from "../../config"
 import {
-  calculateArcPoints,
   calculateArchPoints,
+  calculateArcPoints,
   calculateSectorPoints,
   getAttackArrowPoints
 } from "../utils/creatMilitary"

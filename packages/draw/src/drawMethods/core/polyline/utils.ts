@@ -1,6 +1,6 @@
 // import type { FeatureId } from "../.."
 import type { ArcType, Cartesian3, Ellipsoid, Material } from "mars3d-cesium"
-import { GeometryInstance, PolylineGeometry, Primitive, PolylineMaterialAppearance } from "mars3d-cesium"
+import { GeometryInstance, PolylineGeometry, PolylineMaterialAppearance,Primitive } from "mars3d-cesium"
 
 export interface FeatureId {
   uuid: string

@@ -1,8 +1,9 @@
-import Base from "../base"
-import * as Utils from "../utils"
 // @ts-ignore
 import { Cartesian3 } from "cesium"
+
+import Base from "../base"
 import { PolygonStyle } from "../interface"
+import * as Utils from "../utils"
 
 export default class Lune extends Base {
   points: Cartesian3[] = []
@@ -88,7 +89,7 @@ export default class Lune extends Base {
       endAngle = angle2
     }
 
-    let points = Utils.getArcPoints(center, radius, startAngle, endAngle)
+    const points = Utils.getArcPoints(center, radius, startAngle, endAngle)
     const temp = [].concat(...points)
     const cartesianPoints = this.cesium.Cartesian3.fromDegreesArray(temp)
     return cartesianPoints

@@ -1,5 +1,5 @@
+import { CompositeType,DataManager } from "../data-manager"
 import { BaseLayer, LayerOptions } from "./base-layer"
-import { DataManager, CompositeType } from "../data-manager"
 
 export interface CompositeLayerOptions extends LayerOptions {
   compositeType?: CompositeType

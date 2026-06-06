@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue"
 import { CesiumViewer } from "@fesium/core"
+import { onMounted, onUnmounted, ref } from "vue"
 
 const containerRef = ref<HTMLDivElement>()
 let cesiumViewer: CesiumViewer | null = null

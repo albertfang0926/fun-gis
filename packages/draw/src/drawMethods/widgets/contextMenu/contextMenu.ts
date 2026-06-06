@@ -1,5 +1,5 @@
 import { Cartesian2 } from "mars3d-cesium"
-import { createVNode, render, Component, createApp } from "vue"
+import { Component, createApp,createVNode, render } from "vue"
 
 export interface ContextMenuItem {
   key: string

@@ -1,32 +1,31 @@
 // types
-import type { Coordinate } from "../../types/coordinate"
 import type { Cartesian3, Viewer } from "mars3d-cesium"
 // third-parties
 import {
-  PointPrimitiveCollection,
-  ScreenSpaceEventHandler,
-  ScreenSpaceEventType,
-  defaultValue,
+  ArcType,
   Color,
+  defaultValue,
   Material,
+  PointPrimitiveCollection,
   PrimitiveCollection,
-  ArcType
-} from "mars3d-cesium"
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType} from "mars3d-cesium"
+
+import type { Coordinate } from "../../types/coordinate"
 // customs
 // import Cursor from "../../utils/cursor"
 // import Tooltip from "../../utils/tooltip"
 import {
-  Cursor,
-  Tooltip,
-  createUid,
+  cartesian3ToCoordinate,
   convertArea,
+  coordinatesToCartesian3Array,
+  createUid,
+  Cursor,
   getCoordinateArea,
   getRectangleCoorByTwoPoints,
-  windowPositionToEllipsoidCartesian,
-  cartesian3ToCoordinate,
-  coordinatesToCartesian3Array,
-  isSameCoordinate
-} from "../../utils"
+  isSameCoordinate,
+  Tooltip,
+  windowPositionToEllipsoidCartesian} from "../../utils"
 // import { Settings } from "../config"
 // import { createUid } from "../../utils"
 // import { convertArea } from "../utils"

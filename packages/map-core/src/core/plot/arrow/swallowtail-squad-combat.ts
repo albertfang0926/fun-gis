@@ -1,8 +1,9 @@
-import * as Utils from '../utils';
-import SquadCombat from './squad-combat';
 // @ts-ignore
 import { Cartesian3 } from 'cesium';
+
 import { PolygonStyle } from '../interface';
+import * as Utils from '../utils';
+import SquadCombat from './squad-combat';
 
 export default class SwallowtailSquadCombat extends SquadCombat {
   points: Cartesian3[] = [];

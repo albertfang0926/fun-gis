@@ -1,8 +1,9 @@
-import * as Utils from "../utils"
-import AttackArrow from "./attack-arrow"
 // @ts-ignore
 import { Cartesian3 } from "cesium"
+
 import { PolygonStyle } from "../interface"
+import * as Utils from "../utils"
+import AttackArrow from "./attack-arrow"
 
 export default class SquadCombat extends AttackArrow {
   points: Cartesian3[] = []

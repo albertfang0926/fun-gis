@@ -1,33 +1,32 @@
 // third-parties
+import type { Viewer } from "mars3d-cesium"
 import {
-  PointPrimitiveCollection,
-  PrimitiveCollection,
-  Primitive,
+  ArcType,
+  Cartesian3,
+  Color,
+  defaultValue,
   GeometryInstance,
+  Material,
+  PointPrimitiveCollection,
   PolylineGeometry,
   PolylineMaterialAppearance,
+  Primitive,
+  PrimitiveCollection,
   ScreenSpaceEventHandler,
-  ScreenSpaceEventType,
-  defaultValue,
-  Color,
-  Cartesian3,
-  ArcType,
-  Material
-} from "mars3d-cesium"
-// customs
-import { Settings } from "./../config"
-import { createUid, Cursor, Tooltip } from "../../utils"
-import { hermiteSplineCornerCurve, linearSplineCurve } from "../../utils/curve"
-import {
-  windowPositionToEllipsoidCartesian,
-  cartesian3ToCoordinate,
-  coordinateToCartesian3,
-  coordinatesToCartesian3Array,
-  isSameCoordinate
-} from "../../utils/coordinate"
+  ScreenSpaceEventType} from "mars3d-cesium"
+
 // types
 import type { Coordinate } from "../../types/coordinate"
-import type { Viewer } from "mars3d-cesium"
+import { createUid, Cursor, Tooltip } from "../../utils"
+import {
+  cartesian3ToCoordinate,
+  coordinatesToCartesian3Array,
+  coordinateToCartesian3,
+  isSameCoordinate,
+  windowPositionToEllipsoidCartesian} from "../../utils/coordinate"
+import { hermiteSplineCornerCurve, linearSplineCurve } from "../../utils/curve"
+// customs
+import { Settings } from "./../config"
 
 export type PolylineInterpolationType = "HermiteSpline" | "CatmullRomSpline" | "BezierSpline"
 export interface CurveLineDrawOption {

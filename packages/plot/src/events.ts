@@ -1,4 +1,4 @@
-import { EventType, EventListener } from "./interface"
+import { EventListener,EventType } from "./interface"
 
 export default class EventDispatcher {
   listeners: Map<EventType, Set<EventListener>>

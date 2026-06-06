@@ -1,16 +1,16 @@
-import type {
-  LabelDrawOption,
-  TextLabelTextOptions,
-  CommonLabelOption,
-  DrawOptionTable,
-  BillBoardDrawOption,
-  BillBoardTextureOptions,
-  PolylineDrawOption,
-  PolylineTextureOptions
-} from "./interface"
 // import { PointTextures } from "../material/featureTexture"
 // import { MaterialTable } from ".."
 import { ArcType, Cartesian2, Color } from "mars3d-cesium"
+
+import type {
+  BillBoardDrawOption,
+  BillBoardTextureOptions,
+  CommonLabelOption,
+  DrawOptionTable,
+  LabelDrawOption,
+  PolylineDrawOption,
+  PolylineTextureOptions,
+  TextLabelTextOptions} from "./interface"
 
 /**
  * 默认的标签设置

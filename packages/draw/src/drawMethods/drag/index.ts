@@ -1,6 +1,7 @@
-import { ScreenSpaceEventHandler, ScreenSpaceEventType } from "mars3d-cesium"
-import { itemManager } from "../manager/primitive"
 import type { Viewer } from "mars3d-cesium"
+import { ScreenSpaceEventHandler, ScreenSpaceEventType } from "mars3d-cesium"
+
+import { itemManager } from "../manager/primitive"
 
 function dragManager(viewer: Viewer) {
   const dragHandler = new ScreenSpaceEventHandler()

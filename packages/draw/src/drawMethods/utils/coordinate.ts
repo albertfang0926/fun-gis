@@ -1,6 +1,7 @@
+import type { Cartesian2,Ellipsoid, Viewer } from "mars3d-cesium"
+import { Cartesian3,Cartographic, Math as CMath } from "mars3d-cesium"
+
 import type { Coordinate } from "../types/coordinate"
-import type { Viewer, Ellipsoid, Cartesian2 } from "mars3d-cesium"
-import { Math as CMath, Cartographic, Cartesian3 } from "mars3d-cesium"
 
 /*********************************************************************
  *

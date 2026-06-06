@@ -1,19 +1,18 @@
 import {
-  Viewer,
-  ImageryLayer,
-  UrlTemplateImageryProvider,
-  WebMapTileServiceImageryProvider,
-  WebMapServiceImageryProvider,
   ArcGisMapServerImageryProvider,
+  ImageryLayer,
   IonImageryProvider,
-  SingleTileImageryProvider
-} from "cesium"
-import { BaseLayerProvider } from "./base-provider"
-import {
-  ILayerSourceConfig,
-  IImagerySourceConfig
-} from "../types"
+  SingleTileImageryProvider,
+  UrlTemplateImageryProvider,
+  Viewer,
+  WebMapServiceImageryProvider,
+  WebMapTileServiceImageryProvider} from "cesium"
+
 import { LayerDataSourceType } from "../constants"
+import {
+  IImagerySourceConfig,
+  ILayerSourceConfig} from "../types"
+import { BaseLayerProvider } from "./base-provider"
 
 export class ImageryLayerProvider extends BaseLayerProvider {
   readonly dataSourceType = LayerDataSourceType.Imagery

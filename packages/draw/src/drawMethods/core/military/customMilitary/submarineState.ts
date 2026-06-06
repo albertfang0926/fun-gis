@@ -1,38 +1,37 @@
 import type { Viewer } from "mars3d-cesium"
-import type { Coordinate } from "../../types/coordinate"
 import {
+  ArcType,
+  Cartesian3,
   CircleGeometry,
+  Color,
+  defaultValue,
+  GeometryInstance,
+  Material,
   MaterialAppearance,
   PointPrimitiveCollection,
-  ScreenSpaceEventHandler,
-  ScreenSpaceEventType,
-  defaultValue,
-  Color,
-  Cartesian3,
-  Material,
-  PrimitiveCollection,
-  ArcType,
-  GeometryInstance,
   PolylineGeometry,
+  PolylineMaterialAppearance,
   Primitive,
-  PolylineMaterialAppearance
-} from "mars3d-cesium"
-// customs
-import {
-  Tooltip,
-  Cursor,
-  cartesian3ToCoordinate,
-  convertLength,
-  createUid,
-  getDistance,
-  windowPositionToEllipsoidCartesian,
-  coordinateToCartesian3,
-  isSameCoordinate
-} from "../../utils"
+  PrimitiveCollection,
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType} from "mars3d-cesium"
+
 // import Tooltip from "../../../utils/tooltip"
 // import Cursor from "../../../utils/cursor"
 import { Settings } from "../../config"
-import { getBreakPosition, getIconLinePositions, type CustomGraphPoints } from "../utils/creatMilitary"
+import type { Coordinate } from "../../types/coordinate"
+// customs
+import {
+  cartesian3ToCoordinate,
+  convertLength,
+  coordinateToCartesian3,
+  createUid,
+  Cursor,
+  getDistance,
+  isSameCoordinate,
+  Tooltip,
+  windowPositionToEllipsoidCartesian} from "../../utils"
+import { type CustomGraphPoints,getBreakPosition, getIconLinePositions } from "../utils/creatMilitary"
 
 // import type { Viewer } from "cesium"
 // import {

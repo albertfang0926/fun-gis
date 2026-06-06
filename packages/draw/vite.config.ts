@@ -1,6 +1,7 @@
+import { ConfigEnv } from "vite"
+
 import developmentConfig from "./vite.dev.config"
 import productionConfig from "./vite.lib.config"
-import { ConfigEnv } from "vite"
 
 export default ({ mode, command }: ConfigEnv) => {
   const root = process.cwd()

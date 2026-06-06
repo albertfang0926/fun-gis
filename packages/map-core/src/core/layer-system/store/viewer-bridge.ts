@@ -1,7 +1,8 @@
 import { Viewer } from "cesium"
+
 import { EventEmitter } from "../../event"
-import { LayerStore } from "./layer-store"
 import { ProviderRegistry } from "../providers"
+import { LayerStore } from "./layer-store"
 
 export class ViewerBridge extends EventEmitter {
   private viewer: Viewer

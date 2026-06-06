@@ -1,8 +1,7 @@
 import type {
   Camera,
-  ScreenSpaceCameraController as sscc,
-  Cartesian3
-} from "cesium"
+  Cartesian3,
+  ScreenSpaceCameraController as sscc} from "cesium"
 
 // Cesium相机管理器。功能包括：
 // 1. 管理相机状态

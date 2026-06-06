@@ -1,8 +1,9 @@
-import * as Utils from "../utils"
-import AttackArrow from "./attack-arrow"
 // @ts-ignore
 import { Cartesian3 } from "cesium"
+
 import { PolygonStyle } from "../src/interface"
+import * as Utils from "../utils"
+import AttackArrow from "./attack-arrow"
 
 export default class SwallowtailAttackArrow extends AttackArrow {
   points: Cartesian3[] = []

@@ -1,7 +1,7 @@
-import Base from '../base';
 // @ts-ignore
 import { Cartesian3 } from 'cesium';
 
+import Base from '../base';
 import { PolygonStyle } from '../interface';
 
 export default class Rectangle extends Base {

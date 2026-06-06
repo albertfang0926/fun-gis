@@ -1,26 +1,25 @@
 <template>
   <div id="map-container"></div>
-  <BasePanel></BasePanel>
+  <!-- <BasePanel></BasePanel> -->
 </template>
 
 <script setup lang="ts">
 // third-parties
+import * as Cesium from "cesium"
 import { Cartesian3, Ion } from "cesium"
 import { onMounted } from "vue"
-// customs
-import { CesiumViewer } from "../../src/index"
+
 // components
 import { BasePanel } from "../../src/components/index"
+// customs
+import { CesiumViewer } from "../../src/index"
 import { FlightRoute } from "./utils/flightRoute"
-import * as Cesium from "cesium"
 
 const DEFAULT_HOME_POSITION: [number, number, number] = [
   116.391333, 39.90731, 1e3
 ]
 
 Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN
-
-console.log("VITE_CESIUM_ION_TOKEN", import.meta.env.VITE_CESIUM_ION_TOKEN)
 
 const flightRoute = new FlightRoute()
 

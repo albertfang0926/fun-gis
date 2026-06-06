@@ -1,6 +1,7 @@
-import { Entity, Cartesian3, Color } from "cesium"
-import { BaseVisualizer, VisualizerOptions } from "./base-visualizer"
+import { Cartesian3, Color,Entity } from "cesium"
+
 import { DrawEntity, DrawType } from "../data-manager"
+import { BaseVisualizer, VisualizerOptions } from "./base-visualizer"
 
 export interface DrawVisualizerOptions extends VisualizerOptions {
   defaultColor?: string

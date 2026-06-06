@@ -1,13 +1,13 @@
 import {
-  Scene,
-  Viewer,
   Cartesian3,
   PointPrimitiveCollection,
-  PolylineCollection,
   PolygonPrimitive,
+  PolylineCollection,
+  Scene,
   ScreenSpaceEventHandler,
-  ScreenSpaceEventType
-} from "cesium"
+  ScreenSpaceEventType,
+  Viewer} from "cesium"
+
 import { EventEmitter } from "../event"
 
 export enum DrawMode {

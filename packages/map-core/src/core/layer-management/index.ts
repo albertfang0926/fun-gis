@@ -1,10 +1,11 @@
 /** @deprecated 使用 layer-system 模块中的 LayerManager 替代 */
 import { Scene } from "cesium"
-import { EventEmitter } from "../event"
+
 import { DataManager } from "../data-manager"
+import { EventEmitter } from "../event"
 import { BaseLayer } from "./base-layer"
-import { DrawLayer, DrawLayerOptions } from "./draw-layer"
 import { CompositeLayer, CompositeLayerOptions } from "./composite-layer"
+import { DrawLayer, DrawLayerOptions } from "./draw-layer"
 
 export enum LayerType {
   Draw = "draw",

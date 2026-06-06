@@ -1,5 +1,6 @@
 // third-parties
 import { ImageryLayer, WebMapTileServiceImageryProvider } from "cesium"
+
 //types
 import type { ICoord3d } from "../../types/geometry"
 
@@ -32,4 +33,4 @@ const defaultViewerOpts = {
 }
 const DEFAULT_HOME_POSITION: ICoord3d = [117.43111, 32.100556, 1e6]
 
-export { defaultViewerOpts, DEFAULT_HOME_POSITION }
+export { DEFAULT_HOME_POSITION,defaultViewerOpts }

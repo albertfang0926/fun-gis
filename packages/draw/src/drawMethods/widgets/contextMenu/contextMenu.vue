@@ -12,8 +12,8 @@
 </template>
 
 <script setup lang="ts">
-import type { I_ContextMenu } from "../../types/contextMenu"
 import type { BaseEntity } from "../../middleware/baseEntity"
+import type { I_ContextMenu } from "../../types/contextMenu"
 
 const props = defineProps<{ graphic: BaseEntity; content: I_ContextMenu<BaseEntity>[] }>()
 // const options = ref([

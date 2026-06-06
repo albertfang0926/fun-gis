@@ -1,25 +1,25 @@
 import { Viewer } from "cesium"
+
 import { EventEmitter } from "../event"
+import { LayerDataSourceType } from "./constants"
 import { LayerModel } from "./model/layer-model"
-import { LayerStore } from "./store/layer-store"
-import { ViewerBridge } from "./store/viewer-bridge"
 import { ProviderRegistry } from "./providers"
+import { CzmlLayerProvider } from "./providers/czml-provider"
 import { EntityLayerProvider } from "./providers/entity-provider"
+import { GeoJsonLayerProvider } from "./providers/geojson-provider"
 import { ImageryLayerProvider } from "./providers/imagery-provider"
+import { KmlLayerProvider } from "./providers/kml-provider"
 import { TerrainLayerProvider } from "./providers/terrain-provider"
 import { TilesetLayerProvider } from "./providers/tileset-provider"
-import { GeoJsonLayerProvider } from "./providers/geojson-provider"
-import { KmlLayerProvider } from "./providers/kml-provider"
-import { CzmlLayerProvider } from "./providers/czml-provider"
+import { LayerStore } from "./store/layer-store"
+import { ViewerBridge } from "./store/viewer-bridge"
 import {
-  ILayerProvider,
+  ICreateLayerOptions,
   ILayerFilter,
   ILayerFilterState,
-  ILayerTreeNodeSnapshot,
+  ILayerProvider,
   ILayerStoreSnapshot,
-  ICreateLayerOptions
-} from "./types"
-import { LayerDataSourceType } from "./constants"
+  ILayerTreeNodeSnapshot} from "./types"
 
 export class LayerManager extends EventEmitter {
   private store: LayerStore

@@ -1,8 +1,8 @@
-import { defineConfig } from "vite"
 // plugins
 import vue from "@vitejs/plugin-vue"
-import cesium from "vite-plugin-cesium"
 import Components from "unplugin-vue-components/vite"
+import { defineConfig } from "vite"
+import cesium from "vite-plugin-cesium"
 
 export default defineConfig({
   mode: "development",

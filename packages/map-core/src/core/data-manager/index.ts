@@ -1,4 +1,5 @@
 import { Entity, Viewer } from "cesium"
+
 import { EventEmitter } from "../event"
 import { BaseVisualizer } from "../visualization/base-visualizer"
 

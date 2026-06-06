@@ -1,18 +1,18 @@
 // assets
-import defaultImage from "../../../assets/images/primitives/point.png" // "../../../assets/drawMethods/feature/png/circle-point.png"
+// types
+import type { Viewer } from "mars3d-cesium"
 // third-parties
 import {
   BillboardCollection,
-  ScreenSpaceEventHandler,
-  ScreenSpaceEventType,
-  defaultValue,
   Cartesian2,
-  Color
-} from "mars3d-cesium"
+  Color,
+  defaultValue,
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType} from "mars3d-cesium"
+
+import defaultImage from "../../../assets/images/primitives/point.png" // "../../../assets/drawMethods/feature/png/circle-point.png"
 // customs
-import { Cursor, Tooltip, createUid, windowPositionToEllipsoidCartesian, cartesian3ToCoordinate } from "../../utils"
-// types
-import type { Viewer } from "mars3d-cesium"
+import { cartesian3ToCoordinate,createUid, Cursor, Tooltip, windowPositionToEllipsoidCartesian } from "../../utils"
 
 export interface BillBoardDrawOption {
   id?: string
