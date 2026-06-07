@@ -4,14 +4,11 @@
 </template>
 
 <script setup lang="ts">
-// third-parties
 import * as Cesium from "cesium"
 import { Cartesian3, Ion } from "cesium"
 import { onMounted } from "vue"
 
-// components
 import { BasePanel } from "../../src/components/index"
-// customs
 import { CesiumViewer } from "../../src/index"
 import { FlightRoute } from "./utils/flightRoute"
 

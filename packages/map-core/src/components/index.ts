@@ -1,5 +1,5 @@
 // types
-import type { App,Plugin } from "vue"
+import type { App, Plugin } from "vue"
 
 // components
 import BasePanel from "./basePanel.vue"

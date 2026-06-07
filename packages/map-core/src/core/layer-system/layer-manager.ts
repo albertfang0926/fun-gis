@@ -19,7 +19,8 @@ import {
   ILayerFilterState,
   ILayerProvider,
   ILayerStoreSnapshot,
-  ILayerTreeNodeSnapshot} from "./types"
+  ILayerTreeNodeSnapshot
+} from "./types"
 
 export class LayerManager extends EventEmitter {
   private store: LayerStore
@@ -71,10 +72,7 @@ export class LayerManager extends EventEmitter {
 
   // ─── 图层组 ───────────────────────────────────────────────
 
-  createGroup(
-    name: string,
-    parentId?: string | null
-  ): LayerModel {
+  createGroup(name: string, parentId?: string | null): LayerModel {
     return this.createLayer({
       name,
       dataSourceType: LayerDataSourceType.Custom,
@@ -128,10 +126,7 @@ export class LayerManager extends EventEmitter {
 
   // ─── 过滤 ─────────────────────────────────────────────────
 
-  setLayerFilter(
-    layerId: string,
-    filterState: ILayerFilterState | null
-  ): void {
+  setLayerFilter(layerId: string, filterState: ILayerFilterState | null): void {
     const model = this.store.getModel(layerId)
     model?.setFilter(filterState)
   }
@@ -237,12 +232,8 @@ export class LayerManager extends EventEmitter {
 
   private bindStoreEvents(): void {
     this.store.on("layerAdded", (id: string) => this.emit("layerAdded", id))
-    this.store.on("layerRemoved", (id: string) =>
-      this.emit("layerRemoved", id)
-    )
-    this.store.on("layerChanged", (id: string) =>
-      this.emit("layerChanged", id)
-    )
+    this.store.on("layerRemoved", (id: string) => this.emit("layerRemoved", id))
+    this.store.on("layerChanged", (id: string) => this.emit("layerChanged", id))
     this.store.on("layerMoved", (id: string, parentId: string | null) =>
       this.emit("layerMoved", id, parentId)
     )
