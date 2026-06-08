@@ -6,12 +6,11 @@ import {
   UrlTemplateImageryProvider,
   Viewer,
   WebMapServiceImageryProvider,
-  WebMapTileServiceImageryProvider} from "cesium"
+  WebMapTileServiceImageryProvider
+} from "cesium"
 
 import { LayerDataSourceType } from "../constants"
-import {
-  IImagerySourceConfig,
-  ILayerSourceConfig} from "../types"
+import { IImagerySourceConfig, ILayerSourceConfig } from "../types"
 import { BaseLayerProvider } from "./base-provider"
 
 export class ImageryLayerProvider extends BaseLayerProvider {
@@ -59,11 +58,7 @@ export class ImageryLayerProvider extends BaseLayerProvider {
     }
   }
 
-  setVisibility(
-    _viewer: Viewer,
-    handle: ImageryLayer,
-    visible: boolean
-  ): void {
+  setVisibility(_viewer: Viewer, handle: ImageryLayer, visible: boolean): void {
     handle.show = visible
   }
 

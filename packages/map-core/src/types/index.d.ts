@@ -1,5 +1,6 @@
+export type {
+  IImagerySourceConfig,
+  ITerrainSourceConfig
+} from "../core/layer-system/types"
 export type { ICoord3d } from "./geometry"
-
-export interface IMapConfig {
-  homePosition: ICoord3d
-}
+export type { IMapConfig } from "./map-config"

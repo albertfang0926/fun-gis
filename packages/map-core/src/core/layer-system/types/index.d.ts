@@ -11,7 +11,8 @@ export interface IEntitySourceConfig {
 
 export interface IImagerySourceConfig {
   type: LayerDataSourceType.Imagery
-  url: string
+  /** 影像服务地址（ion 类型无需提供） */
+  url?: string
   providerType: "wmts" | "wms" | "tms" | "arcgis" | "ion" | "single-tile"
   providerOptions?: Record<string, any>
 }
