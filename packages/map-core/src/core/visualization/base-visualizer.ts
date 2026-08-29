@@ -22,8 +22,8 @@ export abstract class BaseVisualizer<T extends BaseEntity> {
   abstract visualize(entity: T): Entity | Entity[]
 
   // 更新可视化样式
-  abstract updateStyle(entity: Entity, style: Record<string, any>): void
+  abstract updateStyle(entity: T, style: Record<string, any>): void
 
   // 清除可视化效果
-  abstract clear(entity: Entity): void
+  abstract clear(entity: T): void
 }

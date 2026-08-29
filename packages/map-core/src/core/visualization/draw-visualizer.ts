@@ -10,7 +10,7 @@ export interface DrawVisualizerOptions extends VisualizerOptions {
 
 export class DrawVisualizer extends BaseVisualizer<DrawEntity> {
   visualize(drawEntity: DrawEntity): Entity {
-    const { type, properties } = drawEntity
+    const { type, properties = {} } = drawEntity
     const style = this.options.style || {}
 
     switch (type) {
@@ -71,7 +71,8 @@ export class DrawVisualizer extends BaseVisualizer<DrawEntity> {
     })
   }
 
-  updateStyle(entity: Entity, style: Record<string, any>): void {
+  updateStyle(drawEntity: DrawEntity, style: Record<string, any>): void {
+    const entity = drawEntity.entity
     if (entity.point) {
       Object.assign(entity.point, {
         pixelSize: style.size,
@@ -99,7 +100,7 @@ export class DrawVisualizer extends BaseVisualizer<DrawEntity> {
     }
   }
 
-  clear(entity: Entity): void {
-    this.viewer.entities.remove(entity)
+  clear(drawEntity: DrawEntity): void {
+    this.viewer.entities.remove(drawEntity.entity)
   }
 }

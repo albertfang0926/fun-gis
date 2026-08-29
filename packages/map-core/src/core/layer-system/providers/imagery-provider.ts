@@ -65,30 +65,34 @@ export class ImageryLayerProvider extends BaseLayerProvider {
   private async createImageryProvider(
     config: IImagerySourceConfig
   ): Promise<any> {
+    if (!config.url) {
+      throw new Error("Imagery source url is required")
+    }
+    const url: string = config.url
     const opts = config.providerOptions || {}
 
     switch (config.providerType) {
       case "wmts":
         return new WebMapTileServiceImageryProvider({
-          url: config.url,
+          url,
           ...opts
         } as any)
       case "wms":
         return new WebMapServiceImageryProvider({
-          url: config.url,
+          url,
           ...opts
         } as any)
       case "tms":
         return new UrlTemplateImageryProvider({
-          url: config.url,
+          url,
           ...opts
         })
       case "arcgis":
-        return await ArcGisMapServerImageryProvider.fromUrl(config.url, opts)
+        return await ArcGisMapServerImageryProvider.fromUrl(url, opts)
       case "ion":
         return await IonImageryProvider.fromAssetId(opts.assetId ?? 3)
       case "single-tile":
-        return new SingleTileImageryProvider({ url: config.url })
+        return new SingleTileImageryProvider({ url })
       default:
         throw new Error(
           `Unsupported imagery provider type: ${config.providerType}`

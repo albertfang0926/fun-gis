@@ -1,7 +1,7 @@
 import { Entity } from "cesium"
 
 import { CompositeEntity, CompositeType } from "../data-manager"
-import { BaseVisualizer, VisualizerOptions } from "./base-visualizer"
+import { BaseVisualizer } from "./base-visualizer"
 
 export class CompositeVisualizer extends BaseVisualizer<CompositeEntity> {
   private visualizers: Map<CompositeType, BaseVisualizer<any>> = new Map()
@@ -18,33 +18,26 @@ export class CompositeVisualizer extends BaseVisualizer<CompositeEntity> {
       )
     }
 
-    return compositeEntity.children.map((child) => visualizer.visualize(child))
+    return compositeEntity.children.flatMap((child) =>
+      visualizer.visualize(child)
+    )
   }
 
-  updateStyle(entities: Entity[], style: Record<string, any>): void {
-    entities.forEach((entity) => {
-      // 根据复合实体类型选择合适的可视化器更新样式
-      const visualizer = this.findVisualizerForEntity(entity)
-      if (visualizer) {
-        visualizer.updateStyle(entity, style)
-      }
+  updateStyle(compositeEntity: CompositeEntity, style: Record<string, any>): void {
+    const visualizer = this.visualizers.get(compositeEntity.type)
+    if (!visualizer) return
+
+    compositeEntity.children.forEach((child) => {
+      visualizer.updateStyle(child, style)
     })
   }
 
-  clear(entities: Entity[]): void {
-    entities.forEach((entity) => {
-      const visualizer = this.findVisualizerForEntity(entity)
-      if (visualizer) {
-        visualizer.clear(entity)
-      }
-    })
-  }
+  clear(compositeEntity: CompositeEntity): void {
+    const visualizer = this.visualizers.get(compositeEntity.type)
+    if (!visualizer) return
 
-  private findVisualizerForEntity(
-    entity: Entity
-  ): BaseVisualizer<any> | undefined {
-    // 根据实体特征找到对应的可视化器
-    // 这里需要实现查找逻辑
-    return undefined
+    compositeEntity.children.forEach((child) => {
+      visualizer.clear(child)
+    })
   }
 }

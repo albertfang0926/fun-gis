@@ -3,7 +3,7 @@ import { Scene } from "cesium"
 
 import { DataManager } from "../data-manager"
 import { EventEmitter } from "../event"
-import { BaseLayer } from "./base-layer"
+import { BaseLayer, LayerOptions } from "./base-layer"
 import { CompositeLayer, CompositeLayerOptions } from "./composite-layer"
 import { DrawLayer, DrawLayerOptions } from "./draw-layer"
 
@@ -13,20 +13,22 @@ export enum LayerType {
   Custom = "custom"
 }
 
+export interface CustomLayerOptions extends LayerOptions {
+  layerFactory: (options: LayerOptions, dataManager: DataManager) => BaseLayer
+}
+
 export class LayerManager extends EventEmitter {
   private layers: Map<string, BaseLayer> = new Map()
   private dataManager: DataManager
-  private scene: Scene
 
-  constructor(scene: Scene, dataManager: DataManager) {
+  constructor(_scene: Scene, dataManager: DataManager) {
     super()
-    this.scene = scene
     this.dataManager = dataManager
   }
 
   createLayer(
     type: LayerType,
-    options: DrawLayerOptions | CompositeLayerOptions
+    options: DrawLayerOptions | CompositeLayerOptions | CustomLayerOptions
   ): string {
     let layer: BaseLayer
 
@@ -42,7 +44,7 @@ export class LayerManager extends EventEmitter {
         break
       case LayerType.Custom:
         // 允许通过自定义工厂创建图层
-        if (!options.layerFactory) {
+        if (!("layerFactory" in options)) {
           throw new Error("Layer factory is required for custom layer type")
         }
         layer = options.layerFactory(options, this.dataManager)
