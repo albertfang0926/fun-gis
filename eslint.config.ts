@@ -8,6 +8,9 @@ import globals from "globals"
 import tseslint from "typescript-eslint"
 
 export default defineConfig([
+  {
+    ignores: ["**/dist/**"]
+  },
   tseslint.configs.recommended,
   ...pluginVue.configs["flat/essential"],
   eslintConfigPrettier,
