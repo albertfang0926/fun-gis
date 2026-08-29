@@ -30,3 +30,4 @@ coverage
 
 # lock files
 pnpm-lock.yaml
+.zcode/
