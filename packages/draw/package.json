@@ -19,7 +19,8 @@
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build"
+    "build": "vite build",
+    "test": "vitest run"
   },
   "publishConfig": {
     "access": "public"
@@ -50,6 +51,7 @@
     "vite": "^7.1.9",
     "vite-plugin-cesium": "^1.2.22",
     "vite-plugin-dts": "^4.5.3",
+    "vitest": "^3.2.4",
     "vue": "^3.4.31"
   }
 }

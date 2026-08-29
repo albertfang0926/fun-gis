@@ -1,0 +1,13 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
+  "updateInternalDependencies": "patch",
+  "emptyChangeset": false,
+  "commit": false,
+  "access": "public",
+  "baseBranch": "main",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "albertfang/fun-gis" }
+  ],
+  "ignore": []
+}

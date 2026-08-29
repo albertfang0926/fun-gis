@@ -17,9 +17,11 @@ provide("cesium-viewer", viewer)
 
 onMounted(() => {
   const cesiumViewer = new Cesium.Viewer("map-container", {
-    baseLayer: new Cesium.OpenStreetMapImageryProvider({
-      url: "https://tile.openstreetmap.org/"
-    }),
+    baseLayer: new Cesium.ImageryLayer(
+      new Cesium.OpenStreetMapImageryProvider({
+        url: "https://tile.openstreetmap.org/"
+      })
+    ),
     baseLayerPicker: false,
     geocoder: false,
     homeButton: false,

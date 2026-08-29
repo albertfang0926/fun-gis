@@ -23,14 +23,11 @@ export default defineConfig({
     },
     rollupOptions: {
       // 将不想打包进库的依赖外部化（peer 与 dependencies 均交由宿主解析）
-      external: [
-        "cesium",
-        "vue",
-        "ant-design-vue",
-        "@turf/turf",
-        "lodash",
-        "uuid"
-      ]
+      external: ["cesium", "vue", "@turf/turf", "lodash", "uuid"],
+      output: {
+        // 与 exports 的 "./style" 入口对齐
+        assetFileNames: "style[extname]"
+      }
     }
   },
   plugins: [

@@ -36,17 +36,19 @@ workspaces. Goal is reusable, publishable packages plus demo apps.
 ## Commands
 
 - **pnpm only** (enforced by `preinstall` via `only-allow`).
-- Root scripts `dev` / `build` / `type-check` / `format` are **stale**: the
-  root no longer has `vite.config.ts`, `tsconfig.app.json`, or `src/`. Work
-  per package instead:
-  - `pnpm -F @fun-gis/draw dev|build`, `pnpm -F @fun-gis/map-core dev|build`
-  - `pnpm -F @fun-gis/panoramic-photo dev|build`
+- Per-package work (root no longer owns app scripts):
+  - `pnpm -F @fun-gis/draw dev|build|test`
+  - `pnpm -F @fun-gis/map-core dev|build`
+  - `pnpm -F @fun-gis/panoramic-photo dev|build` (build currently broken —
+    the package has no `src/`, sources live in `playground/`)
   - `pnpm -F playground dev`, `pnpm -F gh-pages-demo build`
-  - Each package type-checks as part of its `build` (vue-tsc/tsc).
+- Versioning/publish for `@fun-gis/draw` runs through changesets:
+  `pnpm changeset` → `pnpm version` → `pnpm release`; GitHub Pages demo
+  deploys via `pnpm predeploy && pnpm deploy`.
 - `pnpm lint` (root) — ESLint flat config in `eslint.config.ts`, auto-fixes.
   Note: `packages/draw` carries a large backlog of pre-existing lint errors
   (`no-explicit-any`, unused vars) — lint is not a green gate there yet.
-- No test framework is configured anywhere.
+- Unit tests: only `packages/draw` has vitest (geometry utilities).
 
 ## Gotchas
 
