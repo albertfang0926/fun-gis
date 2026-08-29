@@ -1,5 +1,10 @@
 // 统一绘制门面（推荐入口）
-export type { ShapeDefinition, ShapeKind } from "./drawTool"
+export type {
+  ShapeDefinition,
+  ShapeInstance,
+  ShapeKind,
+  ShapeStyle
+} from "./drawTool"
 export { DrawTool, drawTool } from "./drawTool"
 
 // entity 系军事标绘图形（亦可经 drawTool.activate 直接使用）

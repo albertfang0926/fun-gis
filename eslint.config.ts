@@ -21,6 +21,16 @@ export default defineConfig([
     languageOptions: { globals: { ...globals.browser, ...globals.node } }
   },
   {
+    // TS 文件改用 typescript-eslint 版本的规则：核心 no-unused-vars 会误报
+    // 函数类型签名的参数，核心 no-undef 不认识 type-only 导入
+    files: ["**/*.{ts,mts,cts}"],
+    rules: {
+      "no-undef": "off",
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "error"
+    }
+  },
+  {
     files: ["**/*.vue"],
     languageOptions: { parserOptions: { parser: tseslint.parser } }
   },

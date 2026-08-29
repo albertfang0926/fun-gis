@@ -25,6 +25,7 @@ import SquadCombat from "../plot/arrow/squad-combat"
 import StraightArrow from "../plot/arrow/straight-arrow"
 import SwallowtailAttackArrow from "../plot/arrow/swallowtail-attack-arrow"
 import SwallowtailSquadCombat from "../plot/arrow/swallowtail-squad-combat"
+import type { EventType } from "../plot/interface"
 import CurveEntity from "../plot/line/curve"
 import FreehandLine from "../plot/line/freehand-line"
 import CircleEntity from "../plot/polygon/circle"
@@ -38,6 +39,19 @@ import Triangle from "../plot/polygon/triangle"
 
 export type ShapeKind = "primitive" | "entity"
 
+/** 两套渲染后端图形实例的最小公共契约（结构性类型） */
+export interface ShapeInstance {
+  /** entity 系：订阅统一五段式事件 */
+  on(event: EventType, listener: (data: unknown) => void): void
+  /** primitive 系：结束绘制 */
+  finishDrawing?(): void
+  /** primitive 系：绘制状态（如 "drawing"） */
+  state?: string
+}
+
+/** 绘制样式，由各后端自行解释（颜色/宽度/字体等） */
+export type ShapeStyle = Record<string, unknown>
+
 export interface ShapeDefinition {
   kind: ShapeKind
   /**
@@ -47,9 +61,9 @@ export interface ShapeDefinition {
    */
   create: (
     viewer: Viewer,
-    onComplete: (instance: any) => void,
-    style?: any
-  ) => any
+    onComplete: (instance: ShapeInstance) => void,
+    style?: ShapeStyle
+  ) => ShapeInstance
 }
 
 const primitive =

@@ -5,7 +5,12 @@ import EventDispatcher from "../plot/events"
 import type { EventType } from "../plot/interface"
 import { defaultShapes } from "./shapes"
 
-export type { ShapeDefinition, ShapeKind } from "./shapes"
+export type {
+  ShapeDefinition,
+  ShapeInstance,
+  ShapeKind,
+  ShapeStyle
+} from "./shapes"
 
 export interface DrawEventData {
   /** 触发事件的图形类型（注册表 key） */
