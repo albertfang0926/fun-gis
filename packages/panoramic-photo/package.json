@@ -2,16 +2,32 @@
   "name": "@fun-gis/panoramic-photo",
   "private": true,
   "version": "0.0.0",
+  "description": "基于 photo-sphere-viewer 的全景图查看组件，支持 EXIF/XMP 方位角自动校正",
   "type": "module",
+  "main": "./dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./style": {
+      "import": "./dist/style.css",
+      "require": "./dist/style.css"
+    }
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build"
+  },
+  "peerDependencies": {
+    "vue": "^3.4.0"
   },
   "dependencies": {
     "@photo-sphere-viewer/core": "^5.14.1",
-    "exifreader": "^4.37.0",
-    "vue": "^3.5.30"
+    "exifreader": "^4.37.0"
   },
   "devDependencies": {
     "@types/node": "^24.12.0",
@@ -19,6 +35,8 @@
     "@vue/tsconfig": "^0.9.0",
     "typescript": "~5.9.3",
     "vite": "^8.0.1",
+    "vite-plugin-dts": "^4.5.3",
+    "vue": "^3.5.30",
     "vue-tsc": "^3.2.5"
   }
 }

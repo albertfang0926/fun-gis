@@ -1,9 +1,11 @@
-import vue from "@vitejs/plugin-vue"
-import { defineConfig } from "vite"
+import type { ConfigEnv } from "vite"
 
-// https://vite.dev/config/
-export default defineConfig({
-  mode: "development",
-  root: "./playground",
-  plugins: [vue()]
-})
+import developmentConfig from "./vite.dev.config.ts"
+import productionConfig from "./vite.lib.config.ts"
+
+export default ({ mode }: ConfigEnv) => {
+  if (mode === "development") {
+    return developmentConfig
+  }
+  return productionConfig
+}
