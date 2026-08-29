@@ -1,4 +1,4 @@
-# F-Cesium Project Cursor Rules
+# fun-gis Project Cursor Rules
 
 ## 项目概述
 这是一个基于 Cesium.js 和 Vue 3 的 3D 地图可视化库项目。采用 monorepo 架构，使用 TypeScript、Vite、PNPM 作为主要技术栈。
@@ -17,7 +17,7 @@
 ## 项目结构
 ```
 ├── packages/           # 核心库包
-│   ├── f-cesium/      # 主要的 Cesium 封装库
+│   ├── fun-gis/      # 主要的 Cesium 封装库
 │   └── draw/          # 绘制功能模块
 ├── playground/        # 开发测试环境
 ├── docs/             # 文档
@@ -62,7 +62,7 @@
 ## 开发指南
 
 ### 新功能开发
-1. 在 `packages/f-cesium/src` 下创建对应模块
+1. 在 `packages/fun-gis/src` 下创建对应模块
 2. 在 `playground` 中创建测试页面
 3. 添加类型定义到 `types` 目录
 4. 更新导出到 `index.ts`

@@ -7,7 +7,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: "./src/index.ts",
-      name: "@fesium/core",
+      name: "@fun-gis/core",
       fileName: "index"
     }
   },

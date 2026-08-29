@@ -23,21 +23,21 @@ The project uses pnpm workspaces to manage multiple packages and applications fo
   - `gh-pages-demo`: Simple Vue 3 demo for GitHub Pages deployment
   - `playground`: Development playground for testing components
 - **packages/**: Reusable libraries
-  - `@f-cesium/draw`: Core drawing/plotting package for GIS features (points, lines, polygons, military symbols)
-  - `@fesium/core`: Core Cesium wrapper with initialization, camera, layer management, and visualization
+  - `@fun-gis/draw`: Core drawing/plotting package for GIS features (points, lines, polygons, military symbols)
+  - `@fun-gis/core`: Core Cesium wrapper with initialization, camera, layer management, and visualization
   - `plot`: Standalone plotting library for geometric shapes and military arrows (uses rolldown-vite)
 - **docs/**: Documentation
 
 ### Package Architecture
 
-**@f-cesium/draw** (`packages/draw/`)
+**@fun-gis/draw** (`packages/draw/`)
 - Middleware-based drawing system with draggable/editable entities
 - Categories: `point/` (billboards, models, labels), `polyline/` (lines, curves, rectangles), `polygon/` (polygons, circles), `military/` (arrows, formations)
 - Key exports: `Point`, `Label`, `Polyline`, `Polygon`, `Circle`, `AttackArrow`, `Sector`, `Curve`, etc.
 - Includes `itemManager` for primitive management
 - Located in `src/drawMethods/` with subdirectories: `core/`, `middleware/`, `manager/`, `widgets/`, `utils/`
 
-**@fesium/core** (`packages/f-cesium/`) / **@fun-gis/map-core** (`packages/map-core/`)
+**@fun-gis/core** (`packages/fun-gis/`) / **@fun-gis/map-core** (`packages/map-core/`)
 - Core Cesium viewer wrapper and utilities
 - Modules: `initMap/` (viewer initialization), `camera/`, `event/`, `draw/`, `layer-management/` (deprecated), `data-management/`, `visualization/`
 - **Layer System** (`layer-system/`): New comprehensive layer management with tree structure, serialization, multi-viewer sync, and filtering
@@ -84,8 +84,8 @@ pnpm deploy                 # Deploy to GitHub Pages (via gh-pages)
 Each package has its own scripts in its `package.json`:
 ```bash
 # Work on a specific package
-pnpm -F @f-cesium/draw dev      # Start draw package dev server
-pnpm -F @f-cesium/draw build    # Build draw package
+pnpm -F @fun-gis/draw dev      # Start draw package dev server
+pnpm -F @fun-gis/draw build    # Build draw package
 pnpm -F plot dev                # Start plot package dev server
 pnpm -F playground dev          # Start playground app
 ```
