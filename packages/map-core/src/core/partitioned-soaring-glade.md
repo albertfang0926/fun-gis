@@ -210,7 +210,7 @@ packages/map-core/src/core/layer-system/
 2. **LayerStore 无 Cesium 依赖** — 可在 Viewer 之外使用（如 UI 层、Server 端）
 3. **ViewerBridge 是唯一的 Viewer 适配点** — 多 Viewer 同步通过多个 Bridge 实现共享同一 Store
 4. **Provider 注册表模式** — 新数据源类型通过注册 Provider 扩展，不改核心代码
-5. **保留现有模块** — 旧 `layer-management/` 暂不删除，标记 deprecated
+5. **保留现有模块** — 旧 `layer-management/` 暂不删除，标记 deprecated（已于 2026-08 完成迁移后删除）
 
 ## 与现有代码的关系
 

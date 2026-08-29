@@ -39,7 +39,7 @@ The project uses pnpm workspaces to manage multiple packages and applications fo
 
 **@fun-gis/map-core** (`packages/map-core/`)
 - Core Cesium viewer wrapper and utilities
-- Modules: `initMap/` (viewer initialization), `camera/`, `event/`, `draw/`, `layer-management/` (deprecated), `data-manager/`, `visualization/`
+- Modules: `initMap/` (viewer initialization), `camera/`, `event/`, `layer-system/` (see below; legacy `layer-management/`, `draw/`, `data-manager/`, `visualization/` have been removed)
 - **Layer System** (`layer-system/`): New comprehensive layer management with tree structure, serialization, multi-viewer sync, and filtering
   - `LayerModel`: Serializable layer state (no Cesium dependencies)
   - `LayerStore`: Shared state center supporting multi-viewer sync
