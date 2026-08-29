@@ -1,6 +1,6 @@
 import * as turf from "@turf/turf"
-import { max,min } from "lodash"
-import { Cartesian3, Cartographic,Math as CMath } from "mars3d-cesium"
+import { Cartesian3, Cartographic, Math as CMath } from "cesium"
+import { max, min } from "lodash"
 
 import type { Coordinate } from "../types/coordinate"
 
@@ -55,7 +55,11 @@ export function getCoordinateArea(coords: Coordinate[]): number | undefined {
  */
 export function getBearing(coor1: Coordinate, coor2: Coordinate) {
   // final 为 true 只计算最终轴承，即返回的数值介于 0 至 360 之间
-  const azimuth = turf.bearing([coor1.longitude, coor1.latitude], [coor2.longitude, coor2.latitude], { final: true })
+  const azimuth = turf.bearing(
+    [coor1.longitude, coor1.latitude],
+    [coor2.longitude, coor2.latitude],
+    { final: true }
+  )
   return azimuth
 }
 
@@ -70,9 +74,15 @@ export function getBearing(coor1: Coordinate, coor2: Coordinate) {
  * @param angle 当前点到目标点的方位角，单位：°，数值范围 -180~180
  * @returns 目标点坐标
  */
-export function getDestination(coor: Coordinate, distance: number, angle: number) {
+export function getDestination(
+  coor: Coordinate,
+  distance: number,
+  angle: number
+) {
   const targetPoint = turf.point([coor.longitude, coor.latitude])
-  const destination = turf.destination(targetPoint, distance, angle, { units: "kilometers" })
+  const destination = turf.destination(targetPoint, distance, angle, {
+    units: "kilometers"
+  })
   return destination.geometry!.coordinates as [number, number]
 }
 
@@ -86,7 +96,10 @@ export function getDestination(coor: Coordinate, distance: number, angle: number
  * @param mousePosition 鼠标位置
  * @returns 索引（从0开始）
  */
-export function getNearestSegmentIndex(lineCoordinates: Coordinate[], mousePosition: Coordinate) {
+export function getNearestSegmentIndex(
+  lineCoordinates: Coordinate[],
+  mousePosition: Coordinate
+) {
   if (lineCoordinates.length < 2) {
     return -1
   }
@@ -113,13 +126,37 @@ export function getNearestSegmentIndex(lineCoordinates: Coordinate[], mousePosit
  * @param end 线段终点坐标
  * @returns 点到线段的最短距离
  */
-function _distanceToSegment(point: Coordinate, start: Coordinate, end: Coordinate) {
-  const pointCartesian = Cartesian3.fromDegrees(point.longitude, point.latitude, point.height)
-  const startCartesian = Cartesian3.fromDegrees(start.longitude, start.latitude, start.height)
-  const endCartesian = Cartesian3.fromDegrees(end.longitude, end.latitude, end.height)
+function _distanceToSegment(
+  point: Coordinate,
+  start: Coordinate,
+  end: Coordinate
+) {
+  const pointCartesian = Cartesian3.fromDegrees(
+    point.longitude,
+    point.latitude,
+    point.height
+  )
+  const startCartesian = Cartesian3.fromDegrees(
+    start.longitude,
+    start.latitude,
+    start.height
+  )
+  const endCartesian = Cartesian3.fromDegrees(
+    end.longitude,
+    end.latitude,
+    end.height
+  )
   // 计算线段的方向向量和起点到点的向量
-  const direction = Cartesian3.subtract(endCartesian, startCartesian, new Cartesian3())
-  const v = Cartesian3.subtract(pointCartesian, startCartesian, new Cartesian3())
+  const direction = Cartesian3.subtract(
+    endCartesian,
+    startCartesian,
+    new Cartesian3()
+  )
+  const v = Cartesian3.subtract(
+    pointCartesian,
+    startCartesian,
+    new Cartesian3()
+  )
   // 计算点在线段上的投影比例
   const t = Cartesian3.dot(v, direction) / Cartesian3.dot(direction, direction)
   // 如果比例小于0，则点在线段起点之前，返回终点到点的距离
@@ -127,7 +164,9 @@ function _distanceToSegment(point: Coordinate, start: Coordinate, end: Coordinat
     return Cartesian3.magnitude(v)
     // 如果比例大于1，则点在线段的终点之后，返回终点到点的距离
   } else if (t > 1) {
-    return Cartesian3.magnitude(Cartesian3.subtract(pointCartesian, endCartesian, new Cartesian3()))
+    return Cartesian3.magnitude(
+      Cartesian3.subtract(pointCartesian, endCartesian, new Cartesian3())
+    )
   } else {
     // 否则，点在线段上，返回点到线段的投影距离
     const projection = Cartesian3.add(
@@ -135,7 +174,9 @@ function _distanceToSegment(point: Coordinate, start: Coordinate, end: Coordinat
       Cartesian3.multiplyByScalar(direction, t, new Cartesian3()),
       new Cartesian3()
     )
-    return Cartesian3.magnitude(Cartesian3.subtract(pointCartesian, projection, new Cartesian3()))
+    return Cartesian3.magnitude(
+      Cartesian3.subtract(pointCartesian, projection, new Cartesian3())
+    )
   }
 }
 
@@ -185,7 +226,10 @@ export function getRectByCoordinate(coordinate: Coordinate[]) {
   return rect
 }
 
-export function getRectanglePositionByTwoPoints(p1: Coordinate, p2: Coordinate) {
+export function getRectanglePositionByTwoPoints(
+  p1: Coordinate,
+  p2: Coordinate
+) {
   const maxLon = Math.max(p1.longitude, p2.longitude)
   const minLon = Math.min(p1.longitude, p2.longitude)
   const maxLat = Math.max(p1.latitude, p2.latitude)
@@ -221,7 +265,10 @@ export function getAcrossIndexInRectangle(index: number) {
  * @param isRectangle 坐标点是否构成矩形
  * @returns 最北的坐标点 的 索引
  */
-export function getNorthestPointIndex(coors: Coordinate[], isRectangle = false) {
+export function getNorthestPointIndex(
+  coors: Coordinate[],
+  isRectangle = false
+) {
   if (!isRectangle) {
     const length = coors.length
     let northestIndex = 0
@@ -236,7 +283,9 @@ export function getNorthestPointIndex(coors: Coordinate[], isRectangle = false) 
     const latList = coors.map((item) => item.latitude)
     const minLon = min(lonList)
     const maxLat = max(latList)
-    const index = coors.findIndex((it) => it.longitude === minLon && it.latitude === maxLat)
+    const index = coors.findIndex(
+      (it) => it.longitude === minLon && it.latitude === maxLat
+    )
     // 默认就是西南 —— 西北 —— 东北 —— 东南的顺序
     return index >= 0 ? index : 1
   }

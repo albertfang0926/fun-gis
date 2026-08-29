@@ -1,11 +1,15 @@
-import { Cartesian3, Cartographic } from "mars3d-cesium"
+import { Cartesian3, Cartographic } from "cesium"
 
 /**
  * 在某条边确定的情况下, 更新扇形的顶点
  * @param center
  * @param vertex
  */
-function updateSectorVertices(center: Cartesian3, newVertex1: Cartesian3, oldVertex2: Cartesian3) {
+function updateSectorVertices(
+  center: Cartesian3,
+  newVertex1: Cartesian3,
+  oldVertex2: Cartesian3
+) {
   const radius = Cartesian3.distance(center, newVertex1)
   const direction = Cartesian3.subtract(oldVertex2, center, new Cartesian3())
   const unitDir = Cartesian3.normalize(direction, new Cartesian3())
@@ -25,7 +29,11 @@ function updateSectorVertices(center: Cartesian3, newVertex1: Cartesian3, oldVer
  */
 function getCartesian3WithHeight(cartesian: Cartesian3, height: number = 0) {
   const cartographic = Cartographic.fromCartesian(cartesian)
-  return Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, height)
+  return Cartesian3.fromRadians(
+    cartographic.longitude,
+    cartographic.latitude,
+    height
+  )
 }
 
 export { updateSectorVertices }

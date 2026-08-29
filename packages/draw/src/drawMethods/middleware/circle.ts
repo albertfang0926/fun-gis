@@ -14,7 +14,8 @@ import {
   ScreenSpaceEventHandler,
   ScreenSpaceEventType,
   VerticalOrigin,
-  Viewer} from "mars3d-cesium"
+  Viewer
+} from "cesium"
 
 // assets
 import helpPoint from "../../assets/images/primitives/location_type1.png" // "../assets/images/primitives/location_type1.png"
@@ -26,7 +27,11 @@ import { itemManager } from "../manager/primitive"
 import type { I_ContextMenu } from "../types/contextMenu"
 import { Coordinate } from "../types/coordinate"
 // customs
-import { cartesian3ToCoordinate, coordinateToCartesian3, getRectangleCoorByTwoPoints } from "../utils"
+import {
+  cartesian3ToCoordinate,
+  coordinateToCartesian3,
+  getRectangleCoorByTwoPoints
+} from "../utils"
 // import { getAttackArrowPoints } from "../core/military/utils/creatMilitary"
 import { helperPrimitives } from "./utils/dragHelper"
 import { onRightClick } from "./utils/mouse"
@@ -60,9 +65,14 @@ class Circle {
       // this.viewer.scene.primitives.add(e.p)
       itemManager.add(e.id, e)
       this.id = e.id
-      this.controlPoints = e.coordinates.slice(0, 4).map((c) => coordinateToCartesian3(c, this.viewer))
+      this.controlPoints = e.coordinates
+        .slice(0, 4)
+        .map((c) => coordinateToCartesian3(c, this.viewer))
       this.center = this.controlPoints[0]
-      this.radius = Cartesian3.distance(this.controlPoints[0], this.controlPoints[1])
+      this.radius = Cartesian3.distance(
+        this.controlPoints[0],
+        this.controlPoints[1]
+      )
       this.primitive = e.p
     })
   }
@@ -164,25 +174,51 @@ class Circle {
         // const diagonalHelperIndex = (focusedHelperIndex + 2) % 4
         this.dragHandler.setInputAction((e: any) => {
           this.viewer.scene.screenSpaceCameraController.enableRotate = false // 禁止旋转
-          const position = this.viewer.camera.pickEllipsoid(e.endPosition, this.viewer.scene.globe.ellipsoid)
+          const position = this.viewer.camera.pickEllipsoid(
+            e.endPosition,
+            this.viewer.scene.globe.ellipsoid
+          )
           if (position) {
             helperPrimitives.removeAll()
             if (focusedHelperIndex === 0) {
-              const offset = Cartesian3.subtract(position, this.center, new Cartesian3())
-              this.controlPoints[1] = Cartesian3.add(this.controlPoints[1], offset, new Cartesian3())
-              const cartographic = Cartographic.fromCartesian(this.controlPoints[1])
-              this.controlPoints[1] = Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0)
+              const offset = Cartesian3.subtract(
+                position,
+                this.center,
+                new Cartesian3()
+              )
+              this.controlPoints[1] = Cartesian3.add(
+                this.controlPoints[1],
+                offset,
+                new Cartesian3()
+              )
+              const cartographic = Cartographic.fromCartesian(
+                this.controlPoints[1]
+              )
+              this.controlPoints[1] = Cartesian3.fromRadians(
+                cartographic.longitude,
+                cartographic.latitude,
+                0
+              )
               this.center = position
             }
-            if (focusedHelperIndex === 1) this.radius = Cartesian3.distance(this.center, position)
-            const newPrimitive = getCircle({ uuid: this.id }, this.center, this.radius, 0.001, this.width, this.color)
+            if (focusedHelperIndex === 1)
+              this.radius = Cartesian3.distance(this.center, position)
+            const newPrimitive = getCircle(
+              { uuid: this.id },
+              this.center,
+              this.radius,
+              0.001,
+              this.width,
+              this.color
+            )
             this.controlPoints[focusedHelperIndex] = position
             this.controlPoints.forEach((controlPoint, index) => {
               const h = helperPrimitives.add({
                 id: { index, parentId: this.id },
                 show: true,
                 position: controlPoint,
-                image: index === focusedHelperIndex ? highlightHelpPoint : helpPoint,
+                image:
+                  index === focusedHelperIndex ? highlightHelpPoint : helpPoint,
                 scale: index === focusedHelperIndex ? 0.5 : 0.3,
                 verticalOrigin: VerticalOrigin.CENTER,
                 scaleByDistance: new NearFarScalar(1.5e2, 1.5, 8.0e6, 0.0),
@@ -215,7 +251,8 @@ class Circle {
    */
   updateColor(color: string) {
     this.color = color
-    this.primitive.appearance.material.uniforms.color = Color.fromCssColorString(color)
+    this.primitive.appearance.material.uniforms.color =
+      Color.fromCssColorString(color)
   }
 
   /**
@@ -223,7 +260,14 @@ class Circle {
    */
   updateWidth(width: number) {
     this.width = width
-    const newPrimitive = getCircle({ uuid: this.id }, this.center, this.radius, 0.001, this.width, this.color)
+    const newPrimitive = getCircle(
+      { uuid: this.id },
+      this.center,
+      this.radius,
+      0.001,
+      this.width,
+      this.color
+    )
     itemManager.updatePrimitive(this.id, newPrimitive)
   }
 
@@ -233,7 +277,14 @@ class Circle {
   updateCenter(positions: Coordinate) {
     this.center = coordinateToCartesian3(positions, this.viewer)
     this.controlPoints[0] = this.center // positions.map((p) => coordinateToCartesian3(p, this.viewer))
-    const newPrimitive = getCircle({ uuid: this.id }, this.center, this.radius, 0.001, this.width, this.color)
+    const newPrimitive = getCircle(
+      { uuid: this.id },
+      this.center,
+      this.radius,
+      0.001,
+      this.width,
+      this.color
+    )
     itemManager.updatePrimitive(this.id, newPrimitive)
   }
 }

@@ -1,16 +1,16 @@
 // types
-import type { Viewer } from "mars3d-cesium"
+import type { Viewer } from "cesium"
 // third-parties
 import {
   ArcType,
   Cartesian3,
   Color,
-  defaultValue,
   Material,
   PointPrimitiveCollection,
   PrimitiveCollection,
   ScreenSpaceEventHandler,
-  ScreenSpaceEventType} from "mars3d-cesium"
+  ScreenSpaceEventType
+} from "cesium"
 
 import type { Coordinate } from "../../types/coordinate"
 // customs
@@ -25,7 +25,8 @@ import {
   getParallelogramVertices,
   isSameCoordinate,
   Tooltip,
-  windowPositionToEllipsoidCartesian} from "../../utils"
+  windowPositionToEllipsoidCartesian
+} from "../../utils"
 import { getPolylinePrimitive } from "./utils"
 
 const DEFAULT_COLOR_STRING = "#ffffff"
@@ -54,15 +55,20 @@ const drawLine = (
   // 解析参数
   const uuid = options.id || createUid()
   const featureId = { uuid }
-  const show = defaultValue(options.show, true)
-  const pixelSize = defaultValue(options.pointSize, 6)
-  const width = defaultValue(options.lineWidth, 2)
-  const lineColor = options.color instanceof Color ? options.color : Color.fromCssColorString(DEFAULT_COLOR_STRING)
-  const arcType = defaultValue(options.arcType, ArcType.GEODESIC)
-  const distanceType = defaultValue(options.distanceType, "千米")
-  const allowPicking = defaultValue(options.allowPicking, true)
+  const show = options.show ?? true
+  const pixelSize = options.pointSize ?? 6
+  const width = options.lineWidth ?? 2
+  const lineColor =
+    options.color instanceof Color
+      ? options.color
+      : Color.fromCssColorString(DEFAULT_COLOR_STRING)
+  const arcType = options.arcType ?? ArcType.GEODESIC
+  const distanceType = options.distanceType ?? "千米"
+  const allowPicking = options.allowPicking ?? true
   const material =
-    options.material instanceof Material ? options.material : Material.fromType("Color", { color: lineColor })
+    options.material instanceof Material
+      ? options.material
+      : Material.fromType("Color", { color: lineColor })
 
   // 生成primitive的选项
   const polylineOptions = {
@@ -85,7 +91,8 @@ const drawLine = (
   // 设置光标样式
   Cursor.setStyle("pen", viewer)
   // 单位转换
-  const lengthType = distanceType === "米" ? "m" : distanceType === "千米" ? "km" : "nmi"
+  const lengthType =
+    distanceType === "米" ? "m" : distanceType === "千米" ? "km" : "nmi"
   // 双击判定间隔
   const DBCLICK_INTERVAL = Settings.LEFT_DOUBLE_CLICK_TIME_INTERVAL
   // 绘制函数
@@ -125,7 +132,10 @@ const drawLine = (
 
     if (timeInterval > DBCLICK_INTERVAL) {
       // 屏幕坐标转三维笛卡尔坐标
-      const cartesian3 = windowPositionToEllipsoidCartesian(click.position, viewer)
+      const cartesian3 = windowPositionToEllipsoidCartesian(
+        click.position,
+        viewer
+      )
       // 未点击在地球上，不做处理
       if (!cartesian3) {
         return
@@ -139,10 +149,19 @@ const drawLine = (
       }
 
       // 绘制顶点
-      tempPointCollection.add({ show, color: lineColor, pixelSize, position: cartesian3 })
+      tempPointCollection.add({
+        show,
+        color: lineColor,
+        pixelSize,
+        position: cartesian3
+      })
       // 绘制折线
       if (pLength > 0) {
-        const primitive = getPolylinePrimitive(undefined, [positionList[pLength - 1], cartesian3], polylineOptions)
+        const primitive = getPolylinePrimitive(
+          undefined,
+          [positionList[pLength - 1], cartesian3],
+          polylineOptions
+        )
         tempLineCollection.add(primitive)
       }
       positionList.push(cartesian3)
@@ -158,7 +177,10 @@ const drawLine = (
       return
     }
     // 计算鼠标位置处的坐标
-    const cartesian3 = windowPositionToEllipsoidCartesian(move.endPosition, viewer)
+    const cartesian3 = windowPositionToEllipsoidCartesian(
+      move.endPosition,
+      viewer
+    )
     if (!cartesian3) {
       return
     }
@@ -167,7 +189,11 @@ const drawLine = (
     if (movingLineCollection.length > 0) {
       movingLineCollection.removeAll()
     }
-    const primitive = getPolylinePrimitive(undefined, [positionList[pLength - 1], cartesian3], polylineOptions)
+    const primitive = getPolylinePrimitive(
+      undefined,
+      [positionList[pLength - 1], cartesian3],
+      polylineOptions
+    )
     movingLineCollection.add(primitive)
 
     // 计算两点间的距离，默认单位是千米
@@ -175,10 +201,20 @@ const drawLine = (
     const mouseCoor = cartesian3ToCoordinate(cartesian3, viewer)
     const originalDist = getDistance([lastCoor, mouseCoor])
     // 转换坐标单位
-    const convertedDist = lengthType === "km" ? originalDist : convertLength(originalDist, "km", lengthType)
+    const convertedDist =
+      lengthType === "km"
+        ? originalDist
+        : convertLength(originalDist, "km", lengthType)
 
     // 更新tooltip位置和内容
-    tooltip.showAt(move.endPosition, "距离：" + convertedDist.toFixed(3) + lengthType + "</br>" + toolTipText.end)
+    tooltip.showAt(
+      move.endPosition,
+      "距离：" +
+        convertedDist.toFixed(3) +
+        lengthType +
+        "</br>" +
+        toolTipText.end
+    )
   }, ScreenSpaceEventType.MOUSE_MOVE)
 
   // -- 双击 完成绘制
@@ -190,7 +226,11 @@ const drawLine = (
 
     // 最后的生成的primitive用调用者确定是否可以点击
     polylineOptions.allowPicking = allowPicking
-    const primitive = getPolylinePrimitive(featureId, positionList, polylineOptions)
+    const primitive = getPolylinePrimitive(
+      featureId,
+      positionList,
+      polylineOptions
+    )
     const result = {
       p: primitive,
       id: uuid,

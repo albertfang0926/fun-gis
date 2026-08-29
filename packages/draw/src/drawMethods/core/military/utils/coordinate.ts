@@ -5,9 +5,9 @@
  * @Last Modified by: Wang JianLei
  * @Last Modified time: 2023-01-13 14:29:28
  */
-import * as Cesium from "mars3d-cesium"
+import * as Cesium from "cesium"
 
-import type { Coordinate } from "../../types/coordinate"
+import type { Coordinate } from "../../../types/coordinate"
 /**
  * 获取屏幕中心点坐标，参数传空返回笛卡尔坐标
  * @param viewer 视图
@@ -15,7 +15,10 @@ import type { Coordinate } from "../../types/coordinate"
  * @returns {object} {x,y,z}
  */
 const getCameraCentor = (viewer: Cesium.Viewer, type: string | undefined) => {
-  const cartesian2 = new Cesium.Cartesian2(viewer.canvas.clientWidth / 2, viewer.canvas.clientHeight / 2)
+  const cartesian2 = new Cesium.Cartesian2(
+    viewer.canvas.clientWidth / 2,
+    viewer.canvas.clientHeight / 2
+  )
   const cartesian3 = getCatesian3FromPX(viewer, cartesian2)
   return type === "degree" ? transformCartesianToWGS84(cartesian3) : cartesian3
 }
@@ -24,9 +27,18 @@ const getCameraCentor = (viewer: Cesium.Viewer, type: string | undefined) => {
  * @param position - { x, y, z }
  * @returns {Object} Cartesian3
  */
-const transformWGS84ToCartesian = (position: { x: number; y: number; z?: number }) => {
+const transformWGS84ToCartesian = (position: {
+  x: number
+  y: number
+  z?: number
+}) => {
   return position
-    ? Cesium.Cartesian3.fromDegrees(position.x, position.y, position.z, Cesium.Ellipsoid.WGS84)
+    ? Cesium.Cartesian3.fromDegrees(
+        position.x,
+        position.y,
+        position.z,
+        Cesium.Ellipsoid.WGS84
+      )
     : Cesium.Cartesian3.ZERO
 }
 /**
@@ -47,7 +59,11 @@ const transformCartesianToWGS84 = (cartesian: Cesium.Cartesian3): object => {
  * @param position - { x, y, z }
  * @returns - { x:[], y:[] }
  */
-const transformWGS84ToDMS = (position: { x: number; y: number; z?: number }) => {
+const transformWGS84ToDMS = (position: {
+  x: number
+  y: number
+  z?: number
+}) => {
   const x = transformDegreeToDMS(position.x)
   const y = transformDegreeToDMS(position.y)
   return { x, y }
@@ -122,7 +138,8 @@ const getCatesian3FromPX = (viewer: any, px: { x: number; y: number }) => {
       return viewer.scene.pickPosition(px)
     }
   }
-  const noTerrain = viewer.terrainProvider instanceof Cesium.EllipsoidTerrainProvider // 判断是否有地形
+  const noTerrain =
+    viewer.terrainProvider instanceof Cesium.EllipsoidTerrainProvider // 判断是否有地形
   // 在地形上拾取位置点
   if (!isOn3dtiles && !noTerrain) {
     const ray = viewer.scene.camera.getPickRay(px)
@@ -134,7 +151,10 @@ const getCatesian3FromPX = (viewer: any, px: { x: number; y: number }) => {
   }
   // 在普通地球上拾取位置点
   if (!isOn3dtiles && !isOnTerrain && noTerrain) {
-    cartesian = viewer.scene.camera.pickEllipsoid(px, viewer.scene.globe.ellipsoid)
+    cartesian = viewer.scene.camera.pickEllipsoid(
+      px,
+      viewer.scene.globe.ellipsoid
+    )
   }
   return cartesian
 }
@@ -158,7 +178,9 @@ const calculateAngle = (start: Coordinate, end: Coordinate) => {
   const lon1 = start.longitude * rad
   const lon2 = end.longitude * rad
   const a = Math.sin(lon2 - lon1) * Math.cos(lat2)
-  const b = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1)
+  const b =
+    Math.cos(lat1) * Math.sin(lat2) -
+    Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1)
   return radiansToDegrees(Math.atan2(a, b))
 }
 
@@ -167,7 +189,9 @@ const calculateAngle = (start: Coordinate, end: Coordinate) => {
  */
 function radiansToDegrees(radians: number) {
   const degrees = radians % (2 * Math.PI)
-  return (degrees * 180) / Math.PI < 0 ? 360 + (degrees * 180) / Math.PI : (degrees * 180) / Math.PI
+  return (degrees * 180) / Math.PI < 0
+    ? 360 + (degrees * 180) / Math.PI
+    : (degrees * 180) / Math.PI
 }
 /**
  * 计算旋转矩阵
@@ -183,7 +207,10 @@ const calculateOrientation = (cartesian: any, hpr: number[]) => {
   const roll = Cesium.Math.toRadians(hpr[2])
   // HeadingPitchRoll旋转表示为航向，俯仰和滚动。围绕Z轴。节距是绕负y轴的旋转。滚动是关于正x轴。
   const _hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll)
-  const orientation = Cesium.Transforms.headingPitchRollQuaternion(cartesian, _hpr)
+  const orientation = Cesium.Transforms.headingPitchRollQuaternion(
+    cartesian,
+    _hpr
+  )
   return orientation
 }
 export {
@@ -196,4 +223,5 @@ export {
   transformDMSToDegree,
   transformDMSToWGS84,
   transformWGS84ToCartesian,
-  transformWGS84ToDMS}
+  transformWGS84ToDMS
+}

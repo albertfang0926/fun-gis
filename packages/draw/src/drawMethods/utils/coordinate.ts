@@ -1,5 +1,5 @@
-import type { Cartesian2,Ellipsoid, Viewer } from "mars3d-cesium"
-import { Cartesian3,Cartographic, Math as CMath } from "mars3d-cesium"
+import type { Cartesian2, Ellipsoid, Viewer } from "cesium"
+import { Cartesian3, Cartographic, Math as CMath } from "cesium"
 
 import type { Coordinate } from "../types/coordinate"
 
@@ -15,7 +15,10 @@ import type { Coordinate } from "../types/coordinate"
  * @param viewer Cesium.Viewer
  * @returns 三维笛卡尔坐标（屏幕坐标对应的地球椭球表面）
  */
-export function windowPositionToEllipsoidCartesian(position: Cartesian2, viewer: Viewer) {
+export function windowPositionToEllipsoidCartesian(
+  position: Cartesian2,
+  viewer: Viewer
+) {
   const cartesian3 = viewer.scene.camera.pickEllipsoid(position)
   return cartesian3
 }
@@ -26,9 +29,12 @@ export function windowPositionToEllipsoidCartesian(position: Cartesian2, viewer:
  * @param viewer Cesium.Viewer
  * @returns 地理坐标（高度：被除以地形拉伸系数后的高度）
  */
-export function cartesian3ToCoordinate(c3: Cartesian3, viewer: Viewer): Coordinate {
+export function cartesian3ToCoordinate(
+  c3: Cartesian3,
+  viewer: Viewer
+): Coordinate {
   const ellipsoid = viewer.scene.globe.ellipsoid
-  const exaggValue = viewer.scene.globe.terrainExaggeration
+  const exaggValue = viewer.scene.verticalExaggeration
 
   const cartographic = Cartographic.fromCartesian(c3, ellipsoid)
   const longitude = CMath.toDegrees(cartographic.longitude)
@@ -43,9 +49,12 @@ export function cartesian3ToCoordinate(c3: Cartesian3, viewer: Viewer): Coordina
  * @param viewer Cesium.Viewer
  * @returns 地理坐标数组（高度：被除以地形拉伸系数后的高度）
  */
-export function cartesian3ArrayToCoordinates(c3List: Cartesian3[], viewer: Viewer): Coordinate[] {
+export function cartesian3ArrayToCoordinates(
+  c3List: Cartesian3[],
+  viewer: Viewer
+): Coordinate[] {
   const ellipsoid = viewer.scene.globe.ellipsoid
-  const exaggValue = viewer.scene.globe.terrainExaggeration
+  const exaggValue = viewer.scene.verticalExaggeration
 
   return c3List.map((c3) => {
     const cartographic = Cartographic.fromCartesian(c3, ellipsoid)
@@ -64,10 +73,15 @@ export function cartesian3ArrayToCoordinates(c3List: Cartesian3[], viewer: Viewe
  */
 export function coordinateToCartesian3(coord: Coordinate, viewer: Viewer) {
   const ellipsoid = viewer.scene.globe.ellipsoid
-  const exaggValue = viewer.scene.globe.terrainExaggeration
+  const exaggValue = viewer.scene.verticalExaggeration
 
   const height = coord.height >= 0 ? coord.height : coord.height * exaggValue
-  return Cartesian3.fromDegrees(coord.longitude, coord.latitude, height, ellipsoid)
+  return Cartesian3.fromDegrees(
+    coord.longitude,
+    coord.latitude,
+    height,
+    ellipsoid
+  )
 }
 
 /**
@@ -76,13 +90,21 @@ export function coordinateToCartesian3(coord: Coordinate, viewer: Viewer) {
  * @param viewer Cesium.Viewer
  * @returns 三维笛卡尔坐标数组（高度 * 地形拉伸系数，在地球表面上方的不进行拉伸）
  */
-export function coordinatesToCartesian3Array(coordinates: Coordinate[], viewer: Viewer) {
+export function coordinatesToCartesian3Array(
+  coordinates: Coordinate[],
+  viewer: Viewer
+) {
   const ellipsoid = viewer.scene.globe.ellipsoid
-  const exaggValue = viewer.scene.globe.terrainExaggeration
+  const exaggValue = viewer.scene.verticalExaggeration
 
   return coordinates.map((coord) => {
     const height = coord.height >= 0 ? coord.height : coord.height * exaggValue
-    return Cartesian3.fromDegrees(coord.longitude, coord.latitude, height, ellipsoid)
+    return Cartesian3.fromDegrees(
+      coord.longitude,
+      coord.latitude,
+      height,
+      ellipsoid
+    )
   })
 }
 
@@ -93,7 +115,11 @@ export function coordinatesToCartesian3Array(coordinates: Coordinate[], viewer: 
  * @param tolerance 判断为同一个坐标点的容差，默认值为1e-6
  * @returns True/False
  */
-export function isSameCoordinate(coordA: Coordinate, coordB: Coordinate, tolerance = 1e-6) {
+export function isSameCoordinate(
+  coordA: Coordinate,
+  coordB: Coordinate,
+  tolerance = 1e-6
+) {
   return (
     Math.abs(coordA.longitude - coordB.longitude) <= tolerance &&
     Math.abs(coordA.latitude - coordA.latitude) <= tolerance

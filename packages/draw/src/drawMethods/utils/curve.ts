@@ -1,5 +1,5 @@
 import * as turf from "@turf/turf"
-import * as Cesium from "mars3d-cesium"
+import * as Cesium from "cesium"
 
 import type { Coordinate } from "../types/coordinate"
 
@@ -8,7 +8,10 @@ export interface CurveSplineOption {
   sharpness: number
 }
 
-export function getHermiteSpline(positions: Cesium.Cartesian3[], itp_num = 3000): Cesium.Cartesian3[] {
+export function getHermiteSpline(
+  positions: Cesium.Cartesian3[],
+  itp_num = 3000
+): Cesium.Cartesian3[] {
   const pLength = positions.length
   if (pLength < 3) {
     return []
@@ -92,7 +95,10 @@ export function getHermiteSpline(positions: Cesium.Cartesian3[], itp_num = 3000)
 //   }
 // }
 
-export function bezierSplineCurve(coordinates: Coordinate[], sample_distance = 10.0) {
+export function bezierSplineCurve(
+  coordinates: Coordinate[],
+  sample_distance = 10.0
+) {
   if (coordinates.length < 3) {
     return coordinates
   }
@@ -108,7 +114,10 @@ export function bezierSplineCurve(coordinates: Coordinate[], sample_distance = 1
   const lineString = turf.lineString(coords)
   // 计算线段距离
   const distance = turf.length(lineString, { units: "kilometers" })
-  const sample_num = Math.min(Math.max(Math.round(distance / sample_distance), MIN_SAMPLE_NUM), MAX_SAMPLE_NUM)
+  const sample_num = Math.min(
+    Math.max(Math.round(distance / sample_distance), MIN_SAMPLE_NUM),
+    MAX_SAMPLE_NUM
+  )
 
   const options = {
     resolution: sample_num * 20,
@@ -129,7 +138,10 @@ export function bezierSplineCurve(coordinates: Coordinate[], sample_distance = 1
   return result
 }
 
-export function hermiteSplineCurve(coordinates: Coordinate[], itp_num = 300): Coordinate[] {
+export function hermiteSplineCurve(
+  coordinates: Coordinate[],
+  itp_num = 300
+): Coordinate[] {
   const cLength = coordinates.length
   if (coordinates.length < 3 || itp_num <= cLength) {
     return coordinates
@@ -163,7 +175,9 @@ export function hermiteSplineCurve(coordinates: Coordinate[], itp_num = 300): Co
   //   preIndex = index
   // }
 
-  const positions = coordinates.map((it) => new Cesium.Cartesian3(it.longitude, it.latitude))
+  const positions = coordinates.map(
+    (it) => new Cesium.Cartesian3(it.longitude, it.latitude)
+  )
 
   // 创建样条
   const spline = Cesium.HermiteSpline.createNaturalCubic({
@@ -183,7 +197,10 @@ export function hermiteSplineCurve(coordinates: Coordinate[], itp_num = 300): Co
   return result
 }
 
-export function hermiteSplineCornerCurve(coordinates: Coordinate[], options: Partial<CurveSplineOption>): Coordinate[] {
+export function hermiteSplineCornerCurve(
+  coordinates: Coordinate[],
+  options: Partial<CurveSplineOption>
+): Coordinate[] {
   // 不足是三个控制点时无法插值
   const cLength = coordinates.length
   if (coordinates.length < 3) {
@@ -199,7 +216,9 @@ export function hermiteSplineCornerCurve(coordinates: Coordinate[], options: Par
   for (let i = 0; i < cLength; i++) {
     times[i] = i
   }
-  const points = coordinates.map((it) => new Cesium.Cartesian3(it.longitude, it.latitude))
+  const points = coordinates.map(
+    (it) => new Cesium.Cartesian3(it.longitude, it.latitude)
+  )
   const heigtPoints = coordinates.map((it) => it.height)
 
   // 计算每个控制点入弯和出弯的斜率
@@ -207,20 +226,33 @@ export function hermiteSplineCornerCurve(coordinates: Coordinate[], options: Par
   const inTangents = new Array(cLength - 1)
   const outTangents = new Array(cLength - 1)
   for (let i = 1; i < tLength; i++) {
-    const x = ((coordinates[i + 1].longitude - coordinates[i - 1].longitude) / 2) * sharpness
-    const y = ((coordinates[i + 1].latitude - coordinates[i - 1].latitude) / 2) * sharpness
+    const x =
+      ((coordinates[i + 1].longitude - coordinates[i - 1].longitude) / 2) *
+      sharpness
+    const y =
+      ((coordinates[i + 1].latitude - coordinates[i - 1].latitude) / 2) *
+      sharpness
     inTangents[i - 1] = new Cesium.Cartesian3(x, y)
     outTangents[i] = new Cesium.Cartesian3(x, y)
   }
-  const firstX = (coordinates[1].longitude - coordinates[0].longitude) * sharpness
+  const firstX =
+    (coordinates[1].longitude - coordinates[0].longitude) * sharpness
   const firstY = (coordinates[1].latitude - coordinates[0].latitude) * sharpness
   outTangents[0] = new Cesium.Cartesian3(firstX, firstY)
   inTangents[tLength - 1] = new Cesium.Cartesian3(0, 0)
 
   // 创建样条
-  const spline = new Cesium.HermiteSpline({ times, points, inTangents, outTangents })
+  const spline = new Cesium.HermiteSpline({
+    times,
+    points,
+    inTangents,
+    outTangents
+  })
   // 高度插值样条
-  const heightSpline = new Cesium.LinearSpline({ times: times, points: heigtPoints })
+  const heightSpline = new Cesium.LinearSpline({
+    times: times,
+    points: heigtPoints
+  })
 
   // 根据样条进行插值
   const total_num = tLength * resolution + cLength
@@ -258,13 +290,18 @@ export function linearSplineCurve(coordinates: Coordinate[], resolution = 10) {
   for (let i = 0; i < cLength; i++) {
     times[i] = i
   }
-  const points = coordinates.map((it) => new Cesium.Cartesian3(it.longitude, it.latitude))
+  const points = coordinates.map(
+    (it) => new Cesium.Cartesian3(it.longitude, it.latitude)
+  )
   const heigtPoints = coordinates.map((it) => it.height)
 
   // 创建样条
   const spline = new Cesium.LinearSpline({ times, points })
   // 高度插值样条
-  const heightSpline = new Cesium.LinearSpline({ times: times, points: heigtPoints })
+  const heightSpline = new Cesium.LinearSpline({
+    times: times,
+    points: heigtPoints
+  })
 
   // 根据样条进行插值
   const tLength = cLength - 1

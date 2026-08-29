@@ -1,14 +1,36 @@
 import type { Viewer } from "cesium"
 import {
-ArcType, Cartesian3, Color,   defaultValue, GeometryInstance, Material,   PointPrimitiveCollection, PolylineGeometry, PolylineMaterialAppearance,
-Primitive, PrimitiveCollection, ScreenSpaceEventHandler, ScreenSpaceEventType} from "cesium"
+  ArcType,
+  Cartesian3,
+  Color,
+  GeometryInstance,
+  Material,
+  PointPrimitiveCollection,
+  PolylineGeometry,
+  PolylineMaterialAppearance,
+  Primitive,
+  PrimitiveCollection,
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType
+} from "cesium"
 
-import { cartesian3ToCoordinate, convertLength, type Coordinate, coordinatesToCartesian3Array, coordinateToCartesian3, createUid, getDistance, hermiteSplineCornerCurve,isSameCoordinate, linearSplineCurve, windowPositionToEllipsoidCartesian } from "../../.."
-import Cursor from "../../../utils/cursor"
-import Tooltip from "../../../utils/tooltip"
+import type { Coordinate } from "../../../types/coordinate"
+import {
+  cartesian3ToCoordinate,
+  convertLength,
+  coordinatesToCartesian3Array,
+  coordinateToCartesian3,
+  createUid,
+  getDistance,
+  hermiteSplineCornerCurve,
+  isSameCoordinate,
+  linearSplineCurve,
+  windowPositionToEllipsoidCartesian
+} from "../../../utils"
+import { Cursor } from "../../../utils/cursor"
+import { Tooltip } from "../../../utils/tooltip"
 import { Settings } from "../../config"
 import { createFormationMarkPrimitive } from "../utils/creatMilitary"
-
 
 export interface PolylineDrawOption {
   id?: string
@@ -21,30 +43,34 @@ export interface PolylineDrawOption {
   distanceType?: "米" | "千米" | "海里"
 }
 
-
-const drawFormationMark = (viewer: Viewer, options: Record<string, any>, callback: (e:any)=>void, cancelCallback?: ()=>void) => {
+const drawFormationMark = (
+  viewer: Viewer,
+  options: Record<string, any>,
+  callback: (e: any) => void,
+  cancelCallback?: () => void
+) => {
   // 解析参数
   const uuid = options.id || createUid()
   const featureId = { uuid }
-  const show = defaultValue(options.show, true)
-  const pixelSize = defaultValue(options.pointSize, 6)
-  const width = defaultValue(options.lineWidth, 3)
+  const show = options.show ?? true
+  const pixelSize = options.pointSize ?? 6
+  const width = options.lineWidth ?? 3
   const color = options.color || Color.fromCssColorString("#FFFFFF")
   const material = Material.fromType("Color", {
     color: color
   })
   // 折线类型
-  const arcType = defaultValue(options.arcType, ArcType.GEODESIC)
+  const arcType = options.arcType ?? ArcType.GEODESIC
   // 是否允许点击拾取
-  const allowPicking = defaultValue(options.allowPick, true)
+  const allowPicking = options.allowPick ?? true
   // 曲线插值密度
-  const resolution = defaultValue(options.resolution, 30)
+  const resolution = options.resolution ?? 30
   // 曲线弧度
-  const sharpness = defaultValue(options.sharpness, 1.0)
+  const sharpness = options.sharpness ?? 1.0
 
   // 关于深度的设置
-  const haveHeight = defaultValue(options.haveHeight, false)
-  const defaultHeight = defaultValue(options.defaultHeight, 0)
+  const haveHeight = options.haveHeight ?? false
+  const defaultHeight = options.defaultHeight ?? 0
   // 双击间隔
   const DBCLICK_INTERVAL = Settings.LEFT_DOUBLE_CLICK_TIME_INTERVAL
   // 椭球
@@ -89,8 +115,11 @@ const drawFormationMark = (viewer: Viewer, options: Record<string, any>, callbac
   // 是否要更新
   let changedFlag = false
 
-
-  const getPrimitive = (positions: Cartesian3[], id: any = undefined, allowPicking = false) => {
+  const getPrimitive = (
+    positions: Cartesian3[],
+    id: any = undefined,
+    allowPicking = false
+  ) => {
     const primitive = new PrimitiveCollection()
     // 生成新的曲线primitive
     const geometryInstance = new GeometryInstance({
@@ -117,7 +146,9 @@ const drawFormationMark = (viewer: Viewer, options: Record<string, any>, callbac
   }
 
   // 处理坐标
-  const dealWithCoordinate = (cartesian3: Cartesian3): [Cartesian3, Coordinate] => {
+  const dealWithCoordinate = (
+    cartesian3: Cartesian3
+  ): [Cartesian3, Coordinate] => {
     // 处理深度
     if (haveHeight) {
       const coor = cartesian3ToCoordinate(cartesian3, viewer)
@@ -159,7 +190,10 @@ const drawFormationMark = (viewer: Viewer, options: Record<string, any>, callbac
     lastClickTime = currentTime
     if (timeInterval > DBCLICK_INTERVAL) {
       // 屏幕坐标转三维笛卡尔坐标
-      const cartesian3 = windowPositionToEllipsoidCartesian(click.position, viewer)
+      const cartesian3 = windowPositionToEllipsoidCartesian(
+        click.position,
+        viewer
+      )
       // 没选中地球上的坐标
       if (cartesian3 === undefined) {
         // validClick = false
@@ -193,44 +227,59 @@ const drawFormationMark = (viewer: Viewer, options: Record<string, any>, callbac
       return
     }
     // 计算鼠标位置处的坐标
-    const cartesian3 = windowPositionToEllipsoidCartesian(move.endPosition, viewer)
-    if (!cartesian3) { return }
+    const cartesian3 = windowPositionToEllipsoidCartesian(
+      move.endPosition,
+      viewer
+    )
+    if (!cartesian3) {
+      return
+    }
 
     const [c3, coor] = dealWithCoordinate(cartesian3)
     // 在preUpdate时更新航路
     changedFlag = true
 
-
     if (cLength === 1) {
       // 两个点的时候进行线性插值
       const cPoints = [...controlPoints, coor]
       tempLineCoordinates = linearSplineCurve(cPoints, resolution)
-      tempLinePositions = coordinatesToCartesian3Array(tempLineCoordinates, viewer)
+      tempLinePositions = coordinatesToCartesian3Array(
+        tempLineCoordinates,
+        viewer
+      )
     } else {
       const cPoints = controlPoints.concat([coor])
-      tempLineCoordinates = hermiteSplineCornerCurve(cPoints, { resolution, sharpness })
-      tempLinePositions = coordinatesToCartesian3Array(tempLineCoordinates, viewer)
+      tempLineCoordinates = hermiteSplineCornerCurve(cPoints, {
+        resolution,
+        sharpness
+      })
+      tempLinePositions = coordinatesToCartesian3Array(
+        tempLineCoordinates,
+        viewer
+      )
     }
 
     // 更新tooltip位置和内容
     tooltip.showAt(move.endPosition, toolTipText.end)
-
   }, ScreenSpaceEventType.MOUSE_MOVE)
 
   // -- 左双击
   _handler.setInputAction(() => {
     if (controlPoints.length < 2) {
-      message.error("请至少选择两个坐标点")
+      console.error("请至少选择两个坐标点")
       return
     }
 
     const primitive = getPrimitive(tempLinePositions, featureId, allowPicking)
     // 生成标签primitive
-    const labelPrimitives = createFormationMarkPrimitive(tempLinePositions, "舰艇编队标识")
+    const labelPrimitives = createFormationMarkPrimitive(
+      tempLinePositions,
+      "舰艇编队标识"
+    )
     primitive.add(labelPrimitives)
     const result = {
       p: primitive,
-      positions: tempLinePositions.map(item => {
+      positions: tempLinePositions.map((item) => {
         return cartesian3ToCoordinate(item, viewer)
       }),
       coordinates: tempLineCoordinates,
@@ -249,6 +298,5 @@ const drawFormationMark = (viewer: Viewer, options: Record<string, any>, callbac
 
   return onFinished
 }
-
 
 export default drawFormationMark

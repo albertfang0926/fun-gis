@@ -13,7 +13,8 @@ import {
   ScreenSpaceEventHandler,
   ScreenSpaceEventType,
   VerticalOrigin,
-  Viewer} from "mars3d-cesium"
+  Viewer
+} from "cesium"
 
 // assets
 import helpPoint from "../../assets/images/primitives/location_type1.png" // "../assets/images/primitives/location_type1.png"
@@ -24,7 +25,11 @@ import { itemManager } from "../manager/primitive"
 import type { I_ContextMenu } from "../types/contextMenu"
 import { Coordinate } from "../types/coordinate"
 // customs
-import { cartesian3ToCoordinate, coordinateToCartesian3, getRectangleCoorByTwoPoints } from "../utils"
+import {
+  cartesian3ToCoordinate,
+  coordinateToCartesian3,
+  getRectangleCoorByTwoPoints
+} from "../utils"
 // import { getAttackArrowPoints } from "../core/military/utils/creatMilitary"
 import { helperPrimitives } from "./utils/dragHelper"
 import { onRightClick } from "./utils/mouse"
@@ -56,7 +61,9 @@ class Rectangle {
       // this.viewer.scene.primitives.add(e.p)
       itemManager.add(e.id, e)
       this.id = e.id
-      this.controlPoints = e.coordinates.slice(0, 4).map((c) => coordinateToCartesian3(c, this.viewer))
+      this.controlPoints = e.coordinates
+        .slice(0, 4)
+        .map((c) => coordinateToCartesian3(c, this.viewer))
       this.primitive = e.p
     })
   }
@@ -158,13 +165,19 @@ class Rectangle {
         const diagonalHelperIndex = (focusedHelperIndex + 2) % 4
         this.dragHandler.setInputAction((e: any) => {
           this.viewer.scene.screenSpaceCameraController.enableRotate = false // 禁止旋转
-          const position = this.viewer.camera.pickEllipsoid(e.endPosition, this.viewer.scene.globe.ellipsoid)
+          const position = this.viewer.camera.pickEllipsoid(
+            e.endPosition,
+            this.viewer.scene.globe.ellipsoid
+          )
           if (position) {
             helperPrimitives.removeAll()
             const newPrimitive = getPrimitive(
               (this.controlPoints = getRectangleCoorByTwoPoints(
                 cartesian3ToCoordinate(position, this.viewer),
-                cartesian3ToCoordinate(this.controlPoints[diagonalHelperIndex], this.viewer)
+                cartesian3ToCoordinate(
+                  this.controlPoints[diagonalHelperIndex],
+                  this.viewer
+                )
               ).map((c) => coordinateToCartesian3(c, this.viewer))),
               { uuid: this.id },
               true,
@@ -176,7 +189,8 @@ class Rectangle {
                 id: { index, parentId: this.id },
                 show: true,
                 position: controlPoint,
-                image: index === focusedHelperIndex ? highlightHelpPoint : helpPoint,
+                image:
+                  index === focusedHelperIndex ? highlightHelpPoint : helpPoint,
                 scale: index === focusedHelperIndex ? 0.5 : 0.3,
                 verticalOrigin: VerticalOrigin.CENTER,
                 scaleByDistance: new NearFarScalar(1.5e2, 1.5, 8.0e6, 0.0),
@@ -209,7 +223,8 @@ class Rectangle {
    */
   updateColor(color: string) {
     this.color = color
-    this.primitive.appearance.material.uniforms.color = Color.fromCssColorString(color)
+    this.primitive.appearance.material.uniforms.color =
+      Color.fromCssColorString(color)
   }
 
   /**
@@ -232,7 +247,9 @@ class Rectangle {
    * 更新控制点
    */
   updatePositions(positions: Coordinate[]) {
-    this.controlPoints = positions.map((p) => coordinateToCartesian3(p, this.viewer))
+    this.controlPoints = positions.map((p) =>
+      coordinateToCartesian3(p, this.viewer)
+    )
     const newPrimitive = getPrimitive(
       this.controlPoints,
       //   [...this.controlPoints, this.controlPoints[0]],

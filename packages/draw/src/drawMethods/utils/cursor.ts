@@ -1,4 +1,4 @@
-import type { Viewer } from "mars3d-cesium"
+import type { Viewer } from "cesium"
 
 import sight from "../../assets/drawMethods/cursor/sight.png"
 import pen from "../../assets/drawMethods/cursor/sight.png"
@@ -14,7 +14,8 @@ export class Cursor {
 
   static setStyle(type: string, viewer: Viewer) {
     if (Cursor._table.hasOwnProperty(type)) {
-      viewer.canvas.style.cursor = Cursor._table[type as keyof typeof Cursor._table]
+      viewer.canvas.style.cursor =
+        Cursor._table[type as keyof typeof Cursor._table]
       return true
     }
     return false

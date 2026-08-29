@@ -1,7 +1,7 @@
 {
   "name": "@fun-gis/draw",
   "version": "1.0.0",
-  "description": "标绘功能集合",
+  "description": "基于 Cesium 的图形标绘功能集合",
   "type": "module",
   "main": "index.js",
   "files": [
@@ -10,7 +10,6 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "require": "./dist/index.umd.cjs",
       "types": "./dist/types/index.d.ts"
     },
     "./style": {
@@ -20,33 +19,37 @@
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "vite build"
   },
   "publishConfig": {
     "access": "public"
   },
   "keywords": [
-    "three.js",
+    "cesium",
+    "gis",
+    "drawing",
+    "plotting",
     "3d"
   ],
   "author": "giser",
   "license": "ISC",
-  "devDependencies": {
+  "peerDependencies": {
+    "cesium": "^1.133.1",
+    "vue": "^3.4.0"
+  },
+  "dependencies": {
     "@turf/turf": "^7.2.0",
-    "@vitejs/plugin-vue": "^5.1.3",
-    "consola": "^3.4.2",
-    "echarts": "^5.5.0",
     "lodash": "^4.17.21",
-    "mars3d": "^3.9.4",
-    "mars3d-cesium": "^1.107.2",
-    "three": "^0.140.0",
-    "uuid": "^11.1.0",
-    "vite": "^5.4.15",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.1",
+    "cesium": "^1.133.1",
+    "less": "^4.1.3",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.9",
+    "vite-plugin-cesium": "^1.2.22",
     "vite-plugin-dts": "^4.5.3",
-    "vite-plugin-mars3d": "^4.2.0",
-    "vite-plugin-static-copy": "^2.2.0",
-    "vite-plugin-style-import": "^2.0.0",
-    "zrender": "^5.5.0"
+    "vue": "^3.4.31"
   }
 }

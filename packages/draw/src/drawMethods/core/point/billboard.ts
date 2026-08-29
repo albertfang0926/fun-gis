@@ -1,18 +1,24 @@
 // assets
 // types
-import type { Viewer } from "mars3d-cesium"
+import type { Viewer } from "cesium"
 // third-parties
 import {
   BillboardCollection,
   Cartesian2,
   Color,
-  defaultValue,
   ScreenSpaceEventHandler,
-  ScreenSpaceEventType} from "mars3d-cesium"
+  ScreenSpaceEventType
+} from "cesium"
 
 import defaultImage from "../../../assets/images/primitives/point.png" // "../../../assets/drawMethods/feature/png/circle-point.png"
 // customs
-import { cartesian3ToCoordinate,createUid, Cursor, Tooltip, windowPositionToEllipsoidCartesian } from "../../utils"
+import {
+  cartesian3ToCoordinate,
+  createUid,
+  Cursor,
+  Tooltip,
+  windowPositionToEllipsoidCartesian
+} from "../../utils"
 
 export interface BillBoardDrawOption {
   id?: string
@@ -34,10 +40,13 @@ const drawBillboard = (
   // 解析参数
   const uuid = options.id || createUid()
   const featureId = { uuid }
-  const image = defaultValue(options.url, defaultImage)
-  const show = defaultValue(options.show, true)
-  const scale = defaultValue(options.scale, 1.0)
-  const color = options.color instanceof Color ? options.color : Color.fromCssColorString(DEFAULT_COLOR_STRING)
+  const image = options.url ?? defaultImage
+  const show = options.show ?? true
+  const scale = options.scale ?? 1.0
+  const color =
+    options.color instanceof Color
+      ? options.color
+      : Color.fromCssColorString(DEFAULT_COLOR_STRING)
   const pixelOffset = options.pixelOffset
 
   // 操作提示文本
@@ -93,7 +102,10 @@ const drawBillboard = (
 
   // 取椭球表面的坐标，对用无地形的情况
   _handler.setInputAction((click: ScreenSpaceEventHandler.PositionedEvent) => {
-    const cartesian3 = windowPositionToEllipsoidCartesian(click.position, viewer)
+    const cartesian3 = windowPositionToEllipsoidCartesian(
+      click.position,
+      viewer
+    )
     if (cartesian3) {
       onFinished()
       // 创建billboard

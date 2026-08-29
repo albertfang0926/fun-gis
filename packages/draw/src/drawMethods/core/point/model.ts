@@ -1,22 +1,35 @@
 import type { Viewer } from "cesium"
 import {
-  BillboardCollection, Cartesian2, Color,   defaultValue, Model, Primitive, ScreenSpaceEventHandler, ScreenSpaceEventType,
-Transforms
+  BillboardCollection,
+  Cartesian2,
+  Color,
+  Model,
+  Primitive,
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType,
+  Transforms
 } from "cesium"
 
 import { createUid } from "../../utils"
-import { cartesian3ToCoordinate, windowPositionToEllipsoidCartesian } from "../../utils/coordinate"
-import Cursor from "../../utils/cursor"
-import Tooltip from "../../utils/tooltip"
+import {
+  cartesian3ToCoordinate,
+  windowPositionToEllipsoidCartesian
+} from "../../utils/coordinate"
+import { Cursor } from "../../utils/cursor"
+import { Tooltip } from "../../utils/tooltip"
 
-
-const drawModel = (viewer: Viewer, options: Record<string, any>, callback: (e:any)=>void, cancelCallback?: ()=>void) => {
+const drawModel = (
+  viewer: Viewer,
+  options: Record<string, any>,
+  callback: (e: any) => void,
+  cancelCallback?: () => void
+) => {
   // 解析参数
   const uuid = options.id || createUid()
   const featureId = { uuid }
-  const url = defaultValue(options.url, "")
-  const show = defaultValue(options.show, true)
-  const scale = defaultValue(options.scale, 1.0)
+  const url = options.url ?? ""
+  const show = options.show ?? true
+  const scale = options.scale ?? 1.0
 
   // 操作提示文本
   const toolTipText = "单击开始绘制</br>右键取消绘制"
@@ -37,28 +50,33 @@ const drawModel = (viewer: Viewer, options: Record<string, any>, callback: (e:an
     _handler.destroy()
   }
   // 取椭球表面的坐标，对用无地形的情况
-  _handler.setInputAction(async (click: ScreenSpaceEventHandler.PositionedEvent) => {
-    const cartesian3 = windowPositionToEllipsoidCartesian(click.position, viewer)
-    if (cartesian3) {
-
-      onFinished()
-      // 创建model
-      const collection = await Model.fromGltfAsync({
-        id: featureId,
-        url: url,
-        modelMatrix: Transforms.eastNorthUpToFixedFrame(cartesian3),
-        scale: scale
-        // minimumPixelSize: 10
-      })
-      const coor = cartesian3ToCoordinate(cartesian3, viewer)
-      const result = {
-        p: collection,
-        coordinates: [coor]
+  _handler.setInputAction(
+    async (click: ScreenSpaceEventHandler.PositionedEvent) => {
+      const cartesian3 = windowPositionToEllipsoidCartesian(
+        click.position,
+        viewer
+      )
+      if (cartesian3) {
+        onFinished()
+        // 创建model
+        const collection = await Model.fromGltfAsync({
+          id: featureId,
+          url: url,
+          modelMatrix: Transforms.eastNorthUpToFixedFrame(cartesian3),
+          scale: scale
+          // minimumPixelSize: 10
+        })
+        const coor = cartesian3ToCoordinate(cartesian3, viewer)
+        const result = {
+          p: collection,
+          coordinates: [coor]
+        }
+        // 回调连同经纬度一起返回
+        callback(result)
       }
-      // 回调连同经纬度一起返回
-      callback(result)
-    }
-  }, ScreenSpaceEventType.LEFT_CLICK)
+    },
+    ScreenSpaceEventType.LEFT_CLICK
+  )
 
   // 监听鼠标移动
   _handler.setInputAction((e: ScreenSpaceEventHandler.MotionEvent) => {
@@ -75,4 +93,3 @@ const drawModel = (viewer: Viewer, options: Record<string, any>, callback: (e:an
 }
 
 export default drawModel
-

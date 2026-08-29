@@ -1,5 +1,5 @@
+import * as Cesium from "cesium"
 import { flatten } from "lodash"
-import * as Cesium from "mars3d-cesium"
 
 const tailedAttackArrowDefualParam: any = {
   headHeightFactor: 0.18,
@@ -46,7 +46,13 @@ function getAzimuth(t: number[], o: number[]): number {
   return e
 }
 
-function getThirdPoint(t: number[], o: number[], e: number, r: number, n = false) {
+function getThirdPoint(
+  t: number[],
+  o: number[],
+  e: number,
+  r: number,
+  n = false
+) {
   const g = getAzimuth(t, o)
   const i = n ? g + e : g - e
   const s = r * Math.cos(i)
@@ -119,7 +125,12 @@ export function dereplication(array: any) {
   return newArray
 }
 
-export function getAttackArrowHeadPoints(t: any, o: any, e: any, defaultParam: any) {
+export function getAttackArrowHeadPoints(
+  t: any,
+  o: any,
+  e: any,
+  defaultParam: any
+) {
   const headHeightFactor = defaultParam.headHeightFactor
   const headTailFactor = defaultParam.headTailFactor
   const headWidthFactor = defaultParam.headWidthFactor
@@ -199,7 +210,12 @@ export function tailedAttackArrow(inputPoint: [number, number][]) {
     }
     const n = mid(e, r)
     const g = [n].concat(o.slice(2))
-    const i: any = getAttackArrowHeadPoints(g, e, r, tailedAttackArrowDefualParam)
+    const i: any = getAttackArrowHeadPoints(
+      g,
+      e,
+      r,
+      tailedAttackArrowDefualParam
+    )
     const s = i[0]
     const a = i[4]
     const l = distance(e, r)
@@ -223,7 +239,12 @@ export function tailedAttackArrow(inputPoint: [number, number][]) {
 }
 
 // 已知点根据角度和距离求取另一点坐标（二维）  注：WGS84坐标系
-export function getPointByAngleDistance(lng: number, lat: number, angle: number, distance: number) {
+export function getPointByAngleDistance(
+  lng: number,
+  lat: number,
+  angle: number,
+  distance: number
+) {
   const a = 6378137 // 赤道半径
   const b = 6356752.3142 // 短半径
   const f = 1 / 298.257223563 // 扁率
@@ -255,7 +276,10 @@ export function getPointByAngleDistance(lng: number, lat: number, angle: number,
       (cos2SigmaM +
         (B / 4) *
           (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) -
-            (B / 6) * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) * (-3 + 4 * cos2SigmaM * cos2SigmaM)))
+            (B / 6) *
+              cos2SigmaM *
+              (-3 + 4 * sinSigma * sinSigma) *
+              (-3 + 4 * cos2SigmaM * cos2SigmaM)))
     sigmaP = sigma
     sigma = distance / (b * A) + deltaSigma
   }
@@ -265,25 +289,39 @@ export function getPointByAngleDistance(lng: number, lat: number, angle: number,
     sinU1 * cosSigma + cosU1 * sinSigma * cosAlpha1,
     (1 - f) * Math.sqrt(sinAlpha * sinAlpha + tmp * tmp)
   )
-  const lambda = Math.atan2(sinSigma * sinAlpha1, cosU1 * cosSigma - sinU1 * sinSigma * cosAlpha1)
+  const lambda = Math.atan2(
+    sinSigma * sinAlpha1,
+    cosU1 * cosSigma - sinU1 * sinSigma * cosAlpha1
+  )
   const C = (f / 16) * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha))
   const L =
     lambda -
-    (1 - C) * f * sinAlpha * (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)))
+    (1 - C) *
+      f *
+      sinAlpha *
+      (sigma +
+        C *
+          sinSigma *
+          (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)))
   return {
     longitude: lng + L * (180 / Math.PI),
     latitude: lat2 * (180 / Math.PI)
   }
 }
 // 已知点根据角度和距离求取另一点坐标（二三维）  注：WGS84坐标系
-export function getExtensionPoint(startPoint: number[], azimuth_: number, distance: number) {
+export function getExtensionPoint(
+  startPoint: number[],
+  azimuth_: number,
+  distance: number
+) {
   // 从目标点出发根据方位角和距离计算目标点
   const R = 6378137
   const [lon0, lat0, azimuth] = [...startPoint, azimuth_].map((degree) => {
     return Cesium.Math.toRadians(degree)
   })
   const lat = Math.asin(
-    Math.sin(lat0) * Math.cos(distance / R) + Math.cos(lat0) * Math.sin(distance / R) * Math.cos(azimuth)
+    Math.sin(lat0) * Math.cos(distance / R) +
+      Math.cos(lat0) * Math.sin(distance / R) * Math.cos(azimuth)
   )
   const lon =
     lon0 +

@@ -1,10 +1,11 @@
 // third-parties
 // types
-import type { Viewer } from "mars3d-cesium"
+import type { Viewer } from "cesium"
 import {
   SceneTransforms,
   ScreenSpaceEventHandler,
-  ScreenSpaceEventType} from "mars3d-cesium"
+  ScreenSpaceEventType
+} from "cesium"
 
 // customs
 import { itemManager } from "../../manager/primitive"

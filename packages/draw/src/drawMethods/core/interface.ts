@@ -1,4 +1,4 @@
-import type { ArcType, Cartesian2 } from "mars3d-cesium"
+import type { ArcType, Cartesian2 } from "cesium"
 
 import type { Coordinate } from "../types/coordinate"
 

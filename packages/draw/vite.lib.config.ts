@@ -1,13 +1,8 @@
 // /** @type {import("vite").UserConfig} */
 import vue from "@vitejs/plugin-vue"
 import { resolve } from "path"
-// import { viteStaticCopy } from "vite-plugin-static-copy"
-import { AntDesignVueResolver } from "unplugin-vue-components/resolvers"
-import Components from "unplugin-vue-components/vite"
 import { defineConfig } from "vite"
 import dts from "vite-plugin-dts"
-// plugins
-import { AndDesignVueResolve,createStyleImportPlugin } from "vite-plugin-style-import"
 
 export default defineConfig({
   mode: "lib",
@@ -27,30 +22,24 @@ export default defineConfig({
       formats: ["es"]
     },
     rollupOptions: {
-      // 将不想打包进库的依赖外部化
-      external: ["vue", "mars3d", "mars3d-cesium", "@turf/turf"]
+      // 将不想打包进库的依赖外部化（peer 与 dependencies 均交由宿主解析）
+      external: [
+        "cesium",
+        "vue",
+        "ant-design-vue",
+        "@turf/turf",
+        "lodash",
+        "uuid"
+      ]
     }
   },
   plugins: [
-    vue(), // 引入antd样式
+    vue(),
     dts({
       outDir: "./dist/types",
       // rollupTypes: true,
       tsconfigPath: "./tsconfig.lib.json"
-    }),
-    createStyleImportPlugin({
-      resolves: [AndDesignVueResolve()]
-    }),
-    Components({
-      resolvers: [
-        AntDesignVueResolver({
-          importStyle: "less"
-        })
-      ]
     })
-    // viteStaticCopy({
-    //   targets: [{ src: "src/assets/svgs/**/", dest: "src/assets/svgs/" }]
-    // })
   ],
   css: {
     preprocessorOptions: {

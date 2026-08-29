@@ -13,7 +13,8 @@ import {
   ScreenSpaceEventHandler,
   ScreenSpaceEventType,
   VerticalOrigin,
-  Viewer} from "mars3d-cesium"
+  Viewer
+} from "cesium"
 
 // assets
 import helpPoint from "../../assets/images/primitives/location_type1.png" // "../assets/images/primitives/location_type1.png"
@@ -25,7 +26,7 @@ import type { I_ContextMenu } from "../types/contextMenu"
 // types
 import type { Coordinate } from "../types/coordinate"
 // customs
-import { cartesian3ToCoordinate,coordinateToCartesian3 } from "../utils"
+import { cartesian3ToCoordinate, coordinateToCartesian3 } from "../utils"
 import { helperPrimitives } from "./utils/dragHelper"
 import { onRightClick } from "./utils/mouse"
 import { updateSectorVertices } from "./utils/sectorHelper"
@@ -57,9 +58,11 @@ class Arc {
       // this.viewer.scene.primitives.add(e.p)
       itemManager.add(e.id.uuid, e)
       this.id = e.id.uuid
-      this.controlPoints = [e.coordinates[0], e.positions[0], e.positions[e.positions.length - 1]].map((c) =>
-        coordinateToCartesian3(c, this.viewer)
-      ) // e.coordinates.map((c) => coordinateToCartesian3(c, this.viewer))
+      this.controlPoints = [
+        e.coordinates[0],
+        e.positions[0],
+        e.positions[e.positions.length - 1]
+      ].map((c) => coordinateToCartesian3(c, this.viewer)) // e.coordinates.map((c) => coordinateToCartesian3(c, this.viewer))
       this.primitive = e.p
     })
   }
@@ -160,11 +163,18 @@ class Arc {
         // 移动点位
         this.dragHandler.setInputAction((e: any) => {
           this.viewer.scene.screenSpaceCameraController.enableRotate = false // 禁止旋转
-          const position = this.viewer.camera.pickEllipsoid(e.endPosition, this.viewer.scene.globe.ellipsoid)
+          const position = this.viewer.camera.pickEllipsoid(
+            e.endPosition,
+            this.viewer.scene.globe.ellipsoid
+          )
           if (position) {
             this.controlPoints[focusedIndex] = position
             if (focusedIndex === 0) {
-              this.controlPoints[2] = updateSectorVertices(position, this.controlPoints[1], this.controlPoints[2])
+              this.controlPoints[2] = updateSectorVertices(
+                position,
+                this.controlPoints[1],
+                this.controlPoints[2]
+              )
             } else {
               const fixedIndex = 3 - focusedIndex
               this.controlPoints[fixedIndex] = updateSectorVertices(
@@ -188,8 +198,18 @@ class Arc {
               })
               if (focusedIndex === index) pickedControlPoint.primitive = h
             })
-            const vertices = calculateArcPoints(this.controlPoints.map((c) => cartesian3ToCoordinate(c, this.viewer)))
-            const newPrimitive = getPrimitive(vertices, { uuid: this.id }, true, this.width, this.color)
+            const vertices = calculateArcPoints(
+              this.controlPoints.map((c) =>
+                cartesian3ToCoordinate(c, this.viewer)
+              )
+            )
+            const newPrimitive = getPrimitive(
+              vertices,
+              { uuid: this.id },
+              true,
+              this.width,
+              this.color
+            )
             itemManager.updatePrimitive(this.id, newPrimitive)
           }
         }, ScreenSpaceEventType.MOUSE_MOVE)
@@ -212,7 +232,8 @@ class Arc {
    */
   updateColor(color: string) {
     this.color = color
-    this.primitive.appearance.material.uniforms.color = Color.fromCssColorString(color)
+    this.primitive.appearance.material.uniforms.color =
+      Color.fromCssColorString(color)
   }
 
   /**
@@ -221,7 +242,9 @@ class Arc {
   updateWidth(width: number) {
     this.width = width
     const newPrimitive = getPrimitive(
-      calculateArcPoints(this.controlPoints.map((c) => cartesian3ToCoordinate(c, this.viewer))),
+      calculateArcPoints(
+        this.controlPoints.map((c) => cartesian3ToCoordinate(c, this.viewer))
+      ),
       this.id,
       true,
       width,
@@ -234,9 +257,13 @@ class Arc {
    * 更新控制点
    */
   updatePositions(positions: Coordinate[]) {
-    this.controlPoints = positions.map((p) => coordinateToCartesian3(p, this.viewer))
+    this.controlPoints = positions.map((p) =>
+      coordinateToCartesian3(p, this.viewer)
+    )
     const newPrimitive = getPrimitive(
-      calculateArcPoints(this.controlPoints.map((c) => cartesian3ToCoordinate(c, this.viewer))),
+      calculateArcPoints(
+        this.controlPoints.map((c) => cartesian3ToCoordinate(c, this.viewer))
+      ),
       this.id,
       true,
       this.width,

@@ -1,15 +1,33 @@
 import type { Viewer } from "cesium"
 import {
-ArcType, Cartesian3, Color,   defaultValue, GeometryInstance, Material,   PointPrimitiveCollection, PolylineGeometry, PolylineMaterialAppearance,
-Primitive, PrimitiveCollection, ScreenSpaceEventHandler, ScreenSpaceEventType} from "cesium"
+  ArcType,
+  Cartesian3,
+  Color,
+  GeometryInstance,
+  Material,
+  PointPrimitiveCollection,
+  PolylineGeometry,
+  PolylineMaterialAppearance,
+  Primitive,
+  PrimitiveCollection,
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType
+} from "cesium"
 
-import { cartesian3ToCoordinate, convertLength, type Coordinate, coordinateToCartesian3, createUid, getDistance, isSameCoordinate,windowPositionToEllipsoidCartesian } from "../../.."
-import Cursor from "../../../utils/cursor"
-import Tooltip from "../../../utils/tooltip"
+import type { Coordinate } from "../../../types/coordinate"
+import {
+  cartesian3ToCoordinate,
+  convertLength,
+  coordinateToCartesian3,
+  createUid,
+  getDistance,
+  isSameCoordinate,
+  windowPositionToEllipsoidCartesian
+} from "../../../utils"
+import { Cursor } from "../../../utils/cursor"
+import { Tooltip } from "../../../utils/tooltip"
 import { Settings } from "../../config"
 import { computeAssemblePoints } from "../utils/creatMilitary"
-
-
 
 export interface PolylineDrawOption {
   id?: string
@@ -22,30 +40,34 @@ export interface PolylineDrawOption {
   distanceType?: "米" | "千米" | "海里"
 }
 
-
-const drawAssemble = (viewer: Viewer, options: Record<string, any>, callback: (e:any)=>void, cancelCallback?: ()=>void) => {
+const drawAssemble = (
+  viewer: Viewer,
+  options: Record<string, any>,
+  callback: (e: any) => void,
+  cancelCallback?: () => void
+) => {
   // 解析参数
   const uuid = options.id || createUid()
   const featureId = { uuid }
-  const show = defaultValue(options.show, true)
-  const pixelSize = defaultValue(options.pointSize, 6)
-  const width = defaultValue(options.lineWidth, 3)
+  const show = options.show ?? true
+  const pixelSize = options.pointSize ?? 6
+  const width = options.lineWidth ?? 3
   const color = options.color || Color.fromCssColorString("#FFFFFF")
   const material = Material.fromType("Color", {
     color: color
   })
   // 折线类型
-  const arcType = defaultValue(options.arcType, ArcType.GEODESIC)
+  const arcType = options.arcType ?? ArcType.GEODESIC
   // 是否允许点击拾取
-  const allowPicking = defaultValue(options.allowPick, true)
+  const allowPicking = options.allowPick ?? true
   // 曲线插值密度
-  const resolution = defaultValue(options.resolution, 30)
+  const resolution = options.resolution ?? 30
   // 曲线弧度
-  const sharpness = defaultValue(options.sharpness, 1.0)
+  const sharpness = options.sharpness ?? 1.0
 
   // 关于深度的设置
-  const haveHeight = defaultValue(options.haveHeight, false)
-  const defaultHeight = defaultValue(options.defaultHeight, 0)
+  const haveHeight = options.haveHeight ?? false
+  const defaultHeight = options.defaultHeight ?? 0
   // 双击间隔
   const DBCLICK_INTERVAL = Settings.LEFT_DOUBLE_CLICK_TIME_INTERVAL
   // 椭球
@@ -90,8 +112,11 @@ const drawAssemble = (viewer: Viewer, options: Record<string, any>, callback: (e
   // 是否要更新
   let changedFlag = false
 
-
-  const getPrimitive = (positions: Cartesian3[], id: any = undefined, allowPicking = false) => {
+  const getPrimitive = (
+    positions: Cartesian3[],
+    id: any = undefined,
+    allowPicking = false
+  ) => {
     const geometryInstance = new GeometryInstance({
       geometry: new PolylineGeometry({
         positions: positions,
@@ -113,7 +138,9 @@ const drawAssemble = (viewer: Viewer, options: Record<string, any>, callback: (e
   }
 
   // 处理坐标
-  const dealWithCoordinate = (cartesian3: Cartesian3): [Cartesian3, Coordinate] => {
+  const dealWithCoordinate = (
+    cartesian3: Cartesian3
+  ): [Cartesian3, Coordinate] => {
     // 处理深度
     if (haveHeight) {
       const coor = cartesian3ToCoordinate(cartesian3, viewer)
@@ -134,7 +161,7 @@ const drawAssemble = (viewer: Viewer, options: Record<string, any>, callback: (e
     const primitive = getPrimitive(tempLinePositions, featureId, allowPicking)
     const result = {
       p: primitive,
-      positions: tempLinePositions.map(item => {
+      positions: tempLinePositions.map((item) => {
         return cartesian3ToCoordinate(item, viewer)
       }),
       coordinates: controlPoints,
@@ -171,7 +198,10 @@ const drawAssemble = (viewer: Viewer, options: Record<string, any>, callback: (e
 
     if (timeInterval > DBCLICK_INTERVAL) {
       // 屏幕坐标转三维笛卡尔坐标
-      const cartesian3 = windowPositionToEllipsoidCartesian(click.position, viewer)
+      const cartesian3 = windowPositionToEllipsoidCartesian(
+        click.position,
+        viewer
+      )
       // 没选中地球上的坐标
       if (cartesian3 === undefined) {
         // validClick = false
@@ -210,9 +240,13 @@ const drawAssemble = (viewer: Viewer, options: Record<string, any>, callback: (e
       return
     }
     // 计算鼠标位置处的坐标
-    const cartesian3 = windowPositionToEllipsoidCartesian(move.endPosition, viewer)
-    if (!cartesian3) { return }
-
+    const cartesian3 = windowPositionToEllipsoidCartesian(
+      move.endPosition,
+      viewer
+    )
+    if (!cartesian3) {
+      return
+    }
 
     const [c3, coor] = dealWithCoordinate(cartesian3)
     // 在preUpdate时更新航路
@@ -223,18 +257,16 @@ const drawAssemble = (viewer: Viewer, options: Record<string, any>, callback: (e
 
     // 更新tooltip位置和内容
     tooltip.showAt(move.endPosition, toolTipText.end)
-
   }, ScreenSpaceEventType.MOUSE_MOVE)
 
   // -- 左双击
   _handler.setInputAction(() => {
     if (controlPoints.length < 2) {
-      message.error("请至少选择两个坐标点")
+      console.error("请至少选择两个坐标点")
       return
     }
 
     endDraw()
-
   }, ScreenSpaceEventType.LEFT_DOUBLE_CLICK)
 
   // -- 右击
@@ -245,6 +277,5 @@ const drawAssemble = (viewer: Viewer, options: Record<string, any>, callback: (e
 
   return onFinished
 }
-
 
 export default drawAssemble

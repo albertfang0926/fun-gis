@@ -1,5 +1,5 @@
-import type { Viewer } from "mars3d-cesium"
-import { ScreenSpaceEventHandler, ScreenSpaceEventType } from "mars3d-cesium"
+import type { Viewer } from "cesium"
+import { ScreenSpaceEventHandler, ScreenSpaceEventType } from "cesium"
 
 import { itemManager } from "../manager/primitive"
 

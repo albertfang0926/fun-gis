@@ -1,14 +1,8 @@
 // /** @type {import("vite").UserConfig} */
 import vue from "@vitejs/plugin-vue"
 import { resolve } from "path"
-import { AntDesignVueResolver } from "unplugin-vue-components/resolvers"
-import Components from "unplugin-vue-components/vite"
 import { defineConfig } from "vite"
-import { mars3dPlugin } from "vite-plugin-mars3d"
-// plugins
-import {
-  AndDesignVueResolve,
-  createStyleImportPlugin} from "vite-plugin-style-import"
+import cesium from "vite-plugin-cesium"
 
 export default defineConfig({
   // define: {
@@ -28,20 +22,7 @@ export default defineConfig({
     port: 9151,
     proxy: {}
   },
-  plugins: [
-    vue(), // 引入antd样式
-    mars3dPlugin(),
-    createStyleImportPlugin({
-      resolves: [AndDesignVueResolve()]
-    }),
-    Components({
-      resolvers: [
-        AntDesignVueResolver({
-          importStyle: "less"
-        })
-      ]
-    })
-  ],
+  plugins: [vue(), cesium()],
   css: {
     preprocessorOptions: {
       less: {

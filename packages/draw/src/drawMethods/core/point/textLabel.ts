@@ -1,4 +1,4 @@
-import { BillboardCollection, Cartesian2, Cartesian3, defaultValue } from "mars3d-cesium"
+import { BillboardCollection, Cartesian2, Cartesian3 } from "cesium"
 
 import { createUid } from "../../utils"
 import type { TextLabelOptions, TextLabelTextOptions } from "../interface"
@@ -22,9 +22,9 @@ export function createTextLabel(
   // 解析参数
   const uuid = options.id || createUid()
   const featureId = { uuid }
-  const show = defaultValue(options.show, true)
-  const scale = defaultValue(options.scale, 1.0)
-  const offsetY = defaultValue(options.offsetY, -2.0)
+  const show = options.show ?? true
+  const scale = options.scale ?? 1.0
+  const offsetY = options.offsetY ?? -2.0
 
   // 最终的偏移量加上 图片本身高度需要的偏移 偏移量是负数，向上偏移
   const pixelOffset = new Cartesian2(0, offsetY - (height * scale) / 2)
@@ -48,7 +48,10 @@ export function createTextLabel(
  * @param text 标签文本
  * @param options 标签渲染选项
  */
-export function createTextLabelImg(text: string, options: TextLabelTextOptions) {
+export function createTextLabelImg(
+  text: string,
+  options: TextLabelTextOptions
+) {
   // 解析参数
   const {
     padding = [4, 4],
@@ -64,7 +67,8 @@ export function createTextLabelImg(text: string, options: TextLabelTextOptions) 
   ctx.font = fontStyle
   const textMetris = ctx.measureText(text)
   const textWidth = textMetris.width
-  const textHeight = textMetris.fontBoundingBoxAscent + textMetris.fontBoundingBoxDescent
+  const textHeight =
+    textMetris.fontBoundingBoxAscent + textMetris.fontBoundingBoxDescent
   // 整体的宽高 = 文本的宽高 + padding + border
   const width = textWidth + 2 * padding[1] + 2 * borderWidth
   const height = textHeight + 2 * padding[0] + 2 * borderWidth

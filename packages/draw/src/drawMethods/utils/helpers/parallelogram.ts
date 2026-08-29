@@ -1,4 +1,4 @@
-import { Cartesian3 } from "mars3d-cesium"
+import { Cartesian3 } from "cesium"
 
 import type { Coordinate } from "@/drawMethods/types/coordinate"
 

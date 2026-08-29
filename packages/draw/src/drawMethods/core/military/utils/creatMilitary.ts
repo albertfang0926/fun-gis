@@ -1,11 +1,16 @@
+import * as Cesium from "cesium"
 import { concat } from "lodash"
-import * as Cesium from "mars3d-cesium"
 
 // import { getDistance, type Coordinate } from "../../.."
 import type { Coordinate } from "../../../types/coordinate"
 import { getDistance } from "../../../utils"
-import { calculateVector,getExtensionPoint, getPointByAngleDistance, tailedAttackArrow } from "./algorithm"
-import { calculateAngle,transformCartesianToWGS84 } from "./coordinate"
+import {
+  calculateVector,
+  getExtensionPoint,
+  getPointByAngleDistance,
+  tailedAttackArrow
+} from "./algorithm"
+import { calculateAngle, transformCartesianToWGS84 } from "./coordinate"
 
 /**
  * 创建攻击箭头节点
@@ -56,11 +61,19 @@ export function calculateSectorPoints(positions: Coordinate[]) {
   // const angleStep = (endAngleRad - startAngleRad) / numPoints
   for (let i = 0; i <= numPoints; i++) {
     const angle = startAngleRad + i * angleStep
-    const point = getExtensionPoint([positions[0].longitude, positions[0].latitude], angle, distance)
+    const point = getExtensionPoint(
+      [positions[0].longitude, positions[0].latitude],
+      angle,
+      distance
+    )
     coordinates.push(point[0], point[1])
   }
   // 确保弧线最后一个点正确
-  const lastPoint = getExtensionPoint([positions[0].longitude, positions[0].latitude], endAngleRad, distance)
+  const lastPoint = getExtensionPoint(
+    [positions[0].longitude, positions[0].latitude],
+    endAngleRad,
+    distance
+  )
   coordinates.push(lastPoint[0], lastPoint[1])
 
   coordinates.push(positions[0].longitude, positions[0].latitude)
@@ -103,13 +116,25 @@ export function calculateArchPoints(positions: any[]) {
  * @returns {Array}
  * @private
  */
-export function computeAssemblePoints(anchorpoints: Coordinate[]): Cesium.Cartesian3[] {
+export function computeAssemblePoints(
+  anchorpoints: Coordinate[]
+): Cesium.Cartesian3[] {
   const points: Coordinate[] = []
   const originP = anchorpoints[0]
   const lastP = anchorpoints[1]
-  const vectorOL = { longitude: lastP.longitude - originP.longitude, latitude: lastP.latitude - originP.latitude }
-  const dOL = Math.sqrt(vectorOL.longitude * vectorOL.longitude + vectorOL.latitude * vectorOL.latitude)
-  const v_O_P1_lr = calculateVector(vectorOL, Math.PI / 3, (Math.sqrt(3) / 12) * dOL)
+  const vectorOL = {
+    longitude: lastP.longitude - originP.longitude,
+    latitude: lastP.latitude - originP.latitude
+  }
+  const dOL = Math.sqrt(
+    vectorOL.longitude * vectorOL.longitude +
+      vectorOL.latitude * vectorOL.latitude
+  )
+  const v_O_P1_lr = calculateVector(
+    vectorOL,
+    Math.PI / 3,
+    (Math.sqrt(3) / 12) * dOL
+  )
   const originP_P1: Coordinate = v_O_P1_lr[1]
   const p1 = {
     longitude: originP.longitude + originP_P1.longitude,
@@ -121,7 +146,11 @@ export function computeAssemblePoints(anchorpoints: Coordinate[]): Cesium.Cartes
     latitude: (originP.latitude + lastP.latitude) / 2,
     height: 0
   }
-  const v_L_P3_lr = calculateVector(vectorOL, (Math.PI * 2) / 3, (Math.sqrt(3) / 12) * dOL)
+  const v_L_P3_lr = calculateVector(
+    vectorOL,
+    (Math.PI * 2) / 3,
+    (Math.sqrt(3) / 12) * dOL
+  )
   const lastP_P3 = v_L_P3_lr[1]
   const p3 = {
     longitude: lastP.longitude + lastP_P3.longitude,
@@ -130,7 +159,11 @@ export function computeAssemblePoints(anchorpoints: Coordinate[]): Cesium.Cartes
   }
   const v_O_P5_lr = calculateVector(vectorOL, Math.PI / 2, (1 / 2) * dOL)
   const v_O_P5 = v_O_P5_lr[0]
-  const p5 = { longitude: v_O_P5.longitude + p2.longitude, latitude: v_O_P5.latitude + p2.latitude, height: 0 }
+  const p5 = {
+    longitude: v_O_P5.longitude + p2.longitude,
+    latitude: v_O_P5.latitude + p2.latitude,
+    height: 0
+  }
   const p0 = originP
   const p4 = lastP
   points.push(p0, p1, p2, p3, p4, p5)
@@ -190,22 +223,50 @@ export function createCloseCardinal(points: Coordinate[]): Coordinate[] {
     const p1r: any = { longitude: undefined, latitude: undefined }
     // 通过p0、p1、p2计算p1点的做控制点p1l和又控制点p1r
     // 计算向量p0_p1和p1_p2
-    const p0_p1 = { longitude: p1.longitude - p0.longitude, latitude: p1.latitude - p0.latitude }
-    const p1_p2 = { longitude: p2.longitude - p1.longitude, latitude: p2.latitude - p1.latitude }
+    const p0_p1 = {
+      longitude: p1.longitude - p0.longitude,
+      latitude: p1.latitude - p0.latitude
+    }
+    const p1_p2 = {
+      longitude: p2.longitude - p1.longitude,
+      latitude: p2.latitude - p1.latitude
+    }
     // 并计算模
-    const d01 = Math.sqrt(p0_p1.longitude * p0_p1.longitude + p0_p1.latitude * p0_p1.latitude)
-    const d12 = Math.sqrt(p1_p2.longitude * p1_p2.longitude + p1_p2.latitude * p1_p2.latitude)
+    const d01 = Math.sqrt(
+      p0_p1.longitude * p0_p1.longitude + p0_p1.latitude * p0_p1.latitude
+    )
+    const d12 = Math.sqrt(
+      p1_p2.longitude * p1_p2.longitude + p1_p2.latitude * p1_p2.latitude
+    )
     // 向量单位化
-    const p0_p1_1 = { longitude: p0_p1.longitude / d01, latitude: p0_p1.latitude / d01 }
-    const p1_p2_1 = { longitude: p1_p2.longitude / d12, latitude: p1_p2.latitude / d12 }
+    const p0_p1_1 = {
+      longitude: p0_p1.longitude / d01,
+      latitude: p0_p1.latitude / d01
+    }
+    const p1_p2_1 = {
+      longitude: p1_p2.longitude / d12,
+      latitude: p1_p2.latitude / d12
+    }
     // 计算向量p0_p1和p1_p2的夹角平分线向量
-    const p0_p1_p2 = { longitude: p0_p1_1.longitude + p1_p2_1.longitude, latitude: p0_p1_1.latitude + p1_p2_1.latitude }
+    const p0_p1_p2 = {
+      longitude: p0_p1_1.longitude + p1_p2_1.longitude,
+      latitude: p0_p1_1.latitude + p1_p2_1.latitude
+    }
     // 计算向量 p0_p1_p2 的模
-    const d012 = Math.sqrt(p0_p1_p2.longitude * p0_p1_p2.longitude + p0_p1_p2.latitude * p0_p1_p2.latitude)
+    const d012 = Math.sqrt(
+      p0_p1_p2.longitude * p0_p1_p2.longitude +
+        p0_p1_p2.latitude * p0_p1_p2.latitude
+    )
     // 单位化向量p0_p1_p2
-    const p0_p1_p2_1 = { longitude: p0_p1_p2.longitude / d012, latitude: p0_p1_p2.latitude / d012 }
+    const p0_p1_p2_1 = {
+      longitude: p0_p1_p2.longitude / d012,
+      latitude: p0_p1_p2.latitude / d012
+    }
     // 判断p0、p1、p2是否共线，这里判定向量p0_p1和p1_p2的夹角的余弦和1的差值小于e就认为三点共线
-    const cosE_p0p1p2 = (p0_p1_1.longitude * p1_p2_1.longitude + p0_p1_1.latitude * p1_p2_1.latitude) / 1
+    const cosE_p0p1p2 =
+      (p0_p1_1.longitude * p1_p2_1.longitude +
+        p0_p1_1.latitude * p1_p2_1.latitude) /
+      1
     // 共线
     if (Math.abs(1 - cosE_p0p1p2) < e) {
       // 计算p1l的坐标
@@ -397,10 +458,17 @@ export function computeRoundedRectanglePoints(anchorpoints: Coordinate[]) {
  * @param num
  * @returns
  */
-export function getRegularPoints(centerPoint: Coordinate, endPoint: Coordinate, num: number) {
+export function getRegularPoints(
+  centerPoint: Coordinate,
+  endPoint: Coordinate,
+  num: number
+) {
   const distance = getDistance([centerPoint, endPoint]) * 1000
   const ellipse = new Cesium.EllipseOutlineGeometry({
-    center: Cesium.Cartesian3.fromDegrees(centerPoint.longitude, centerPoint.latitude),
+    center: Cesium.Cartesian3.fromDegrees(
+      centerPoint.longitude,
+      centerPoint.latitude
+    ),
     semiMajorAxis: distance,
     semiMinorAxis: distance,
     granularity: 0.0001 // 0~1 圆的弧度角,该值非常重要,默认值0.02,如果绘制性能下降，适当调高该值可以提高性能
@@ -413,7 +481,11 @@ export function getRegularPoints(centerPoint: Coordinate, endPoint: Coordinate, 
   }
   const posNum = values.length / 3 // 数组中以笛卡尔坐标进行存储(每3个值一个坐标)
   for (let i = 0; i < posNum; i++) {
-    const curPos = new Cesium.Cartesian3(values[i * 3], values[i * 3 + 1], values[i * 3 + 2])
+    const curPos = new Cesium.Cartesian3(
+      values[i * 3],
+      values[i * 3 + 1],
+      values[i * 3 + 2]
+    )
     circlePoints.push(curPos)
   }
   const resultPoints: Cesium.Cartesian3[] = []
@@ -472,18 +544,31 @@ function cartesian3ToDegree(c: Cesium.Cartesian3) {
   return [lon, lat]
 }
 
-function getForwardAzimuth(startPoint: { lon: number; lat: number }, endPoint: { lon: number; lat: number }) {
-  const [lon1, lat1, lon2, lat2] = [startPoint.lon, startPoint.lat, endPoint.lon, endPoint.lat].map((degree) => {
+function getForwardAzimuth(
+  startPoint: { lon: number; lat: number },
+  endPoint: { lon: number; lat: number }
+) {
+  const [lon1, lat1, lon2, lat2] = [
+    startPoint.lon,
+    startPoint.lat,
+    endPoint.lon,
+    endPoint.lat
+  ].map((degree) => {
     return Cesium.Math.toRadians(degree)
   })
   const y = Math.sin(lon2 - lon1) * Math.cos(lat2)
-  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1)
+  const x =
+    Math.cos(lat1) * Math.sin(lat2) -
+    Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1)
   const theta = Math.atan2(y, x)
   const bearing = ((theta * 180) / Math.PI + 360) % 360
   return bearing
 }
 
-function getAngleFromTwoPoint(start: Cesium.Cartesian3, end: Cesium.Cartesian3) {
+function getAngleFromTwoPoint(
+  start: Cesium.Cartesian3,
+  end: Cesium.Cartesian3
+) {
   const header = cartesian3ToDegree(start)
   const header2 = cartesian3ToDegree(end)
   return getForwardAzimuth(
@@ -527,7 +612,10 @@ function getLine(
   return positions
 }
 // 海上巡逻线 获取断点位置
-export function getBreakPosition(positions: Cesium.Cartesian3[], opt?: { customPercent?: number }) {
+export function getBreakPosition(
+  positions: Cesium.Cartesian3[],
+  opt?: { customPercent?: number }
+) {
   const { customPercent } = opt || {}
   const breakDistance = 2000 // 断点长度
   const percent = customPercent === undefined ? 0.5 : customPercent // 断点位置 0-1
@@ -589,8 +677,16 @@ export function getIconLinePositions(
         const x = item[0] * 100000 * scale
         const y = item[1] * 100000 * scale
         // east + north
-        const sub = new Cesium.Cartesian3(x * Math.cos(t) - y * Math.sin(t), x * Math.sin(t) + y * Math.cos(t), 0)
-        const res = Cesium.Matrix4.multiplyByPoint(transform, sub, new Cesium.Cartesian3())
+        const sub = new Cesium.Cartesian3(
+          x * Math.cos(t) - y * Math.sin(t),
+          x * Math.sin(t) + y * Math.cos(t),
+          0
+        )
+        const res = Cesium.Matrix4.multiplyByPoint(
+          transform,
+          sub,
+          new Cesium.Cartesian3()
+        )
         return res
       })
       positions.push(p)
@@ -611,7 +707,13 @@ function computeGround(positions: Cesium.Cartesian3[]) {
     const values = line?.attributes.position.values
     const _positions: Cesium.Cartesian3[] = []
     for (let i = 0; i < values.length / 3; i++) {
-      _positions.push(new Cesium.Cartesian3(values[i * 3], values[i * 3 + 1], values[i * 3 + 2]))
+      _positions.push(
+        new Cesium.Cartesian3(
+          values[i * 3],
+          values[i * 3 + 1],
+          values[i * 3 + 2]
+        )
+      )
     }
     const n = _positions.length
     const times: number[] = []
@@ -651,7 +753,10 @@ export function getSplinePositions(positions: Cesium.Cartesian3[]) {
     const p2 = spline.evaluate(0.25) as Cesium.Cartesian3
     const p3 = spline.evaluate(0.4) as Cesium.Cartesian3
     const p4 = spline.evaluate(0.75) as Cesium.Cartesian3
-    const angle = getAngleFromTwoPoint(spline.evaluate(0.7) as Cesium.Cartesian3, p4)
+    const angle = getAngleFromTwoPoint(
+      spline.evaluate(0.7) as Cesium.Cartesian3,
+      p4
+    )
     return {
       positions: [p1, p2, p3, p4],
       angle,
@@ -668,8 +773,14 @@ export function getCruiserPositions(positions: Cesium.Cartesian3[]) {
   if (spline && r) {
     const p1 = spline.evaluate(0.25) as Cesium.Cartesian3
     const p2 = spline.evaluate(0.75) as Cesium.Cartesian3
-    const angle1 = getAngleFromTwoPoint(p1, spline.evaluate(0.5) as Cesium.Cartesian3)
-    const angle2 = getAngleFromTwoPoint(spline.evaluate(0.5) as Cesium.Cartesian3, p2)
+    const angle1 = getAngleFromTwoPoint(
+      p1,
+      spline.evaluate(0.5) as Cesium.Cartesian3
+    )
+    const angle2 = getAngleFromTwoPoint(
+      spline.evaluate(0.5) as Cesium.Cartesian3,
+      p2
+    )
     const scale = r / SCALENUM
     const ps1 = computeSector(p1, scale, angle1 + 180) as Cesium.Cartesian3[]
     const ps2 = computeSector(p2, scale, angle2) as Cesium.Cartesian3[]
@@ -677,7 +788,11 @@ export function getCruiserPositions(positions: Cesium.Cartesian3[]) {
   }
 }
 
-function computeSector(center: Cesium.Cartesian3, scale: number, offsetTheta: number) {
+function computeSector(
+  center: Cesium.Cartesian3,
+  scale: number,
+  offsetTheta: number
+) {
   const SCALENUM = 500000
   const OFFSETBETWEEN = 0
   const ellipseGeometry = new Cesium.EllipseGeometry({
@@ -687,13 +802,21 @@ function computeSector(center: Cesium.Cartesian3, scale: number, offsetTheta: nu
     granularity: 0.001,
     rotation: Cesium.Math.toRadians(-offsetTheta)
   })
-  const values = Cesium.EllipseOutlineGeometry.createGeometry(ellipseGeometry)?.attributes.position.values
+  const values =
+    Cesium.EllipseOutlineGeometry.createGeometry(ellipseGeometry)?.attributes
+      .position.values
   if (values) {
     const _length = values.length / 3
     const endIndex = ((_length - 1) * 266) / 360
     const positions: Cesium.Cartesian3[] = []
     for (let i = 0; i <= endIndex; i++) {
-      positions.push(new Cesium.Cartesian3(values[i * 3], values[i * 3 + 1], values[i * 3 + 2]))
+      positions.push(
+        new Cesium.Cartesian3(
+          values[i * 3],
+          values[i * 3 + 1],
+          values[i * 3 + 2]
+        )
+      )
     }
     return positions
   }
@@ -701,7 +824,10 @@ function computeSector(center: Cesium.Cartesian3, scale: number, offsetTheta: nu
 // #endregion
 
 // #region 舰艇编队标识
-export function createFormationMarkPrimitive(positions: Cesium.Cartesian3[], markText: string) {
+export function createFormationMarkPrimitive(
+  positions: Cesium.Cartesian3[],
+  markText: string
+) {
   // 获取canvas
   const drawText = (text: string) => {
     const fontSize = 1000 // 清晰度
@@ -765,8 +891,16 @@ export function createFormationMarkPrimitive(positions: Cesium.Cartesian3[], mar
     const positions = ps.map((item) => {
       const x = item[0]
       const y = item[1]
-      const sub = new Cesium.Cartesian3(x * Math.cos(t) - y * Math.sin(t), x * Math.sin(t) + y * Math.cos(t), 0)
-      return Cesium.Matrix4.multiplyByPoint(transform, sub, new Cesium.Cartesian3())
+      const sub = new Cesium.Cartesian3(
+        x * Math.cos(t) - y * Math.sin(t),
+        x * Math.sin(t) + y * Math.cos(t),
+        0
+      )
+      return Cesium.Matrix4.multiplyByPoint(
+        transform,
+        sub,
+        new Cesium.Cartesian3()
+      )
     })
     return positions
   }
@@ -801,18 +935,40 @@ export function createFormationMarkPrimitive(positions: Cesium.Cartesian3[], mar
         x * Math.sin(theta2) + y * Math.cos(theta2),
         0
       )
-      const p = Cesium.Matrix4.multiplyByPoint(transform, sub, new Cesium.Cartesian3())
+      const p = Cesium.Matrix4.multiplyByPoint(
+        transform,
+        sub,
+        new Cesium.Cartesian3()
+      )
       positions = getPositions(p, theta, fontWidth)
-      const primitive = getPrimitive(positions[0], positions[1], positions[2], positions[3], t, theta)
+      const primitive = getPrimitive(
+        positions[0],
+        positions[1],
+        positions[2],
+        positions[3],
+        t,
+        theta
+      )
       primitiveCollection.add(primitive)
     } else {
       // 曲线范围内
       const p = spline.evaluate(target)
-      const pre0 = spline.evaluate(Math.max(target - 0.005, 0)) as Cesium.Cartesian3
-      const aft0 = spline.evaluate(Math.min(target + 0.005, 1)) as Cesium.Cartesian3
+      const pre0 = spline.evaluate(
+        Math.max(target - 0.005, 0)
+      ) as Cesium.Cartesian3
+      const aft0 = spline.evaluate(
+        Math.min(target + 0.005, 1)
+      ) as Cesium.Cartesian3
       const theta = getAngleFromTwoPoint(pre0, aft0)
       positions = getPositions(p, theta, fontWidth)
-      const primitive = getPrimitive(positions[0], positions[1], positions[2], positions[3], t, theta)
+      const primitive = getPrimitive(
+        positions[0],
+        positions[1],
+        positions[2],
+        positions[3],
+        t,
+        theta
+      )
       primitiveCollection.add(primitive)
     }
   })

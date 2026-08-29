@@ -1,5 +1,5 @@
-import { Cartesian2 } from "mars3d-cesium"
-import { Component, createApp,createVNode, render } from "vue"
+import { Cartesian2 } from "cesium"
+import { Component, createApp, createVNode, render } from "vue"
 
 export interface ContextMenuItem {
   key: string
@@ -15,7 +15,11 @@ export type ContextMenuContent = ContextMenuGroup[]
 type DefaultEventCallBack = () => void
 export type ContextMenuEventType = "AFTER_OPEN" | "AFTER_CLOSE"
 
-export function updateContextMenuItem(menu: ContextMenuContent, key: string, value: boolean) {
+export function updateContextMenuItem(
+  menu: ContextMenuContent,
+  key: string,
+  value: boolean
+) {
   let item: ContextMenuItem | undefined
   for (const group of menu) {
     item = group.contents.find((it) => it.key === key)
@@ -96,7 +100,11 @@ export default class ContextMenuManager {
    * @param props 右键菜单组件属性
    * @param position 右键菜单位置
    */
-  open(component: Component, props: any, position: { clientX: number; clientY: number }) {
+  open(
+    component: Component,
+    props: any,
+    position: { clientX: number; clientY: number }
+  ) {
     // 确保同时只能打开一个右键弹窗
     this.close()
     // 创建虚拟节点

@@ -1,5 +1,4 @@
 // types
-import { push } from "echarts/types/src/component/dataZoom/history.js"
 import {
   Cartesian3,
   Cartographic,
@@ -7,12 +6,12 @@ import {
   EllipsoidGeodesic,
   Matrix4,
   Transforms,
-  Viewer} from "mars3d-cesium"
+  Viewer
+} from "cesium"
 // third-parties
 import {
   ArcType,
   Color,
-  defaultValue,
   EllipseGeometry,
   GeometryInstance,
   Material,
@@ -22,7 +21,8 @@ import {
   Primitive,
   PrimitiveCollection,
   ScreenSpaceEventHandler,
-  ScreenSpaceEventType} from "mars3d-cesium"
+  ScreenSpaceEventType
+} from "cesium"
 
 import type { Coordinate } from "../../types/coordinate"
 // customs
@@ -39,7 +39,8 @@ import {
   getRectangleCoorByTwoPoints,
   isSameCoordinate,
   Tooltip,
-  windowPositionToEllipsoidCartesian} from "../../utils"
+  windowPositionToEllipsoidCartesian
+} from "../../utils"
 // import { Settings } from "../config"
 // import { createUid } from "../../utils"
 // import { convertArea } from "../utils"
@@ -70,15 +71,20 @@ const drawCircle = (
   // 解析参数
   const uuid = options.id || createUid()
   const featureId = { uuid }
-  const show = defaultValue(options.show, true)
-  const pixelSize = defaultValue(options.pointSize, 7)
-  const width = defaultValue(options.lineWidth, 2)
-  const rectangleColor = options.color instanceof Color ? options.color : Color.fromCssColorString(DEFAULT_COLOR_STRING)
-  const arcType = defaultValue(options.arcType, ArcType.GEODESIC)
-  const distanceType = defaultValue(options.distanceType, "千米")
-  const allowPicking = defaultValue(options.allowPicking, true)
+  const show = options.show ?? true
+  const pixelSize = options.pointSize ?? 7
+  const width = options.lineWidth ?? 2
+  const rectangleColor =
+    options.color instanceof Color
+      ? options.color
+      : Color.fromCssColorString(DEFAULT_COLOR_STRING)
+  const arcType = options.arcType ?? ArcType.GEODESIC
+  const distanceType = options.distanceType ?? "千米"
+  const allowPicking = options.allowPicking ?? true
   const material =
-    options.material instanceof Material ? options.material : Material.fromType("Color", { color: rectangleColor })
+    options.material instanceof Material
+      ? options.material
+      : Material.fromType("Color", { color: rectangleColor })
 
   // 生成primitive的选项
   const polylineOptions = {
@@ -100,7 +106,8 @@ const drawCircle = (
   // 设置光标样式
   Cursor.setStyle("cross", viewer)
   // 单位转换
-  const areaType = distanceType === "米" ? "m²" : distanceType === "千米" ? "km²" : "nmi²"
+  const areaType =
+    distanceType === "米" ? "m²" : distanceType === "千米" ? "km²" : "nmi²"
   // 双击判定间隔
   const DBCLICK_INTERVAL = Settings.LEFT_DOUBLE_CLICK_TIME_INTERVAL
   // 绘制函数
@@ -139,7 +146,10 @@ const drawCircle = (
 
     if (timeInterval > DBCLICK_INTERVAL) {
       // 屏幕坐标转三维笛卡尔坐标
-      const cartesian3 = windowPositionToEllipsoidCartesian(click.position, viewer)
+      const cartesian3 = windowPositionToEllipsoidCartesian(
+        click.position,
+        viewer
+      )
       // 未点击在地球上，不做处理
       if (!cartesian3) {
         return
@@ -152,7 +162,12 @@ const drawCircle = (
       // 还没有确定矩形的顶点
       if (cLength <= 0) {
         // 添加矩形的一个顶点
-        tempPointCollection.add({ show, rectangleColor, pixelSize, position: cartesian3 })
+        tempPointCollection.add({
+          show,
+          rectangleColor,
+          pixelSize,
+          position: cartesian3
+        })
         coordList.push(coor)
       } else {
         // 判断是否点击了同一个点
@@ -169,7 +184,11 @@ const drawCircle = (
         const centerC3 = coordinateToCartesian3(coordList[0], viewer)
         const radius = Cartesian3.distance(centerC3, cartesian3)
         // const primitive = getEllipsePrimitive(coordinateToCartesian3(coordList[0], viewer), radius, radius)
-        const primitive = getCircle(featureId, coordinateToCartesian3(coordList[0], viewer), radius)
+        const primitive = getCircle(
+          featureId,
+          coordinateToCartesian3(coordList[0], viewer),
+          radius
+        )
         const result = {
           p: primitive,
           id: uuid,
@@ -188,7 +207,10 @@ const drawCircle = (
       return
     }
     // 计算鼠标位置处的坐标
-    const cartesian3 = windowPositionToEllipsoidCartesian(move.endPosition, viewer)
+    const cartesian3 = windowPositionToEllipsoidCartesian(
+      move.endPosition,
+      viewer
+    )
     if (!cartesian3) {
       return
     }
@@ -206,12 +228,20 @@ const drawCircle = (
     const radius = Cartesian3.distance(centerC3, cartesian3)
     // const primitive = getEllipsePrimitive(coordinateToCartesian3(coordList[0], viewer), radius, radius) // getPolylinePrimitive(undefined, positions, polylineOptions)
 
-    const primitive = getCircle(undefined, coordinateToCartesian3(coordList[0], viewer), radius)
+    const primitive = getCircle(
+      undefined,
+      coordinateToCartesian3(coordList[0], viewer),
+      radius
+    )
     movingLineCollection.add(primitive)
     // 计算矩形的面积，默认单位是平方米
     const area = getCoordinateArea(rectangleCoor)
     const convertedArea =
-      area !== undefined ? (areaType === "m²" ? area.toFixed(2) : convertArea(area, "m²", areaType).toFixed(2)) : "未知"
+      area !== undefined
+        ? areaType === "m²"
+          ? area.toFixed(2)
+          : convertArea(area, "m²", areaType).toFixed(2)
+        : "未知"
 
     tooltip.showAt(move.endPosition, toolTipText.end)
     // tooltip.showAt(move.endPosition, "面积：" + convertedArea + areaType + "</br>" + toolTipText.end)
@@ -279,7 +309,11 @@ export function getCircle(
     releaseGeometryInstances: true
   }
   // method 1
-  const geometry = new CircleOutlineGeometry({ center: center, radius: radius, granularity: granularity })
+  const geometry = new CircleOutlineGeometry({
+    center: center,
+    radius: radius,
+    granularity: granularity
+  })
   const circle = CircleOutlineGeometry.createGeometry(geometry)
   const _positions = circle.attributes.position.values as number[]
   const positions = [].slice.call(_positions)
@@ -299,7 +333,11 @@ export function getCircle(
   //   positionC3.push(c3)
   // }
 
-  return getPolylinePrimitive(id, [...positionC3, positionC3[0]], polylineOptions)
+  return getPolylinePrimitive(
+    id,
+    [...positionC3, positionC3[0]],
+    polylineOptions
+  )
 }
 //   const positions = []
 //   for (let i = 0; i <= 2 * czmMath.PI; i += granularity) {}

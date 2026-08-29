@@ -13,7 +13,8 @@ import {
   ScreenSpaceEventHandler,
   ScreenSpaceEventType,
   VerticalOrigin,
-  Viewer} from "mars3d-cesium"
+  Viewer
+} from "cesium"
 
 // assets
 import helpPoint from "../../assets/images/primitives/location_type1.png" // "../assets/images/primitives/location_type1.png"
@@ -25,7 +26,11 @@ import { itemManager } from "../manager/primitive"
 import type { I_ContextMenu } from "../types/contextMenu"
 import { Coordinate } from "../types/coordinate"
 // customs
-import { cartesian3ToCoordinate, coordinateToCartesian3, getParallelogramVertices } from "../utils"
+import {
+  cartesian3ToCoordinate,
+  coordinateToCartesian3,
+  getParallelogramVertices
+} from "../utils"
 import { helperPrimitives } from "./utils/dragHelper"
 import { onRightClick } from "./utils/mouse"
 // const helperPrimitives = new BillboardCollection()
@@ -56,7 +61,9 @@ class Parallelogram {
       // this.viewer.scene.primitives.add(e.p)
       itemManager.add(e.id, e)
       this.id = e.id
-      this.controlPoints = e.coordinates.map((c) => coordinateToCartesian3(c, this.viewer))
+      this.controlPoints = e.coordinates.map((c) =>
+        coordinateToCartesian3(c, this.viewer)
+      )
       this.primitive = e.p
     })
   }
@@ -163,7 +170,10 @@ class Parallelogram {
         // // 移动点位
         this.dragHandler.setInputAction((e: any) => {
           this.viewer.scene.screenSpaceCameraController.enableRotate = false // 禁止旋转
-          const position = this.viewer.camera.pickEllipsoid(e.endPosition, this.viewer.scene.globe.ellipsoid)
+          const position = this.viewer.camera.pickEllipsoid(
+            e.endPosition,
+            this.viewer.scene.globe.ellipsoid
+          )
           if (position) {
             // helperPrimitives.remove(pickedControlPoint.primitive)
             // pickedControlPoint.primitive = helperPrimitives.add({
@@ -192,9 +202,14 @@ class Parallelogram {
               })
               if (focusedIndex === index) pickedControlPoint.primitive = h
             })
-            const vertices = getParallelogramVertices([previousTwoPoint, previousOnePoint, position])
+            const vertices = getParallelogramVertices([
+              previousTwoPoint,
+              previousOnePoint,
+              position
+            ])
             this.controlPoints[focusedIndex] = vertices[2]
-            this.controlPoints[(focusedIndex + 1) % 4] = vertices[vertices.length - 1]
+            this.controlPoints[(focusedIndex + 1) % 4] =
+              vertices[vertices.length - 1]
             const newPrimitive = getPrimitive(
               [...vertices, vertices[0]],
               // getAttackArrowPoints(this.controlPoints.map((c) => cartesian3ToCoordinate(c, this.viewer))),
@@ -225,7 +240,8 @@ class Parallelogram {
    */
   updateColor(color: string) {
     this.color = color
-    this.primitive.appearance.material.uniforms.color = Color.fromCssColorString(color)
+    this.primitive.appearance.material.uniforms.color =
+      Color.fromCssColorString(color)
   }
 
   /**
@@ -234,7 +250,9 @@ class Parallelogram {
   updateWidth(width: number) {
     this.width = width
     const newPrimitive = getPrimitive(
-      getAttackArrowPoints(this.controlPoints.map((c) => cartesian3ToCoordinate(c, this.viewer))),
+      getAttackArrowPoints(
+        this.controlPoints.map((c) => cartesian3ToCoordinate(c, this.viewer))
+      ),
       this.id,
       true,
       width,
@@ -247,9 +265,13 @@ class Parallelogram {
    * 更新控制点
    */
   updatePositions(positions: Coordinate[]) {
-    this.controlPoints = positions.map((p) => coordinateToCartesian3(p, this.viewer))
+    this.controlPoints = positions.map((p) =>
+      coordinateToCartesian3(p, this.viewer)
+    )
     const newPrimitive = getPrimitive(
-      getAttackArrowPoints(this.controlPoints.map((c) => cartesian3ToCoordinate(c, this.viewer))),
+      getAttackArrowPoints(
+        this.controlPoints.map((c) => cartesian3ToCoordinate(c, this.viewer))
+      ),
       this.id,
       true,
       this.width,

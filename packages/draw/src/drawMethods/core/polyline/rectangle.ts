@@ -1,15 +1,15 @@
 // types
-import type { Cartesian3, Viewer } from "mars3d-cesium"
+import type { Cartesian3, Viewer } from "cesium"
 // third-parties
 import {
   ArcType,
   Color,
-  defaultValue,
   Material,
   PointPrimitiveCollection,
   PrimitiveCollection,
   ScreenSpaceEventHandler,
-  ScreenSpaceEventType} from "mars3d-cesium"
+  ScreenSpaceEventType
+} from "cesium"
 
 import type { Coordinate } from "../../types/coordinate"
 // customs
@@ -25,7 +25,8 @@ import {
   getRectangleCoorByTwoPoints,
   isSameCoordinate,
   Tooltip,
-  windowPositionToEllipsoidCartesian} from "../../utils"
+  windowPositionToEllipsoidCartesian
+} from "../../utils"
 // import { Settings } from "../config"
 // import { createUid } from "../../utils"
 // import { convertArea } from "../utils"
@@ -56,15 +57,20 @@ const drawRectangle = (
   // 解析参数
   const uuid = options.id || createUid()
   const featureId = { uuid }
-  const show = defaultValue(options.show, true)
-  const pixelSize = defaultValue(options.pointSize, 7)
-  const width = defaultValue(options.lineWidth, 2)
-  const rectangleColor = options.color instanceof Color ? options.color : Color.fromCssColorString(DEFAULT_COLOR_STRING)
-  const arcType = defaultValue(options.arcType, ArcType.GEODESIC)
-  const distanceType = defaultValue(options.distanceType, "千米")
-  const allowPicking = defaultValue(options.allowPicking, true)
+  const show = options.show ?? true
+  const pixelSize = options.pointSize ?? 7
+  const width = options.lineWidth ?? 2
+  const rectangleColor =
+    options.color instanceof Color
+      ? options.color
+      : Color.fromCssColorString(DEFAULT_COLOR_STRING)
+  const arcType = options.arcType ?? ArcType.GEODESIC
+  const distanceType = options.distanceType ?? "千米"
+  const allowPicking = options.allowPicking ?? true
   const material =
-    options.material instanceof Material ? options.material : Material.fromType("Color", { color: rectangleColor })
+    options.material instanceof Material
+      ? options.material
+      : Material.fromType("Color", { color: rectangleColor })
 
   // 生成primitive的选项
   const polylineOptions = {
@@ -86,7 +92,8 @@ const drawRectangle = (
   // 设置光标样式
   Cursor.setStyle("cross", viewer)
   // 单位转换
-  const areaType = distanceType === "米" ? "m²" : distanceType === "千米" ? "km²" : "nmi²"
+  const areaType =
+    distanceType === "米" ? "m²" : distanceType === "千米" ? "km²" : "nmi²"
   // 双击判定间隔
   const DBCLICK_INTERVAL = Settings.LEFT_DOUBLE_CLICK_TIME_INTERVAL
   // 绘制函数
@@ -125,7 +132,10 @@ const drawRectangle = (
 
     if (timeInterval > DBCLICK_INTERVAL) {
       // 屏幕坐标转三维笛卡尔坐标
-      const cartesian3 = windowPositionToEllipsoidCartesian(click.position, viewer)
+      const cartesian3 = windowPositionToEllipsoidCartesian(
+        click.position,
+        viewer
+      )
       // 未点击在地球上，不做处理
       if (!cartesian3) {
         return
@@ -138,7 +148,12 @@ const drawRectangle = (
       // 还没有确定矩形的顶点
       if (cLength <= 0) {
         // 添加矩形的一个顶点
-        tempPointCollection.add({ show, rectangleColor, pixelSize, position: cartesian3 })
+        tempPointCollection.add({
+          show,
+          rectangleColor,
+          pixelSize,
+          position: cartesian3
+        })
         coordList.push(coor)
       } else {
         // 判断是否点击了同一个点
@@ -151,7 +166,11 @@ const drawRectangle = (
         // 最后的生成的primitive用调用者确定是否可以点击
         polylineOptions.allowPicking = allowPicking
         // 生成矩形
-        const primitive = getPolylinePrimitive(featureId, positions, polylineOptions)
+        const primitive = getPolylinePrimitive(
+          featureId,
+          positions,
+          polylineOptions
+        )
         const result = {
           p: primitive,
           id: uuid,
@@ -170,7 +189,10 @@ const drawRectangle = (
       return
     }
     // 计算鼠标位置处的坐标
-    const cartesian3 = windowPositionToEllipsoidCartesian(move.endPosition, viewer)
+    const cartesian3 = windowPositionToEllipsoidCartesian(
+      move.endPosition,
+      viewer
+    )
     if (!cartesian3) {
       return
     }
@@ -183,12 +205,20 @@ const drawRectangle = (
     if (movingLineCollection.length > 0) {
       movingLineCollection.removeAll()
     }
-    const primitive = getPolylinePrimitive(undefined, positions, polylineOptions)
+    const primitive = getPolylinePrimitive(
+      undefined,
+      positions,
+      polylineOptions
+    )
     movingLineCollection.add(primitive)
     // 计算矩形的面积，默认单位是平方米
     const area = getCoordinateArea(rectangleCoor)
     const convertedArea =
-      area !== undefined ? (areaType === "m²" ? area.toFixed(2) : convertArea(area, "m²", areaType).toFixed(2)) : "未知"
+      area !== undefined
+        ? areaType === "m²"
+          ? area.toFixed(2)
+          : convertArea(area, "m²", areaType).toFixed(2)
+        : "未知"
 
     tooltip.showAt(move.endPosition, toolTipText.end)
     // tooltip.showAt(move.endPosition, "面积：" + convertedArea + areaType + "</br>" + toolTipText.end)

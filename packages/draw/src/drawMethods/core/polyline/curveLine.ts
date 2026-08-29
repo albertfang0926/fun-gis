@@ -1,10 +1,9 @@
 // third-parties
-import type { Viewer } from "mars3d-cesium"
+import type { Viewer } from "cesium"
 import {
   ArcType,
   Cartesian3,
   Color,
-  defaultValue,
   GeometryInstance,
   Material,
   PointPrimitiveCollection,
@@ -13,7 +12,8 @@ import {
   Primitive,
   PrimitiveCollection,
   ScreenSpaceEventHandler,
-  ScreenSpaceEventType} from "mars3d-cesium"
+  ScreenSpaceEventType
+} from "cesium"
 
 // types
 import type { Coordinate } from "../../types/coordinate"
@@ -23,12 +23,16 @@ import {
   coordinatesToCartesian3Array,
   coordinateToCartesian3,
   isSameCoordinate,
-  windowPositionToEllipsoidCartesian} from "../../utils/coordinate"
+  windowPositionToEllipsoidCartesian
+} from "../../utils/coordinate"
 import { hermiteSplineCornerCurve, linearSplineCurve } from "../../utils/curve"
 // customs
 import { Settings } from "./../config"
 
-export type PolylineInterpolationType = "HermiteSpline" | "CatmullRomSpline" | "BezierSpline"
+export type PolylineInterpolationType =
+  | "HermiteSpline"
+  | "CatmullRomSpline"
+  | "BezierSpline"
 export interface CurveLineDrawOption {
   id?: string
   show?: boolean
@@ -59,25 +63,25 @@ const drawCurveLine = (
   // 解析参数
   const uuid = options.id || createUid()
   const featureId = { uuid }
-  const show = defaultValue(options.show, true)
-  const pixelSize = defaultValue(options.pointSize, 6)
-  const width = defaultValue(options.lineWidth, 2)
+  const show = options.show ?? true
+  const pixelSize = options.pointSize ?? 6
+  const width = options.lineWidth ?? 2
   const color = options.color || Color.fromCssColorString("#FFFFFF")
-  const material = defaultValue(options.material, DEFAULT_MATERIAL)
+  const material = options.material ?? DEFAULT_MATERIAL
   // 折线类型
-  const arcType = defaultValue(options.arcType, ArcType.GEODESIC)
+  const arcType = options.arcType ?? ArcType.GEODESIC
   // 是否允许点击拾取
-  const allowPicking = defaultValue(options.allowPick, true)
+  const allowPicking = options.allowPick ?? true
   // 曲线插值密度
-  const resolution = defaultValue(options.resolution, 10)
+  const resolution = options.resolution ?? 10
   // 曲线弧度
-  const sharpness = defaultValue(options.sharpness, 0.5)
+  const sharpness = options.sharpness ?? 0.5
   // // 曲线插值方法
-  // const interpolation_type = defaultValue(options.interpolation_type, "HermiteSpline")
+  // const interpolation_type = (options.interpolation_type ?? "HermiteSpline")
 
   // 关于深度的设置
-  const haveHeight = defaultValue(options.haveHeight, false)
-  const defaultHeight = defaultValue(options.defaultHeight, 0)
+  const haveHeight = options.haveHeight ?? false
+  const defaultHeight = options.defaultHeight ?? 0
   // 双击间隔
   const DBCLICK_INTERVAL = Settings.LEFT_DOUBLE_CLICK_TIME_INTERVAL
   // 椭球
@@ -128,7 +132,11 @@ const drawCurveLine = (
   let changedFlag = false
 
   // 生成等角航线primitive
-  const generateRhumbLine = (positions: Cartesian3[], id: any = undefined, allowPicking = false) => {
+  const generateRhumbLine = (
+    positions: Cartesian3[],
+    id: any = undefined,
+    allowPicking = false
+  ) => {
     // 生成新的航路primitive
     const geometryInstance = new GeometryInstance({
       geometry: new PolylineGeometry({
@@ -151,7 +159,9 @@ const drawCurveLine = (
   }
 
   // 处理坐标
-  const dealWithCoordinate = (cartesian3: Cartesian3): [Cartesian3, Coordinate] => {
+  const dealWithCoordinate = (
+    cartesian3: Cartesian3
+  ): [Cartesian3, Coordinate] => {
     // 处理深度
     if (haveHeight) {
       const coor = cartesian3ToCoordinate(cartesian3, viewer)
@@ -194,7 +204,10 @@ const drawCurveLine = (
 
     if (timeInterval > DBCLICK_INTERVAL) {
       // 屏幕坐标转三维笛卡尔坐标
-      const cartesian3 = windowPositionToEllipsoidCartesian(click.position, viewer)
+      const cartesian3 = windowPositionToEllipsoidCartesian(
+        click.position,
+        viewer
+      )
       // 没选中地球上的坐标
       if (cartesian3 === undefined) {
         // validClick = false
@@ -238,7 +251,10 @@ const drawCurveLine = (
       return
     }
     // 计算鼠标位置处的坐标
-    const cartesian3 = windowPositionToEllipsoidCartesian(move.endPosition, viewer)
+    const cartesian3 = windowPositionToEllipsoidCartesian(
+      move.endPosition,
+      viewer
+    )
     if (!cartesian3) {
       return
     }
@@ -269,7 +285,10 @@ const drawCurveLine = (
       cLength === 1
         ? linearSplineCurve(cPoints, resolution)
         : hermiteSplineCornerCurve(cPoints, { resolution, sharpness })
-    tempLinePositions = coordinatesToCartesian3Array(tempLineCoordinates, viewer)
+    tempLinePositions = coordinatesToCartesian3Array(
+      tempLineCoordinates,
+      viewer
+    )
 
     // 更新tooltip位置和内容
     tooltip.showAt(move.endPosition, toolTipText.end)
@@ -296,9 +315,16 @@ const drawCurveLine = (
       cLength === 2
         ? linearSplineCurve(controlPoints, resolution)
         : hermiteSplineCornerCurve(controlPoints, { resolution, sharpness })
-    tempLinePositions = coordinatesToCartesian3Array(tempLineCoordinates, viewer)
+    tempLinePositions = coordinatesToCartesian3Array(
+      tempLineCoordinates,
+      viewer
+    )
 
-    const primitive = generateRhumbLine(tempLinePositions, featureId, allowPicking)
+    const primitive = generateRhumbLine(
+      tempLinePositions,
+      featureId,
+      allowPicking
+    )
     const result = {
       p: primitive,
       id: uuid,
@@ -327,24 +353,24 @@ export default drawCurveLine
 //   // 解析参数
 //   const uuid = options.id || createUid()
 //   const featureId = { uuid }
-//   const show = defaultValue(options.show, true)
-//   const pixelSize = defaultValue(options.pointSize, 6)
-//   const width = defaultValue(options.lineWidth, 2)
+//   const show = (options.show ?? true)
+//   const pixelSize = (options.pointSize ?? 6)
+//   const width = (options.lineWidth ?? 2)
 //   const color = options.color || Color.fromCssColorString("#FFFFFF")
-//   const material = defaultValue(options.material, DEFAULT_MATERIAL)
-//   // const interpolation_num = defaultValue(options.interpolation_num, 3000)
+//   const material = (options.material ?? DEFAULT_MATERIAL)
+//   // const interpolation_num = (options.interpolation_num ?? 3000)
 //   // // 曲线插值方法
-//   // const interpolation_type = defaultValue(options.interpolation_type, "HermiteSpline")
+//   // const interpolation_type = (options.interpolation_type ?? "HermiteSpline")
 //   // 转弯半径
-//   const turnRadius = defaultValue(options.turnRadius, 20)
+//   const turnRadius = (options.turnRadius ?? 20)
 //   // 曲线控制点密度 ( 样点之间的距离 )
-//   const itpDist = defaultValue(options.interpolation_dist, 10)
+//   const itpDist = (options.interpolation_dist ?? 10)
 //   // 折线类型
-//   const arcType = defaultValue(options.arcType, ArcType.GEODESIC)
+//   const arcType = (options.arcType ?? ArcType.GEODESIC)
 
 //   // 关于深度的设置
-//   const haveHeight = defaultValue(options.haveHeight, false)
-//   const defaultHeight = defaultValue(options.defaultHeight, 0)
+//   const haveHeight = (options.haveHeight ?? false)
+//   const defaultHeight = (options.defaultHeight ?? 0)
 //   // 双击间隔
 //   const DBCLICK_INTERVAL = Settings.LEFT_DOUBLE_CLICK_TIME_INTERVAL
 //   // 椭球

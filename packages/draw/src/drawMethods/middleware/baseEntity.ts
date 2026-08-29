@@ -1,4 +1,4 @@
-import type { Viewer } from "mars3d-cesium"
+import type { Viewer } from "cesium"
 
 abstract class BaseEntity {
   public id: string

@@ -14,7 +14,8 @@ import {
   ScreenSpaceEventHandler,
   ScreenSpaceEventType,
   VerticalOrigin,
-  Viewer} from "mars3d-cesium"
+  Viewer
+} from "cesium"
 
 // assets
 import defaultPoint from "../../assets/images/primitives/point.png" // "../assets/images/primitives/location_type1.png"
@@ -27,7 +28,7 @@ import { itemManager } from "../manager/primitive"
 import type { I_ContextMenu } from "../types/contextMenu"
 import { Coordinate } from "../types/coordinate"
 // customs
-import { cartesian3ToCoordinate,coordinateToCartesian3 } from "../utils"
+import { cartesian3ToCoordinate, coordinateToCartesian3 } from "../utils"
 import type { BaseEntity } from "./baseEntity"
 import { helperPrimitives } from "./utils/dragHelper"
 import { onRightClick } from "./utils/mouse"
@@ -57,7 +58,11 @@ class Label {
     this._onRightClick(onRightClick)
   }
 
-  public draw(text = this.text, textColor = this.textColor, backgroundColor = this.bgColor): void {
+  public draw(
+    text = this.text,
+    textColor = this.textColor,
+    backgroundColor = this.bgColor
+  ): void {
     drawPoint(
       this.viewer,
       {
@@ -71,7 +76,9 @@ class Label {
         // this.viewer.scene.primitives.add(e.p)
         itemManager.add(e.id, e)
         this.id = e.id
-        this.controlPoints = e.coordinates.map((c) => coordinateToCartesian3(c, this.viewer))
+        this.controlPoints = e.coordinates.map((c) =>
+          coordinateToCartesian3(c, this.viewer)
+        )
         this.primitive = e.p
       }
     )
@@ -174,7 +181,10 @@ class Label {
         // 移动点位
         this.dragHandler.setInputAction((e: any) => {
           this.viewer.scene.screenSpaceCameraController.enableRotate = false // 禁止旋转
-          const position = this.viewer.camera.pickEllipsoid(e.endPosition, this.viewer.scene.globe.ellipsoid)
+          const position = this.viewer.camera.pickEllipsoid(
+            e.endPosition,
+            this.viewer.scene.globe.ellipsoid
+          )
           if (position) {
             helperPrimitives.remove(pickedControlPoint.primitive)
             pickedControlPoint.primitive = helperPrimitives.add({

@@ -1,15 +1,26 @@
 import { Cartesian3, Cesium3DTile, Transforms, type Viewer } from "cesium"
 import {
-Cartesian2, Color,   defaultValue, EllipsoidSurfaceAppearance, GeometryInstance, Material, Math as CMath,
-Matrix4,
-PolygonGeometry,
-  PolygonHierarchy, Primitive,   ScreenSpaceEventHandler, ScreenSpaceEventType} from "cesium"
+  Cartesian2,
+  Color,
+  EllipsoidSurfaceAppearance,
+  GeometryInstance,
+  Material,
+  Math as CMath,
+  Matrix4,
+  PolygonGeometry,
+  PolygonHierarchy,
+  Primitive,
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType
+} from "cesium"
 
 import { createUid } from "../../utils"
-import { cartesian3ToCoordinate, windowPositionToEllipsoidCartesian } from "../../utils/coordinate"
-import Cursor from "../../utils/cursor"
-import Tooltip from "../../utils/tooltip"
-
+import {
+  cartesian3ToCoordinate,
+  windowPositionToEllipsoidCartesian
+} from "../../utils/coordinate"
+import { Cursor } from "../../utils/cursor"
+import { Tooltip } from "../../utils/tooltip"
 
 export interface SymbolDrawOption {
   id?: string
@@ -21,16 +32,19 @@ export interface SymbolDrawOption {
   height: number
 }
 
-
-const drawSymbolMilitary = (viewer: Viewer, options: Record<string, any>, callback: (e:any)=>void, cancelCallback?: ()=>void) => {
+const drawSymbolMilitary = (
+  viewer: Viewer,
+  options: Record<string, any>,
+  callback: (e: any) => void,
+  cancelCallback?: () => void
+) => {
   // 解析参数
   const image = options.url
   const uuid = options.id || createUid()
   // 是否允许点击拾取
-  const allowPicking = defaultValue(options.allowPick, true)
-  const scale = defaultValue(options.scale, 1.0)
+  const allowPicking = options.allowPick ?? true
+  const scale = options.scale ?? 1.0
   const color = options.color || Color.fromCssColorString("#FF0000")
-
 
   // 操作提示文本
   const toolTipText = "单击开始绘制</br>右键取消绘制"
@@ -54,13 +68,22 @@ const drawSymbolMilitary = (viewer: Viewer, options: Record<string, any>, callba
 
   // 取椭球表面的坐标，对用无地形的情况
   _handler.setInputAction((click: ScreenSpaceEventHandler.PositionedEvent) => {
-    const cartesian3 = windowPositionToEllipsoidCartesian(click.position, viewer)
+    const cartesian3 = windowPositionToEllipsoidCartesian(
+      click.position,
+      viewer
+    )
     if (cartesian3) {
-
       onFinished()
       // 创建Symbol
 
-      const primitive = getSymbolPrimitive({ uuid, image, position: cartesian3, scale, color, allowPicking })
+      const primitive = getSymbolPrimitive({
+        uuid,
+        image,
+        position: cartesian3,
+        scale,
+        color,
+        allowPicking
+      })
 
       const coor = cartesian3ToCoordinate(cartesian3, viewer)
       const result = {
@@ -86,12 +109,19 @@ const drawSymbolMilitary = (viewer: Viewer, options: Record<string, any>, callba
   return onFinished
 }
 
-export function getSymbolPrimitive({ uuid, image, position, scale, color, allowPicking = true }:{
-  uuid: string,
-  image: string,
-  position: Cartesian3,
-  scale: number,
-  color: Color,
+export function getSymbolPrimitive({
+  uuid,
+  image,
+  position,
+  scale,
+  color,
+  allowPicking = true
+}: {
+  uuid: string
+  image: string
+  position: Cartesian3
+  scale: number
+  color: Color
   allowPicking: boolean
 }) {
   const material = new Material({
@@ -118,7 +148,6 @@ export function getSymbolPrimitive({ uuid, image, position, scale, color, allowP
     },
     translucent: false
   })
-
 
   const positions = getPosition({
     scale,
@@ -149,23 +178,22 @@ export function getSymbolPrimitive({ uuid, image, position, scale, color, allowP
   return primitive
 }
 
-
 function getPosition({
   rotate = 0,
   scale = 1,
   position, // 鼠标点击位置
   centerPosition = [0, 0] // 默认图形中心点相对鼠标点击位置[0, 0]，
-}:{
-  rotate?: number,
-  scale?: number,
-  position: Cartesian3,
-  centerPosition?: [number, number],
+}: {
+  rotate?: number
+  scale?: number
+  position: Cartesian3
+  centerPosition?: [number, number]
 }) {
-
   const transform = Transforms.eastNorthUpToFixedFrame(position)
   const rcX = centerPosition[0]
   const rcY = centerPosition[1]
-  const cornerPositions = [ // 计算四角相对旋转点位置
+  const cornerPositions = [
+    // 计算四角相对旋转点位置
     [1 - rcX, 1 - rcY],
     [-1 - rcX, 1 - rcY],
     [-1 - rcX, -1 - rcY],
@@ -183,15 +211,10 @@ function getPosition({
       0
     )
     // 相对位置转换
-    const res = Matrix4.multiplyByPoint(
-      transform,
-      sub,
-      new Cartesian3()
-    )
+    const res = Matrix4.multiplyByPoint(transform, sub, new Cartesian3())
     return res
   })
   return positions
 }
 
 export default drawSymbolMilitary
-

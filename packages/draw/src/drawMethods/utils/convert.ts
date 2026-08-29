@@ -1,5 +1,3 @@
-
-
 // #region 单位转换规则
 
 // 常见的长度单位
@@ -34,8 +32,6 @@ const areaUnits: { [unit: string]: number } = {
 
 // #endregion
 
-
-
 // #region 单位转换
 
 /**
@@ -44,7 +40,11 @@ const areaUnits: { [unit: string]: number } = {
  * @param fromUnit 转换前的长度单位
  * @param toUnit 转换后的长度单位
  */
-export function convertLength(length: number, fromUnit: string, toUnit: string): number {
+export function convertLength(
+  length: number,
+  fromUnit: string,
+  toUnit: string
+): number {
   if (fromUnit === toUnit) {
     return length
   }
@@ -63,7 +63,11 @@ export function convertLength(length: number, fromUnit: string, toUnit: string):
  * @param fromUnit 转换前的面积单位
  * @param toUnit 转换后的面积单位
  */
-export function convertArea(area: number, fromUnit: string, toUnit: string): number {
+export function convertArea(
+  area: number,
+  fromUnit: string,
+  toUnit: string
+): number {
   if (fromUnit === toUnit) {
     return area
   }
@@ -77,13 +81,16 @@ export function convertArea(area: number, fromUnit: string, toUnit: string): num
 
 // #endregion
 
-
 // #region 矢量要素转换
 export function convertDegree(degree: number, toUnit: "DM" | "DMS") {
   if (toUnit === "DM") {
     const degreeInteger = Math.floor(degree)
     const minute = ((degree - degreeInteger) * 60).toFixed(3)
-    return { degree: degreeInteger, minute: minute, showType: degreeInteger + "°" + minute + "′" }
+    return {
+      degree: degreeInteger,
+      minute: minute,
+      showType: degreeInteger + "°" + minute + "′"
+    }
   } else {
     degree = degree > 0 ? degree : -degree
     const deg = Math.floor(degree)
@@ -93,7 +100,13 @@ export function convertDegree(degree: number, toUnit: "DM" | "DMS") {
       degree: deg,
       minute: min,
       second: sec,
-      showType: deg.toString() + "°" + min.toString().padStart(2, "0") + "′" + sec.toString().padStart(2, "0") + "″"
+      showType:
+        deg.toString() +
+        "°" +
+        min.toString().padStart(2, "0") +
+        "′" +
+        sec.toString().padStart(2, "0") +
+        "″"
     }
   }
 }

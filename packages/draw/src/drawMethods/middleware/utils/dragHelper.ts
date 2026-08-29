@@ -1,4 +1,4 @@
-import { BillboardCollection } from "mars3d-cesium"
+import { BillboardCollection } from "cesium"
 
 const helperPrimitives = new BillboardCollection()
 

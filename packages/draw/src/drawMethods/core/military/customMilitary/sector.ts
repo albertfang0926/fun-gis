@@ -1,9 +1,8 @@
-import type { Viewer } from "mars3d-cesium"
+import type { Viewer } from "cesium"
 import {
   ArcType,
   Cartesian3,
   Color,
-  defaultValue,
   GeometryInstance,
   Material,
   PointPrimitiveCollection,
@@ -12,7 +11,8 @@ import {
   Primitive,
   PrimitiveCollection,
   ScreenSpaceEventHandler,
-  ScreenSpaceEventType} from "mars3d-cesium"
+  ScreenSpaceEventType
+} from "cesium"
 
 import type { Coordinate } from "../../../types/coordinate"
 // customs
@@ -25,7 +25,8 @@ import {
   getDistance,
   isSameCoordinate,
   Tooltip,
-  windowPositionToEllipsoidCartesian} from "../../../utils"
+  windowPositionToEllipsoidCartesian
+} from "../../../utils"
 // import Tooltip from "../../../utils/tooltip"
 // import Cursor from "../../../utils/cursor"
 import { Settings } from "../../config"
@@ -58,25 +59,25 @@ const drawSector = (
   // 解析参数
   const uuid = options.id || createUid()
   const featureId = { uuid }
-  const show = defaultValue(options.show, true)
-  const pixelSize = defaultValue(options.pointSize, 6)
-  const width = defaultValue(options.lineWidth, 3)
+  const show = options.show ?? true
+  const pixelSize = options.pointSize ?? 6
+  const width = options.lineWidth ?? 3
   const color = options.color || Color.fromCssColorString("#FFFFFF")
   const material = Material.fromType("Color", {
     color: color
   })
   // 折线类型
-  const arcType = defaultValue(options.arcType, ArcType.GEODESIC)
+  const arcType = options.arcType ?? ArcType.GEODESIC
   // 是否允许点击拾取
-  const allowPicking = defaultValue(options.allowPick, true)
+  const allowPicking = options.allowPick ?? true
   // 曲线插值密度
-  const resolution = defaultValue(options.resolution, 30)
+  const resolution = options.resolution ?? 30
   // 曲线弧度
-  const sharpness = defaultValue(options.sharpness, 1.0)
+  const sharpness = options.sharpness ?? 1.0
 
   // 关于深度的设置
-  const haveHeight = defaultValue(options.haveHeight, false)
-  const defaultHeight = defaultValue(options.defaultHeight, 0)
+  const haveHeight = options.haveHeight ?? false
+  const defaultHeight = options.defaultHeight ?? 0
   // 双击间隔
   const DBCLICK_INTERVAL = Settings.LEFT_DOUBLE_CLICK_TIME_INTERVAL
   // 椭球
@@ -122,7 +123,11 @@ const drawSector = (
   // 是否要更新
   let changedFlag = false
 
-  const getPrimitive = (positions: Cartesian3[], id: any = undefined, allowPicking = false) => {
+  const getPrimitive = (
+    positions: Cartesian3[],
+    id: any = undefined,
+    allowPicking = false
+  ) => {
     // 生成新的航路primitive
     const geometryInstance = new GeometryInstance({
       geometry: new PolylineGeometry({
@@ -158,7 +163,9 @@ const drawSector = (
   }
 
   // 处理坐标
-  const dealWithCoordinate = (cartesian3: Cartesian3): [Cartesian3, Coordinate] => {
+  const dealWithCoordinate = (
+    cartesian3: Cartesian3
+  ): [Cartesian3, Coordinate] => {
     // 处理深度
     if (haveHeight) {
       const coor = cartesian3ToCoordinate(cartesian3, viewer)
@@ -216,7 +223,10 @@ const drawSector = (
 
     if (timeInterval > DBCLICK_INTERVAL) {
       // 屏幕坐标转三维笛卡尔坐标
-      const cartesian3 = windowPositionToEllipsoidCartesian(click.position, viewer)
+      const cartesian3 = windowPositionToEllipsoidCartesian(
+        click.position,
+        viewer
+      )
       // 没选中地球上的坐标
       if (cartesian3 === undefined) {
         // validClick = false
@@ -259,7 +269,10 @@ const drawSector = (
       return
     }
     // 计算鼠标位置处的坐标
-    const cartesian3 = windowPositionToEllipsoidCartesian(move.endPosition, viewer)
+    const cartesian3 = windowPositionToEllipsoidCartesian(
+      move.endPosition,
+      viewer
+    )
     if (!cartesian3) {
       return
     }
@@ -270,10 +283,11 @@ const drawSector = (
 
     tempLineCoordinates = [...controlPoints, coor]
     tempLinePositions = getPositions(tempLineCoordinates)!
-    tempLineCoordinates[tempLineCoordinates.length - 1] = cartesian3ToCoordinate(
-      tempLinePositions[tempLinePositions.length - 1],
-      viewer
-    )
+    tempLineCoordinates[tempLineCoordinates.length - 1] =
+      cartesian3ToCoordinate(
+        tempLinePositions[tempLinePositions.length - 1],
+        viewer
+      )
     // tempLinePositions = getAttackArrowPoints(tempLineCoordinates)
 
     // 更新tooltip位置和内容

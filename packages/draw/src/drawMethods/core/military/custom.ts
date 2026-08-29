@@ -1,4 +1,4 @@
-import type { Color, Viewer } from "mars3d-cesium"
+import type { Color, Viewer } from "cesium"
 
 import drawAttackArrow from "./customMilitary/attackArrow"
 // import drawPatrolLine from "./customMilitary/patrolLine"

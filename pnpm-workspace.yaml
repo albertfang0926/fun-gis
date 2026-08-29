@@ -2,3 +2,8 @@ packages:
   - apps/**
   - packages/**
   - docs
+allowBuilds:
+  core-js: true
+  esbuild: true
+  exifreader: true
+  vue-demi: true

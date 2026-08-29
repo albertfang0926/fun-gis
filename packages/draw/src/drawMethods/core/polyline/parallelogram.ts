@@ -1,16 +1,16 @@
 // types
-import type { Viewer } from "mars3d-cesium"
+import type { Viewer } from "cesium"
 // third-parties
 import {
   ArcType,
   Cartesian3,
   Color,
-  defaultValue,
   Material,
   PointPrimitiveCollection,
   PrimitiveCollection,
   ScreenSpaceEventHandler,
-  ScreenSpaceEventType} from "mars3d-cesium"
+  ScreenSpaceEventType
+} from "cesium"
 
 import type { Coordinate } from "../../types/coordinate"
 // customs
@@ -23,7 +23,8 @@ import {
   getParallelogramVertices,
   isSameCoordinate,
   Tooltip,
-  windowPositionToEllipsoidCartesian} from "../../utils"
+  windowPositionToEllipsoidCartesian
+} from "../../utils"
 import { getPolylinePrimitive } from "./utils"
 
 const DEFAULT_COLOR_STRING = "#ffffff"
@@ -41,15 +42,20 @@ const drawParallelogram = (
   // 解析参数
   const uuid = options.id || createUid()
   const featureId = { uuid }
-  const show = defaultValue(options.show, true)
-  const pixelSize = defaultValue(options.pointSize, 6)
-  const width = defaultValue(options.lineWidth, 2)
-  const polygonColor = options.color instanceof Color ? options.color : Color.fromCssColorString(DEFAULT_COLOR_STRING)
-  const arcType = defaultValue(options.arcType, ArcType.GEODESIC)
-  const distanceType = defaultValue(options.distanceType, "千米")
-  const allowPicking = defaultValue(options.allowPicking, true)
+  const show = options.show ?? true
+  const pixelSize = options.pointSize ?? 6
+  const width = options.lineWidth ?? 2
+  const polygonColor =
+    options.color instanceof Color
+      ? options.color
+      : Color.fromCssColorString(DEFAULT_COLOR_STRING)
+  const arcType = options.arcType ?? ArcType.GEODESIC
+  const distanceType = options.distanceType ?? "千米"
+  const allowPicking = options.allowPicking ?? true
   const material =
-    options.material instanceof Material ? options.material : Material.fromType("Color", { color: polygonColor })
+    options.material instanceof Material
+      ? options.material
+      : Material.fromType("Color", { color: polygonColor })
 
   // 生成primitive的选项
   const polylineOptions = {
@@ -72,7 +78,8 @@ const drawParallelogram = (
   // 设置光标样式
   Cursor.setStyle("cross", viewer)
   // 单位转换
-  const areaType = distanceType === "米" ? "m²" : distanceType === "千米" ? "km²" : "nmi²"
+  const areaType =
+    distanceType === "米" ? "m²" : distanceType === "千米" ? "km²" : "nmi²"
   // 双击判定间隔
   const DBCLICK_INTERVAL = Settings.LEFT_DOUBLE_CLICK_TIME_INTERVAL
   // 绘制函数
@@ -112,7 +119,10 @@ const drawParallelogram = (
 
     if (timeInterval > DBCLICK_INTERVAL) {
       // 屏幕坐标转三维笛卡尔坐标
-      const cartesian3 = windowPositionToEllipsoidCartesian(click.position, viewer)
+      const cartesian3 = windowPositionToEllipsoidCartesian(
+        click.position,
+        viewer
+      )
       // 未点击在地球上，不做处理
       if (!cartesian3) {
         return
@@ -126,10 +136,19 @@ const drawParallelogram = (
       }
 
       // 绘制顶点
-      tempPointCollection.add({ show, polygonColor, pixelSize, position: cartesian3 })
+      tempPointCollection.add({
+        show,
+        polygonColor,
+        pixelSize,
+        position: cartesian3
+      })
       // 绘制折线
       if (pLength > 0) {
-        const primitive = getPolylinePrimitive(undefined, [positionList[pLength - 1], cartesian3], polylineOptions)
+        const primitive = getPolylinePrimitive(
+          undefined,
+          [positionList[pLength - 1], cartesian3],
+          polylineOptions
+        )
         tempLineCollection.add(primitive)
       }
 
@@ -139,16 +158,25 @@ const drawParallelogram = (
       if (pLength === 2) {
         // 闭合多边形
 
-        const parallelogramVertices = getParallelogramVertices([...positionList, cartesian3])
+        const parallelogramVertices = getParallelogramVertices([
+          ...positionList,
+          cartesian3
+        ])
         const positions = [...parallelogramVertices, parallelogramVertices[0]]
         coordList.push(coordList[0])
         // 最后的生成的primitive用调用者确定是否可以点击
         polylineOptions.allowPicking = allowPicking
-        const primitive = getPolylinePrimitive(featureId, positions, polylineOptions)
+        const primitive = getPolylinePrimitive(
+          featureId,
+          positions,
+          polylineOptions
+        )
         const result = {
           p: primitive,
           id: uuid,
-          coordinates: parallelogramVertices.map((p) => cartesian3ToCoordinate(p, viewer))
+          coordinates: parallelogramVertices.map((p) =>
+            cartesian3ToCoordinate(p, viewer)
+          )
         }
 
         onFinished()
@@ -167,7 +195,10 @@ const drawParallelogram = (
       return
     }
     // 计算鼠标位置处的坐标
-    const cartesian3 = windowPositionToEllipsoidCartesian(move.endPosition, viewer)
+    const cartesian3 = windowPositionToEllipsoidCartesian(
+      move.endPosition,
+      viewer
+    )
     if (!cartesian3) {
       return
     }
@@ -175,14 +206,21 @@ const drawParallelogram = (
     // 如果只确定了一个顶点，那么只用更新一条线段
     if (pLength === 1) {
       movingLineCollection.removeAll()
-      const primitive = getPolylinePrimitive(undefined, [positionList[pLength - 1], cartesian3], polylineOptions)
+      const primitive = getPolylinePrimitive(
+        undefined,
+        [positionList[pLength - 1], cartesian3],
+        polylineOptions
+      )
       movingLineCollection.add(primitive)
       // 更新tooltip
       tooltip.showAt(move.endPosition, toolTipText.second)
     } else {
       // 如果已经确定了至少两个顶点，那么需要更新两条线段
       movingLineCollection.removeAll()
-      const parallelogramVertices = getParallelogramVertices([...positionList, cartesian3])
+      const parallelogramVertices = getParallelogramVertices([
+        ...positionList,
+        cartesian3
+      ])
       const primitive = getPolylinePrimitive(
         undefined,
         [...parallelogramVertices, parallelogramVertices[0]],

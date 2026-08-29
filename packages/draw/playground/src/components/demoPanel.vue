@@ -3,7 +3,9 @@
     <div class="container">
       <button class="button" @click="drawPointHelper">点</button>
       <button class="button" @click="drawLabelHelper">标签</button>
-      <button class="button" @click="drawParallelogramHelper">平行四边形</button>
+      <button class="button" @click="drawParallelogramHelper">
+        平行四边形
+      </button>
       <button class="button" @click="drawSegmentHelper">线段</button>
       <button class="button" @click="drawCircleHelper">圆</button>
       <button class="button" @click="drawArcHelper">弧形</button>
@@ -35,12 +37,20 @@
 
     <!-- edit panel -->
     <div v-if="editPanelVisible" class="edit-panel">
-      <div v-for="(initItems, index) of initMap[current.name]" :key="initItems.property">
+      <div
+        v-for="(initItems, index) of initMap[current.name]"
+        :key="initItems.property"
+      >
         <div class="edit-panel-item">
           <span> {{ initItems.label }} </span>
           <!-- <f-input v-model="updateMap[current.name][index].value"></f-input> -->
-          <input v-model="updateMap[current.name][index].value" style="width: 100px" />
-          <button @click="() => callbackMap[current.name][index].callback()">更新</button>
+          <input
+            v-model="updateMap[current.name][index].value"
+            style="width: 100px"
+          />
+          <button @click="() => callbackMap[current.name][index].callback()">
+            更新
+          </button>
         </div>
       </div>
     </div>
@@ -49,7 +59,7 @@
 
 <script setup lang="ts">
 // third-parties
-import type { Viewer } from "mars3d-cesium"
+import type { Viewer } from "cesium"
 // types
 import type { ShallowRef } from "vue"
 import { computed, inject, ref, shallowRef, watch } from "vue"
@@ -444,13 +454,33 @@ watch(editPanelVisible, () => {
 
 const callbackMap = {
   point: [
-    { property: "size", callback: () => current.value.updateSize(updateMap.value[current.value.name][0].value) },
-    { property: "scale", callback: () => current.value.updateScale(updateMap.value[current.value.name][1].value) },
-    { property: "color", callback: () => current.value.updateColor(updateMap.value[current.value.name][2].value) }
+    {
+      property: "size",
+      callback: () =>
+        current.value.updateSize(updateMap.value[current.value.name][0].value)
+    },
+    {
+      property: "scale",
+      callback: () =>
+        current.value.updateScale(updateMap.value[current.value.name][1].value)
+    },
+    {
+      property: "color",
+      callback: () =>
+        current.value.updateColor(updateMap.value[current.value.name][2].value)
+    }
   ],
   label: [
-    { property: "text", callback: () => current.value.updateText(updateMap.value[current.value.name][0].value) },
-    { property: "scale", callback: () => current.value.updateScale(updateMap.value[current.value.name][1].value) },
+    {
+      property: "text",
+      callback: () =>
+        current.value.updateText(updateMap.value[current.value.name][0].value)
+    },
+    {
+      property: "scale",
+      callback: () =>
+        current.value.updateScale(updateMap.value[current.value.name][1].value)
+    },
     {
       property: "textColor",
       callback: () =>
