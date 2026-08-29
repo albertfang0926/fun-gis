@@ -10,7 +10,7 @@ export default class CurvedArrow extends Base {
   arrowLengthScale: number = 5
   maxArrowLength: number = 3000000
   t: number
-  minPointsForShape: number
+  declare minPointsForShape: number
 
   constructor(cesium: any, viewer: any, style?: LineStyle) {
     super(cesium, viewer, style)
@@ -81,7 +81,6 @@ export default class CurvedArrow extends Base {
     }
 
     const curvePoints = Utils.getCurvePoints(this.t, lnglatPoints)
-    const pnt1 = lnglatPoints[lnglatPoints.length - 2]
     const pnt2 = lnglatPoints[lnglatPoints.length - 1]
 
     const distance = Utils.wholeDistance(lnglatPoints)

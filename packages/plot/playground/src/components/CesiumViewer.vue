@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CesiumViewer } from "@fun-gis/core"
+import { CesiumViewer } from "@fun-gis/map-core"
 import { onMounted, onUnmounted, ref } from "vue"
 
 const containerRef = ref<HTMLDivElement>()

@@ -9,7 +9,7 @@ export default class StraightArrow extends Base {
   points: Cartesian3[] = []
   arrowLengthScale: number = 5
   maxArrowLength: number = 3000000
-  minPointsForShape: number
+  declare minPointsForShape: number
 
   constructor(cesium: any, viewer: any, style?: LineStyle) {
     super(cesium, viewer, style)

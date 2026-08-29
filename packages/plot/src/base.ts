@@ -23,7 +23,7 @@ export default class Base {
   polygonEntity: CesiumTypeOnly.Entity;
   geometryPoints: CesiumTypeOnly.Cartesian3[] = [];
   state: State = 'drawing';
-  controlPoints: CesiumTypeOnly.EntityCollection = [];
+  controlPoints: CesiumTypeOnly.Entity[] = [];
   controlPointsEventHandler: CesiumTypeOnly.ScreenSpaceEventHandler;
   lineEntity: CesiumTypeOnly.Entity;
   type!: 'polygon' | 'line';
@@ -34,11 +34,12 @@ export default class Base {
   dragEventHandler: CesiumTypeOnly.ScreenSpaceEventHandler;
   entityId: string = '';
   points: CesiumTypeOnly.Cartesian3[] = [];
-  styleCache: GeometryStyle | undefined;
+  // 过渡期：样式缓存承载用户传入的动态样式对象，M2 统一架构时收紧类型
+  styleCache: any;
   minPointsForShape: number = 0;
   tempLineEntity: CesiumTypeOnly.Entity;
 
-  constructor(cesium: CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer, style?: GeometryStyle) {
+  constructor(cesium: typeof CesiumTypeOnly, viewer: CesiumTypeOnly.Viewer, style?: GeometryStyle) {
     this.cesium = cesium;
     this.viewer = viewer;
     this.type = this.getType();
@@ -165,7 +166,7 @@ export default class Base {
   }
 
   onDoubleClick() {
-    this.eventHandler.setInputAction((evt: any) => {
+    this.eventHandler.setInputAction((_evt: any) => {
       if (this.state === 'drawing') {
         this.finishDrawing();
       }
@@ -335,7 +336,8 @@ export default class Base {
     });
 
     let isDragging = false;
-    let draggedIcon: CesiumTypeOnly.Entity = null;
+    // 过渡期类型：控制点图标在拖拽逻辑中动态挂载 index 属性
+    let draggedIcon: any = null;
     let dragStartPosition: CesiumTypeOnly.Cartesian3;
 
     this.controlPointsEventHandler = new this.cesium.ScreenSpaceEventHandler(this.viewer.canvas);
@@ -349,7 +351,7 @@ export default class Base {
           if (pickedObject.id === this.controlPoints[i]) {
             isDragging = true;
             draggedIcon = this.controlPoints[i];
-            dragStartPosition = draggedIcon.position._value;
+            dragStartPosition = (draggedIcon.position as any)._value;
             //Save the index of dragged points for dynamic updates during movement
             draggedIcon.index = i;
             break;
@@ -438,14 +440,15 @@ export default class Base {
           this.controlPoints.map((p: CesiumTypeOnly.Entity) => {
             const position = p.position?.getValue(this.cesium.JulianDate.now());
             const newPosition = this.cesium.Cartesian3.add(position, translation, new this.cesium.Cartesian3());
-            p.position?.setValue(newPosition);
+            (p.position as any)?.setValue(newPosition);
           });
 
           this.setGeometryPoints(newPoints);
           if (this.minPointsForShape === 4) {
             // 双箭头在整体被拖拽时，需要同步更新生长动画的插值点
-            this.curveControlPointLeft = this.cesium.Cartesian3.add(this.curveControlPointLeft, translation, new this.cesium.Cartesian3());
-            this.curveControlPointRight = this.cesium.Cartesian3.add(this.curveControlPointRight, translation, new this.cesium.Cartesian3());
+            const _this = this as any;
+            _this.curveControlPointLeft = this.cesium.Cartesian3.add(_this.curveControlPointLeft, translation, new this.cesium.Cartesian3());
+            _this.curveControlPointRight = this.cesium.Cartesian3.add(_this.curveControlPointRight, translation, new this.cesium.Cartesian3());
           }
           startPosition = newPosition;
         }
@@ -575,7 +578,7 @@ export default class Base {
     setTimeout(() => {
       const graphics = entity.polygon || entity.polyline || entity.billboard;
       let startAlpha: number;
-      const material = graphics.material;
+      const material = (graphics as any).material;
       if (material) {
         if (material.image && material.color.alpha !== undefined) {
           // Texture material, setting the alpha channel in the color of the custom ImageFlowMaterialProperty.
@@ -585,7 +588,7 @@ export default class Base {
         }
       } else {
         // billbord
-        const color = graphics.color.getValue();
+        const color = (graphics as CesiumTypeOnly.BillboardGraphics).color.getValue();
         startAlpha = color.alpha;
       }
 
@@ -612,9 +615,9 @@ export default class Base {
             }
           } else {
             // billbord
-            const color = graphics.color.getValue();
+            const color = (graphics as CesiumTypeOnly.BillboardGraphics).color.getValue();
             const newColor = color.withAlpha(newAlpha);
-            graphics.color.setValue(newColor);
+            (graphics as any).color.setValue(newColor);
           }
 
           requestAnimationFrame(animate);
@@ -640,9 +643,9 @@ export default class Base {
             }
           } else {
             // billbord
-            const color = graphics.color.getValue();
+            const color = (graphics as CesiumTypeOnly.BillboardGraphics).color.getValue();
             const newColor = color.withAlpha(targetAlpha);
-            graphics.color.setValue(newColor);
+            (graphics as any).color.setValue(newColor);
           }
           requestAnimationFrame(() => {
             this.setState(restoredState);
@@ -657,8 +660,17 @@ export default class Base {
     }, delay);
   }
 
-  startGrowthAnimation(opts: GrowthAnimationOpts) {
-    const { duration = 2000, delay = 0, callback } = opts || {};
+  // 仅 DoubleArrow 子类覆写，供双箭头生长动画取贝塞尔控制点
+  getBezierControlPointforGrowthAnimation(): {
+    left: CesiumTypeOnly.Cartesian3;
+    right: CesiumTypeOnly.Cartesian3;
+  } {
+    throw new Error(
+      'getBezierControlPointforGrowthAnimation is only supported by DoubleArrow'
+    );
+  }
+
+  startGrowthAnimation(opts: GrowthAnimationOpts) {    const { duration = 2000, delay = 0, callback } = opts || {};
     if (this.state === 'hidden' || this.state != 'static') {
       return;
     }
@@ -687,7 +699,7 @@ export default class Base {
       let movingPointIndex = 0;
       this.viewer.clock.shouldAnimate = true;
 
-      const frameListener = (clock) => {
+      const frameListener = (_clock) => {
         const currentTime = Date.now();
         const elapsedTime = currentTime - startTime;
         if (elapsedTime >= duration) {
@@ -736,7 +748,7 @@ export default class Base {
       let startTime = Date.now();
       this.viewer.clock.shouldAnimate = true;
 
-      const frameListener = (clock) => {
+      const frameListener = (_clock) => {
         const currentTime = Date.now();
         const elapsedTime = currentTime - startTime;
         if (elapsedTime >= duration) {
@@ -847,7 +859,7 @@ export default class Base {
     return this.entityId === id;
   }
 
-  addPoint(cartesian: CesiumTypeOnly.Cartesian3) {
+  addPoint(_cartesian: CesiumTypeOnly.Cartesian3) {
     //Abstract method that must be implemented by subclasses.
   }
 
@@ -856,11 +868,11 @@ export default class Base {
     return [new this.cesium.Cartesian3()];
   }
 
-  updateMovingPoint(cartesian: CesiumTypeOnly.Cartesian3, index?: number) {
+  updateMovingPoint(_cartesian: CesiumTypeOnly.Cartesian3, _index?: number) {
     //Abstract method that must be implemented by subclasses.
   }
 
-  updateDraggingPoint(cartesian: CesiumTypeOnly.Cartesian3, index: number) {
+  updateDraggingPoint(_cartesian: CesiumTypeOnly.Cartesian3, _index: number) {
     //Abstract method that must be implemented by subclasses.
   }
 

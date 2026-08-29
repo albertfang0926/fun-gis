@@ -2,11 +2,10 @@
 import { Cartesian3 } from "cesium"
 
 import Base from "../base"
-import { PolygonStyle } from "../src/interface"
+import { PolygonStyle } from "../interface"
 
 export default class FreehandLine extends Base {
   points: Cartesian3[] = []
-  freehand: boolean
 
   constructor(cesium: any, viewer: any, style?: PolygonStyle) {
     super(cesium, viewer, style)

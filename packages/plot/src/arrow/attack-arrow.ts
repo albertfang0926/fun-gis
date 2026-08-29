@@ -7,12 +7,12 @@ import * as Utils from "../utils"
 
 export default class AttackArrow extends Base {
   points: Cartesian3[] = []
-  headHeightFactor: number
-  headWidthFactor: number
-  neckHeightFactor: number
-  neckWidthFactor: number
+  declare headHeightFactor: number
+  declare headWidthFactor: number
+  declare neckHeightFactor: number
+  declare neckWidthFactor: number
   headTailFactor: number
-  minPointsForShape: number
+  declare minPointsForShape: number
 
   constructor(cesium: any, viewer: any, style?: PolygonStyle) {
     super(cesium, viewer, style)

@@ -7,11 +7,11 @@ import SquadCombat from "./squad-combat"
 
 export default class SwallowtailSquadCombat extends SquadCombat {
   points: Cartesian3[] = []
-  headHeightFactor: number
-  headWidthFactor: number
-  neckHeightFactor: number
-  neckWidthFactor: number
-  tailWidthFactor: number
+  declare headHeightFactor: number
+  declare headWidthFactor: number
+  declare neckHeightFactor: number
+  declare neckWidthFactor: number
+  declare tailWidthFactor: number
   swallowTailFactor: number
 
   constructor(cesium: any, viewer: any, style?: PolygonStyle) {

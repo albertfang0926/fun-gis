@@ -7,8 +7,11 @@ export type PolygonStyle = {
   outlineMaterial?: CesiumTypeOnly.MaterialProperty | CesiumTypeOnly.Color;
 };
 
+/** 平面坐标点 [x, y] */
+export type Point = [number, number];
+
 export type LineStyle = {
-  material?: CesiumTypeOnly.Color;
+  material?: CesiumTypeOnly.MaterialProperty | CesiumTypeOnly.Color;
   lineWidth?: number;
 };
 

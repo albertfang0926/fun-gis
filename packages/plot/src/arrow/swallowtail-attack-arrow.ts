@@ -1,18 +1,18 @@
 // @ts-ignore
 import { Cartesian3 } from "cesium"
 
-import { PolygonStyle } from "../src/interface"
+import { PolygonStyle } from "../interface"
 import * as Utils from "../utils"
 import AttackArrow from "./attack-arrow"
 
 export default class SwallowtailAttackArrow extends AttackArrow {
   points: Cartesian3[] = []
-  headHeightFactor: number
-  headWidthFactor: number
-  neckHeightFactor: number
-  neckWidthFactor: number
-  headTailFactor: number
-  tailWidthFactor: number
+  declare headHeightFactor: number
+  declare headWidthFactor: number
+  declare neckHeightFactor: number
+  declare neckWidthFactor: number
+  declare headTailFactor: number
+  declare tailWidthFactor: number
   swallowTailFactor: number
   swallowTailPnt: [number, number]
 

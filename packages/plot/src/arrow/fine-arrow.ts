@@ -9,12 +9,12 @@ export default class FineArrow extends Base {
   points: Cartesian3[] = []
   arrowLengthScale: number = 5
   maxArrowLength: number = 2
-  tailWidthFactor: number
-  neckWidthFactor: number
-  headWidthFactor: number
-  headAngle: number
-  neckAngle: number
-  minPointsForShape: number
+  declare tailWidthFactor: number
+  declare neckWidthFactor: number
+  declare headWidthFactor: number
+  declare headAngle: number
+  declare neckAngle: number
+  declare minPointsForShape: number
 
   constructor(cesium: any, viewer: any, style?: PolygonStyle) {
     super(cesium, viewer, style)

@@ -7,7 +7,6 @@ import * as Utils from "../utils"
 
 export default class Circle extends Base {
   points: Cartesian3[] = []
-  freehand: boolean
 
   constructor(cesium: any, viewer: any, style?: PolygonStyle) {
     super(cesium, viewer, style)

@@ -10,13 +10,13 @@ export default class DoubleArrow extends Base {
   points: Cartesian3[] = []
   arrowLengthScale: number = 5
   maxArrowLength: number = 2
-  neckWidthFactor: number
-  headWidthFactor: number
-  headHeightFactor: number
-  neckHeightFactor: number
+  declare neckWidthFactor: number
+  declare headWidthFactor: number
+  declare headHeightFactor: number
+  declare neckHeightFactor: number
   connPoint: Position
   tempPoint4: Position
-  minPointsForShape: number
+  declare minPointsForShape: number
   llBodyPnts: Position[] = []
   rrBodyPnts: Position[] = []
   curveControlPointLeft: Cartesian3

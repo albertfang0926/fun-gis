@@ -7,11 +7,11 @@ import AttackArrow from "./attack-arrow"
 
 export default class SquadCombat extends AttackArrow {
   points: Cartesian3[] = []
-  headHeightFactor: number
-  headWidthFactor: number
-  neckHeightFactor: number
-  neckWidthFactor: number
-  tailWidthFactor: number
+  declare headHeightFactor: number
+  declare headWidthFactor: number
+  declare neckHeightFactor: number
+  declare neckWidthFactor: number
+  declare tailWidthFactor: number
 
   constructor(cesium: any, viewer: any, style?: PolygonStyle) {
     super(cesium, viewer, style)
