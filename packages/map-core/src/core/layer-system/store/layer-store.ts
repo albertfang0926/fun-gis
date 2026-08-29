@@ -1,10 +1,7 @@
 import { EventEmitter } from "../../event"
 import { LayerModel } from "../model/layer-model"
 import { LayerTreeNode } from "../model/layer-tree-node"
-import {
-  ILayerStoreSnapshot,
-  ILayerTreeNodeSnapshot
-} from "../types"
+import { ILayerStoreSnapshot, ILayerTreeNodeSnapshot } from "../types"
 
 export class LayerStore extends EventEmitter {
   private models: Map<string, LayerModel> = new Map()
@@ -84,11 +81,7 @@ export class LayerStore extends EventEmitter {
 
   // ─── 树操作 ───────────────────────────────────────────────
 
-  moveLayer(
-    id: string,
-    newParentId: string | null,
-    newIndex?: number
-  ): void {
+  moveLayer(id: string, newParentId: string | null, newIndex?: number): void {
     const model = this.models.get(id)
     const treeNode = this.tree.get(id)
     if (!model || !treeNode) return
@@ -186,10 +179,12 @@ export class LayerStore extends EventEmitter {
       dataSourceType: model.dataSourceType,
       visible: model.visible,
       parentId: node.parentId,
-      children: node.childrenIds.map((childId) => {
-        const childNode = this.tree.get(childId)
-        return childNode ? this.buildSnapshot(childNode) : null!
-      }).filter(Boolean)
+      children: node.childrenIds
+        .map((childId) => {
+          const childNode = this.tree.get(childId)
+          return childNode ? this.buildSnapshot(childNode) : null!
+        })
+        .filter(Boolean)
     }
   }
 

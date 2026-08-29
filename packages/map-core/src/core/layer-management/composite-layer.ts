@@ -1,4 +1,5 @@
-import { CompositeType,DataManager } from "../data-manager"
+import { CompositeType, DataManager } from "@fun-gis/entity-manager"
+
 import { BaseLayer, LayerOptions } from "./base-layer"
 
 export interface CompositeLayerOptions extends LayerOptions {

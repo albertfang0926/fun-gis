@@ -23,7 +23,10 @@ export class CompositeVisualizer extends BaseVisualizer<CompositeEntity> {
     )
   }
 
-  updateStyle(compositeEntity: CompositeEntity, style: Record<string, any>): void {
+  updateStyle(
+    compositeEntity: CompositeEntity,
+    style: Record<string, any>
+  ): void {
     const visualizer = this.visualizers.get(compositeEntity.type)
     if (!visualizer) return
 

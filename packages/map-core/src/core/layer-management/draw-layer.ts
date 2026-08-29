@@ -1,4 +1,5 @@
-import { DataManager } from "../data-manager"
+import { DataManager } from "@fun-gis/entity-manager"
+
 import { BaseLayer, LayerOptions } from "./base-layer"
 
 export interface DrawLayerOptions extends LayerOptions {

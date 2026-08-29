@@ -1,7 +1,7 @@
 /** @deprecated 使用 layer-system 模块中的 LayerManager 替代 */
+import { DataManager } from "@fun-gis/entity-manager"
 import { Scene } from "cesium"
 
-import { DataManager } from "../data-manager"
 import { EventEmitter } from "../event"
 import { BaseLayer, LayerOptions } from "./base-layer"
 import { CompositeLayer, CompositeLayerOptions } from "./composite-layer"

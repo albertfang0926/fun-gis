@@ -1,4 +1,4 @@
-import { Cartesian3, Color,Entity } from "cesium"
+import { Cartesian3, Color, Entity } from "cesium"
 
 import { DrawEntity, DrawType } from "../data-manager"
 import { BaseVisualizer, VisualizerOptions } from "./base-visualizer"

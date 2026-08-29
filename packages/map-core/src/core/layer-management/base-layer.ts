@@ -1,4 +1,5 @@
-import { DataManager } from "../data-manager"
+import { DataManager } from "@fun-gis/entity-manager"
+
 import { EventEmitter } from "../event"
 
 /** @deprecated 使用 layer-system 模块中的 LayerModel 替代 */

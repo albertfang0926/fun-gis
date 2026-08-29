@@ -1,11 +1,12 @@
+import { DataManager } from "@fun-gis/entity-manager"
 import { Viewer } from "cesium"
 
-import { DataManager } from "../../data-manager"
 import { LayerDataSourceType } from "../constants"
 import {
   IEntitySourceConfig,
   ILayerFilterState,
-  ILayerSourceConfig} from "../types"
+  ILayerSourceConfig
+} from "../types"
 import { BaseLayerProvider } from "./base-provider"
 
 export class EntityLayerProvider extends BaseLayerProvider {
