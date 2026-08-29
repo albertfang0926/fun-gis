@@ -6,16 +6,27 @@ workspaces. Goal is reusable, publishable packages plus demo apps.
 
 ## Workspace layout
 
-- `packages/draw` (`@fun-gis/draw`) — drawing/plotting library. Sources in
-  `src/drawMethods/` (core/, middleware/, manager/, widgets/, utils/). Has its
-  own `playground/` and split configs: `vite.dev.config.ts` (dev server, port
-  9151, mars3d plugin) vs `vite.lib.config.ts` (ES lib build + dts). Exports
-  `./style` CSS alongside JS.
+- `packages/draw` (`@fun-gis/draw`) — the publishable drawing/plotting
+  library. **One unified facade `DrawTool`** (`src/drawTool/`: registry +
+  activate/deactivate + events `drawStart/drawUpdate/drawEnd/editStart/
+  editEnd`) dispatches to two rendering backends:
+  - `src/drawMethods/` — primitive-based shapes (core/, middleware/,
+    manager/itemManager, widgets/, utils/), 14 shapes, drag & context menu.
+  - `src/plot/` — Entity + CallbackProperty military/geometric shapes
+    (absorbed from the retired `@fun-gis/plot` package, 19 shapes, control
+    point editing & growth animations). `CesiumPlot.createGeometryFromData`
+    facade kept in `src/plot/index.ts`.
+  - Legacy v1 class exports (14 middleware classes + `itemManager`) are kept
+    but marked `@deprecated` — prefer `drawTool.activate(shapeType)`.
+  - Has its own `playground/` and split configs: `vite.dev.config.ts` (dev
+    server, port 9151, vite-plugin-cesium) vs `vite.lib.config.ts` (ES lib
+    build + dts). Exports `./style` CSS alongside JS. Cesium/vue are
+    peerDependencies.
 - `packages/map-core` (`@fun-gis/map-core`, private) — Cesium viewer wrapper:
-  `src/core/` (init, camera, events, layer system), `src/components/` (e.g.
-  `CesiumViewer`), `src/config/`, `src/types/`.
-- `packages/plot` (`@fun-gis/plot`, private) — standalone military/geometric
-  plotting (arrows, polygons, curves).
+  `src/core/` (init, camera, events, layer system, data-manager +
+  visualization registry), `src/config/`, `src/types/`. Its old `core/draw`,
+  `core/draw.ts` and vendored `core/plot` were removed — drawing now lives
+  only in `@fun-gis/draw`.
 - `packages/panoramic-photo` (`@fun-gis/panoramic-photo`, private) — panorama
   viewer (photo-sphere-viewer + EXIF orientation).
 - `packages/effect` — work in progress; only `VolumeBar.vue`, no package.json.
@@ -29,18 +40,22 @@ workspaces. Goal is reusable, publishable packages plus demo apps.
   root no longer has `vite.config.ts`, `tsconfig.app.json`, or `src/`. Work
   per package instead:
   - `pnpm -F @fun-gis/draw dev|build`, `pnpm -F @fun-gis/map-core dev|build`
-  - `pnpm -F @fun-gis/plot dev|build`, `pnpm -F @fun-gis/panoramic-photo dev|build`
+  - `pnpm -F @fun-gis/panoramic-photo dev|build`
   - `pnpm -F playground dev`, `pnpm -F gh-pages-demo build`
   - Each package type-checks as part of its `build` (vue-tsc/tsc).
 - `pnpm lint` (root) — ESLint flat config in `eslint.config.ts`, auto-fixes.
+  Note: `packages/draw` carries a large backlog of pre-existing lint errors
+  (`no-explicit-any`, unused vars) — lint is not a green gate there yet.
 - No test framework is configured anywhere.
 
 ## Gotchas
 
-- `packages/plot` intentionally uses **rolldown-vite**
-  (`"vite": "npm:rolldown-vite@7.2.5"` alias + pnpm override) and pins
-  **cesium 1.107.2** while root/apps use cesium ^1.133.1 — do not "fix" either.
-- Cesium is duplicated across workspace versions; keep imports per-package.
+- Cesium versions: draw/map-core/root use cesium ^1.133+ (draw publishes it
+  as a peerDependency). Never reintroduce `mars3d` / `mars3d-cesium` into
+  `packages/draw` — it was fully removed.
+- Entity-based plotting uses `CallbackProperty` and `viewer.clock.onTick`;
+  under `requestRenderMode: true` (map-core default) frames must be
+  requested manually or animations won't advance.
 - Never commit API keys/tokens (a secret was already purged from remote
   history once — commit `ded3bab`).
 - Always destroy Cesium viewers/resources to avoid leaks; Cesium uses radians
@@ -53,17 +68,18 @@ workspaces. Goal is reusable, publishable packages plus demo apps.
   **errors** — keep imports sorted when editing.
 - Naming: kebab-case files, PascalCase components, camelCase functions,
   UPPER_SNAKE_CASE constants, `I`-prefixed interfaces (e.g. `IMapOptions`).
-- Vue: Composition API with `<script setup>`; Less for styling; Ant Design
-  Vue via unplugin auto-import resolvers in draw's configs.
+- Vue: Composition API with `<script setup>`; Less for styling. The draw
+  package has no runtime antd dependency (its context menu is plain DOM).
 - Commits: Conventional Commits with Chinese subjects (`feat: 新增xxx`).
 - New features: implement in the right package, export from its `index.ts`,
   and add a demo page in `apps/playground/` (or the package's own playground).
 
 ## References & caveats
 
-- Package rename history: the old `@f-cesium/*` packages and `@fesium/core`
-  were removed (commit `31dd7f3`); the core Cesium wrapper now lives only in
-  `@fun-gis/map-core`. Expect the old names in older branches or code.
+- Package history: old `@f-cesium/*` / `@fesium/core` removed (commit
+  `31dd7f3`); `@fun-gis/plot` merged into `@fun-gis/draw` as `src/plot/`
+  (branch `refactor/draw-unification`). Expect the old names in older
+  branches or code.
 - `CLAUDE.md` and `.cursor/rules/*.mdc` have deeper architecture notes but
   can lag behind the real `packages/` layout — verify paths against the
   actual `package.json`s.
