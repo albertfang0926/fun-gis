@@ -4,14 +4,13 @@ import { Cartesian3 } from "cesium"
 import Base from "../base"
 import { PolygonStyle } from "../interface"
 
-export default class FreehandPolygon extends Base {
+export default class Polygon extends Base {
   points: Cartesian3[] = []
 
-  constructor(cesium: any, viewer: any, style?: PolygonStyle) {
-    super(cesium, viewer, style)
-    this.cesium = cesium
-    this.freehand = true
+  constructor(viewer: CesiumTypeOnly.Viewer, style?: PolygonStyle) {
+    super(viewer, style)
     this.setState("drawing")
+    this.onDoubleClick()
   }
 
   getType(): "polygon" | "line" {
@@ -25,8 +24,6 @@ export default class FreehandPolygon extends Base {
     this.points.push(cartesian)
     if (this.points.length === 1) {
       this.onMouseMove()
-    } else if (this.points.length > 2) {
-      this.finishDrawing()
     }
   }
 
@@ -34,11 +31,13 @@ export default class FreehandPolygon extends Base {
    * Draw a shape based on mouse movement points during the initial drawing.
    */
   updateMovingPoint(cartesian: Cartesian3) {
-    this.points.push(cartesian)
-    if (this.points.length > 2) {
-      this.setGeometryPoints(this.points)
+    const tempPoints = [...this.points, cartesian]
+    this.setGeometryPoints(tempPoints)
+    if (tempPoints.length === 2) {
+      this.addTempLine()
+    } else {
+      this.removeTempLine()
       this.drawPolygon()
-      this.eventDispatcher.dispatchEvent("drawUpdate", cartesian)
     }
   }
 

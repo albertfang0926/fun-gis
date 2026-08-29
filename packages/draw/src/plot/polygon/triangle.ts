@@ -4,14 +4,12 @@ import { Cartesian3 } from "cesium"
 import Base from "../base"
 import { PolygonStyle } from "../interface"
 
-export default class Polygon extends Base {
+export default class Triangle extends Base {
   points: Cartesian3[] = []
 
-  constructor(cesium: any, viewer: any, style?: PolygonStyle) {
-    super(cesium, viewer, style)
-    this.cesium = cesium
+  constructor(viewer: CesiumTypeOnly.Viewer, style?: PolygonStyle) {
+    super(viewer, style)
     this.setState("drawing")
-    this.onDoubleClick()
   }
 
   getType(): "polygon" | "line" {
@@ -25,6 +23,8 @@ export default class Polygon extends Base {
     this.points.push(cartesian)
     if (this.points.length === 1) {
       this.onMouseMove()
+    } else if (this.points.length === 3) {
+      this.finishDrawing()
     }
   }
 

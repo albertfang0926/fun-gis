@@ -3,15 +3,12 @@ import { Cartesian3 } from "cesium"
 
 import Base from "../base"
 import { PolygonStyle } from "../interface"
-import * as Utils from "../utils"
 
-export default class Circle extends Base {
+export default class Rectangle extends Base {
   points: Cartesian3[] = []
 
-  constructor(cesium: any, viewer: any, style?: PolygonStyle) {
-    super(cesium, viewer, style)
-    this.cesium = cesium
-    this.freehand = true
+  constructor(viewer: CesiumTypeOnly.Viewer, style?: PolygonStyle) {
+    super(viewer, style)
     this.setState("drawing")
   }
 
@@ -52,30 +49,10 @@ export default class Circle extends Base {
   }
 
   createGraphic(positions: Cartesian3[]) {
-    const lnglatPoints = positions.map((pnt) => {
-      return this.cartesianToLnglat(pnt)
-    })
-    const center = lnglatPoints[0]
-    const pnt2 = lnglatPoints[1]
-
-    const radius = Utils.MathDistance(center, pnt2)
-
-    const res = this.generatePoints(center, radius)
-    const temp = [].concat(...res)
-    const cartesianPoints = this.cesium.Cartesian3.fromDegreesArray(temp)
+    const [p1, p2] = positions.map(this.cartesianToLnglat)
+    const coords = [...p1, p1[0], p2[1], ...p2, p2[0], p1[1], ...p1]
+    const cartesianPoints = this.cesium.Cartesian3.fromDegreesArray(coords)
     return cartesianPoints
-  }
-
-  generatePoints(center, radius) {
-    let x, y, angle
-    const points = []
-    for (let i = 0; i <= 100; i++) {
-      angle = (Math.PI * 2 * i) / 100
-      x = center[0] + radius * Math.cos(angle)
-      y = center[1] + radius * Math.sin(angle)
-      points.push([x, y])
-    }
-    return points
   }
 
   getPoints() {

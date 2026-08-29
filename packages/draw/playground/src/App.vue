@@ -7,7 +7,7 @@
 import * as Cesium from "cesium"
 import { onMounted, provide, ref, shallowRef } from "vue"
 
-import { itemManager } from "../../src/drawMethods/manager/primitive"
+import { drawTool } from "../../src/drawTool"
 // components
 import DemoPanel from "./components/demoPanel.vue"
 
@@ -38,7 +38,7 @@ onMounted(() => {
   viewer.value = cesiumViewer
   mapMounted.value = true
 
-  itemManager.init(cesiumViewer)
+  drawTool.init(cesiumViewer)
 })
 </script>
 

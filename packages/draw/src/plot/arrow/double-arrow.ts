@@ -23,9 +23,8 @@ export default class DoubleArrow extends Base {
   curveControlPointRight: Cartesian3
   isClockWise: boolean
 
-  constructor(cesium: any, viewer: any, style?: PolygonStyle) {
-    super(cesium, viewer, style)
-    this.cesium = cesium
+  constructor(viewer: CesiumTypeOnly.Viewer, style?: PolygonStyle) {
+    super(viewer, style)
     this.headHeightFactor = 0.25
     this.headWidthFactor = 0.3
     this.neckHeightFactor = 0.85

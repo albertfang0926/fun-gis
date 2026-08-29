@@ -7,9 +7,8 @@ import { PolygonStyle } from "../interface"
 export default class FreehandLine extends Base {
   points: Cartesian3[] = []
 
-  constructor(cesium: any, viewer: any, style?: PolygonStyle) {
-    super(cesium, viewer, style)
-    this.cesium = cesium
+  constructor(viewer: CesiumTypeOnly.Viewer, style?: PolygonStyle) {
+    super(viewer, style)
     this.freehand = true
     this.setState("drawing")
   }

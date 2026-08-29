@@ -5,12 +5,11 @@ import Base from "../base"
 import { PolygonStyle } from "../interface"
 import * as Utils from "../utils"
 
-export default class Lune extends Base {
+export default class Circle extends Base {
   points: Cartesian3[] = []
 
-  constructor(cesium: any, viewer: any, style?: PolygonStyle) {
-    super(cesium, viewer, style)
-    this.cesium = cesium
+  constructor(viewer: CesiumTypeOnly.Viewer, style?: PolygonStyle) {
+    super(viewer, style)
     this.freehand = true
     this.setState("drawing")
   }
@@ -26,8 +25,7 @@ export default class Lune extends Base {
     this.points.push(cartesian)
     if (this.points.length === 1) {
       this.onMouseMove()
-    } else if (this.points.length === 2) {
-    } else if (this.points.length > 2) {
+    } else if (this.points.length > 1) {
       this.finishDrawing()
     }
   }
@@ -56,42 +54,27 @@ export default class Lune extends Base {
     const lnglatPoints = positions.map((pnt) => {
       return this.cartesianToLnglat(pnt)
     })
+    const center = lnglatPoints[0]
+    const pnt2 = lnglatPoints[1]
 
-    if (lnglatPoints.length === 2) {
-      const mid = Utils.Mid(lnglatPoints[0], lnglatPoints[1])
-      const d = Utils.MathDistance(lnglatPoints[0], mid)
-      const pnt = Utils.getThirdPoint(
-        lnglatPoints[0],
-        mid,
-        Math.PI / 2,
-        d,
-        false
-      )
-      lnglatPoints.push(pnt)
-    }
-    let [pnt1, pnt2, pnt3, startAngle, endAngle] = [
-      lnglatPoints[0],
-      lnglatPoints[1],
-      lnglatPoints[2],
-      undefined,
-      undefined
-    ]
-    const center = Utils.getCircleCenterOfThreePoints(pnt1, pnt2, pnt3)
-    const radius = Utils.MathDistance(pnt1, center)
-    const angle1 = Utils.getAzimuth(pnt1, center)
-    const angle2 = Utils.getAzimuth(pnt2, center)
-    if (Utils.isClockWise(pnt1, pnt2, pnt3)) {
-      startAngle = angle2
-      endAngle = angle1
-    } else {
-      startAngle = angle1
-      endAngle = angle2
-    }
+    const radius = Utils.MathDistance(center, pnt2)
 
-    const points = Utils.getArcPoints(center, radius, startAngle, endAngle)
-    const temp = [].concat(...points)
+    const res = this.generatePoints(center, radius)
+    const temp = [].concat(...res)
     const cartesianPoints = this.cesium.Cartesian3.fromDegreesArray(temp)
     return cartesianPoints
+  }
+
+  generatePoints(center, radius) {
+    let x, y, angle
+    const points = []
+    for (let i = 0; i <= 100; i++) {
+      angle = (Math.PI * 2 * i) / 100
+      x = center[0] + radius * Math.cos(angle)
+      y = center[1] + radius * Math.sin(angle)
+      points.push([x, y])
+    }
+    return points
   }
 
   getPoints() {
