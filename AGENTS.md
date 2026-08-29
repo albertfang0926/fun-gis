@@ -20,27 +20,41 @@ workspaces. Goal is reusable, publishable packages plus demo apps.
     but marked `@deprecated` — prefer `drawTool.activate(shapeType)`.
   - Has its own `playground/` and split configs: `vite.dev.config.ts` (dev
     server, port 9151, vite-plugin-cesium) vs `vite.lib.config.ts` (ES lib
-    build + dts). Exports `./style` CSS alongside JS. Cesium/vue are
-    peerDependencies.
+    build + dts). Exports `./style` CSS alongside JS. Cesium is the only
+    peerDependency — vue was fully decoupled (the built-in context menu is
+    plain DOM, `widgets/contextMenu/defaultPanel.ts`; users needing a
+    framework-rendered menu pass a `ContextMenuPanelFactory` to
+    `itemManager.updateMenuContext`).
+- `packages/entity-manager` (`@fun-gis/entity-manager`) — publishable-shaped,
+  framework-agnostic (cesium is the only peerDependency, no vue): `DataManager`
+  (entity factory/registry + events) and the visualizer registry
+  (`BaseVisualizer`/`DrawVisualizer`/`CompositeVisualizer`). Extracted from
+  map-core's former `core/data-manager` + `core/visualization`; map-core
+  consumes it via `workspace:*`.
 - `packages/map-core` (`@fun-gis/map-core`, private) — Cesium viewer wrapper:
-  `src/core/` (init, camera, events, layer system, data-manager +
-  visualization registry), `src/config/`, `src/types/`. Its old `core/draw`,
-  `core/draw.ts` and vendored `core/plot` were removed — drawing now lives
-  only in `@fun-gis/draw`.
+  `src/core/` (init, camera, events, layer system), `src/config/`,
+  `src/types/`. Its old `core/draw`, `core/draw.ts` and vendored `core/plot`
+  were removed — drawing now lives only in `@fun-gis/draw`; entity
+  management now lives only in `@fun-gis/entity-manager`.
 - `packages/panoramic-photo` (`@fun-gis/panoramic-photo`, private) — panorama
-  viewer (photo-sphere-viewer + EXIF orientation).
+  viewer (photo-sphere-viewer + EXIF orientation). Lib source in `src/`
+  (component + EXIF utils), demo in its own `playground/`; split configs
+  like draw (`vite.dev.config.ts` dev server port 9152 vs lib build + dts).
+  Exports `./style` CSS alongside JS.
 - `packages/effect` — work in progress; only `VolumeBar.vue`, no package.json.
-- `apps/playground`, `apps/gh-pages-demo` — demo apps; the latter deploys to
-  GitHub Pages via root `pnpm predeploy && pnpm deploy`.
+- `apps/playground`, `apps/gh-pages-demo` — demo apps; the latter is the
+  unified online demo for the three publishable packages (draw 标绘 /
+  entity-manager 实体管理 / panoramic-photo 全景, tab-switched, deploy to
+  GitHub Pages via root `pnpm predeploy && pnpm deploy`).
 
 ## Commands
 
 - **pnpm only** (enforced by `preinstall` via `only-allow`).
 - Per-package work (root no longer owns app scripts):
   - `pnpm -F @fun-gis/draw dev|build|test`
+  - `pnpm -F @fun-gis/entity-manager build`
   - `pnpm -F @fun-gis/map-core dev|build`
-  - `pnpm -F @fun-gis/panoramic-photo dev|build` (build currently broken —
-    the package has no `src/`, sources live in `playground/`)
+  - `pnpm -F @fun-gis/panoramic-photo dev|build`
   - `pnpm -F playground dev`, `pnpm -F gh-pages-demo build`
 - Versioning/publish for `@fun-gis/draw` runs through changesets:
   `pnpm changeset` → `pnpm version` → `pnpm release`; GitHub Pages demo
