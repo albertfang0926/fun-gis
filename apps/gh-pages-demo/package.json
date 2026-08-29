@@ -13,6 +13,8 @@
   "dependencies": {
     "vue": "^3.5.22",
     "@fun-gis/draw": "workspace:*",
+    "@fun-gis/entity-manager": "workspace:*",
+    "@fun-gis/panoramic-photo": "workspace:*",
     "cesium": "^1.133.1"
   },
   "devDependencies": {
