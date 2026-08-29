@@ -1,0 +1,32 @@
+// 内置右键菜单样式，通过挂载节点 id 限定作用范围
+#context-menu {
+  .container {
+    display: grid;
+    width: 100px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    color: #fff;
+    padding: 0px 8px;
+    cursor: default;
+
+    .option {
+      display: grid;
+      row-gap: 2px;
+      padding-left: 2px;
+      margin: 2px 0px 2px;
+      justify-content: start;
+      align-content: center;
+      width: 100%;
+      border-bottom: solid rgba(255, 255, 255, 0.3) 1px;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}

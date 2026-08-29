@@ -35,8 +35,7 @@
   "author": "giser",
   "license": "ISC",
   "peerDependencies": {
-    "cesium": "^1.133.1",
-    "vue": "^3.4.0"
+    "cesium": "^1.133.1"
   },
   "dependencies": {
     "@turf/turf": "^7.2.0",

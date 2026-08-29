@@ -1,9 +1,9 @@
 // components
 // types
 import type { Viewer } from "cesium"
-import type { Component } from "vue"
 
-import contextMenuPanel from "../widgets/contextMenu/contextMenu.vue"
+import type { ContextMenuPanelFactory } from "../types/contextMenu"
+import { createDefaultContextMenuPanel } from "../widgets/contextMenu/defaultPanel"
 
 /**
  * 绘制实体的管理器
@@ -11,7 +11,7 @@ import contextMenuPanel from "../widgets/contextMenu/contextMenu.vue"
 class ItemManager {
   private _viewer: Viewer
   private items: Map<string, any>
-  component: Component = contextMenuPanel
+  menuPanel: ContextMenuPanelFactory = createDefaultContextMenuPanel
 
   constructor() {
     this.items = new Map()
@@ -29,8 +29,8 @@ class ItemManager {
     return this._viewer
   }
 
-  public updateMenuContext(component: Component) {
-    this.component = component
+  public updateMenuContext(panel: ContextMenuPanelFactory) {
+    this.menuPanel = panel
   }
 
   /**

@@ -12,8 +12,6 @@ import { itemManager } from "../../manager/primitive"
 import type { I_ContextMenu } from "../../types/contextMenu"
 import ContextMenuManager from "../../widgets/contextMenu/contextMenu"
 import type { BaseEntity } from "../baseEntity"
-// components
-// import ContextMenuPanel from "../../widgets/contextMenu/contextMenu.vue"
 import { helperPrimitives } from "./dragHelper"
 
 interface I_Graphic {
@@ -58,8 +56,7 @@ function onRightClick<T extends I_Graphic>(
       if (graphic.contextMenu.length > 0) {
         setTimeout(() => {
           contextMenu.open(
-            itemManager.component,
-            { graphic: graphic, content: graphic.contextMenu },
+            itemManager.menuPanel(graphic, graphic.contextMenu),
             { clientX: winPosition.x, clientY: winPosition.y }
           )
           graphic.viewer.scene.postRender.addEventListener(() => {

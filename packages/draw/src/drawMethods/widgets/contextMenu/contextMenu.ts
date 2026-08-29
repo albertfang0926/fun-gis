@@ -1,5 +1,4 @@
 import { Cartesian2 } from "cesium"
-import { Component, createApp, createVNode, render } from "vue"
 
 export interface ContextMenuItem {
   key: string
@@ -72,7 +71,6 @@ export default class ContextMenuManager {
     this.close = () => {
       const child = this._mountNode.querySelector("#context-menu")
       if (child) {
-        render(null, child)
         this._mountNode.removeChild(child)
       }
       this._triggerEvent("AFTER_CLOSE")
@@ -96,21 +94,13 @@ export default class ContextMenuManager {
 
   /**
    * 打开自定义的右键菜单
-   * @param component 右键菜单组件
-   * @param props 右键菜单组件属性
+   * @param panel 右键菜单面板的 DOM 元素（由调用方构建，内容完全自定义）
    * @param position 右键菜单位置
    */
-  open(
-    component: Component,
-    props: any,
-    position: { clientX: number; clientY: number }
-  ) {
+  open(panel: HTMLElement, position: { clientX: number; clientY: number }) {
     // 确保同时只能打开一个右键弹窗
     this.close()
-    // 创建虚拟节点
-    const instance = createVNode(component, props) // createVNode(component, props)
     // 创建弹窗的挂载节点
-    // vue3中应用的实例不会替换挂载节点，而是替换挂载节点的所有子节点，所以需要自行创建挂载节点
     this.div = document.createElement("div")
     const div = this.div
     div.setAttribute("id", "context-menu")
@@ -119,12 +109,7 @@ export default class ContextMenuManager {
     div.style.setProperty("top", "0px")
     div.style.setProperty("z-index", "99")
     this._mountNode.appendChild(div)
-    // 挂载节点
-    render(instance, div)
-    const el = instance.el
-    if (!el) {
-      return undefined
-    }
+    div.appendChild(panel)
     // 调整右键菜单的位置，保证能完整显示菜单内容
     const menuWidth = div.clientWidth
     const menuHeight = div.clientHeight
@@ -196,6 +181,7 @@ export default class ContextMenuManager {
     this.close()
     this._events.AFTER_CLOSE = []
     this._events.AFTER_OPEN = []
-    document.removeEventListener("mousedown", this.close)
+    document.removeEventListener("click", this.close)
+    this._mountNode.remove()
   }
 }

@@ -17,11 +17,13 @@
 npm i @fun-gis/draw
 ```
 
-peer 依赖需要宿主自行安装：
+唯一 peer 依赖需要宿主自行安装：
 
 ```bash
-npm i cesium@^1.133 vue@^3
+npm i cesium@^1.133
 ```
+
+库核心零前端框架依赖（内置右键菜单为纯 DOM 实现），Vue/React 宿主均可直接使用。
 
 ## 快速上手
 
@@ -78,6 +80,26 @@ drawTool.registerShape("AttackArrow", {
 | `drawEnd`    | 图形绘制完成                    | `{ shape, instance, data }` |
 | `editStart`  | 进入编辑（entity 系拖拽控制点） | `{ shape, data }`           |
 | `editEnd`    | 退出编辑                        | `{ shape, data }`           |
+
+## 自定义右键菜单
+
+右键菜单默认由纯 DOM 面板渲染，也可以传入自己的面板工厂（在任何框架里挂载
+你的组件均可）：
+
+```ts
+import { itemManager } from "@fun-gis/draw"
+
+itemManager.updateMenuContext((graphic, content) => {
+  const el = document.createElement("div")
+  for (const option of content) {
+    const item = document.createElement("div")
+    item.textContent = option.label
+    item.addEventListener("click", () => option.callback(graphic))
+    el.appendChild(item)
+  }
+  return el
+})
+```
 
 ## 直接使用图形类
 
