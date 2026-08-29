@@ -61,9 +61,12 @@ workspaces. Goal is reusable, publishable packages plus demo apps.
 
 ## References & caveats
 
-- `CLAUDE.md` and `.cursor/rules/*.mdc` have useful architecture notes but
-  **stale package names** (`@fun-gis/*`, `@fun-gis/core`) and a `docs/` dir
-  that no longer exist — trust this file and the actual `package.json`s.
+- Package rename history: the old `@f-cesium/*` packages and `@fesium/core`
+  were removed (commit `31dd7f3`); the core Cesium wrapper now lives only in
+  `@fun-gis/map-core`. Expect the old names in older branches or code.
+- `CLAUDE.md` and `.cursor/rules/*.mdc` have deeper architecture notes but
+  can lag behind the real `packages/` layout — verify paths against the
+  actual `package.json`s.
 - Project-specific agent skills are vendored in `.agents/skills/`
   (vue, pinia, vite, pnpm, unocss, vue-best-practices, ...) — locked via
   `skills-lock.json`.

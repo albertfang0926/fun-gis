@@ -18,15 +18,15 @@ The project uses pnpm workspaces to manage multiple packages and applications fo
 ## Architecture
 
 ### Workspace Structure
-- **Root**: Monorepo configuration with Vue 3 demo app
+- **Root**: Monorepo configuration only (no root app; run commands per package)
 - **apps/**: Demo applications
   - `gh-pages-demo`: Simple Vue 3 demo for GitHub Pages deployment
   - `playground`: Development playground for testing components
 - **packages/**: Reusable libraries
   - `@fun-gis/draw`: Core drawing/plotting package for GIS features (points, lines, polygons, military symbols)
-  - `@fun-gis/core`: Core Cesium wrapper with initialization, camera, layer management, and visualization
-  - `plot`: Standalone plotting library for geometric shapes and military arrows (uses rolldown-vite)
-- **docs/**: Documentation
+  - `@fun-gis/map-core`: Core Cesium wrapper with initialization, camera, layer management, and visualization
+  - `@fun-gis/plot`: Standalone plotting library for geometric shapes and military arrows (uses rolldown-vite)
+  - `@fun-gis/panoramic-photo`: Panorama photo viewer component (photo-sphere-viewer + EXIF orientation)
 
 ### Package Architecture
 
@@ -37,9 +37,9 @@ The project uses pnpm workspaces to manage multiple packages and applications fo
 - Includes `itemManager` for primitive management
 - Located in `src/drawMethods/` with subdirectories: `core/`, `middleware/`, `manager/`, `widgets/`, `utils/`
 
-**@fun-gis/core** (`packages/fun-gis/`) / **@fun-gis/map-core** (`packages/map-core/`)
+**@fun-gis/map-core** (`packages/map-core/`)
 - Core Cesium viewer wrapper and utilities
-- Modules: `initMap/` (viewer initialization), `camera/`, `event/`, `draw/`, `layer-management/` (deprecated), `data-management/`, `visualization/`
+- Modules: `initMap/` (viewer initialization), `camera/`, `event/`, `draw/`, `layer-management/` (deprecated), `data-manager/`, `visualization/`
 - **Layer System** (`layer-system/`): New comprehensive layer management with tree structure, serialization, multi-viewer sync, and filtering
   - `LayerModel`: Serializable layer state (no Cesium dependencies)
   - `LayerStore`: Shared state center supporting multi-viewer sync
@@ -50,15 +50,19 @@ The project uses pnpm workspaces to manage multiple packages and applications fo
 - Includes `plot/` subdirectory with arrow and polygon implementations (mirrors plot package)
 - Main class: `CesiumViewer` for map initialization (now includes `layerManager` property)
 
-**plot** (`packages/plot/`)
+**@fun-gis/plot** (`packages/plot/`)
 - Standalone geometric plotting library
 - Supports: arrows (attack, fine, straight, curved, double, squad-combat), polygons (circle, ellipse, rectangle, triangle, sector, lune), lines (curve, freehand)
 - Factory function: `CesiumPlot.createGeometryFromData()` for creating shapes from data
 - Uses rolldown-vite (experimental Vite with Rolldown bundler)
 
+**@fun-gis/panoramic-photo** (`packages/panoramic-photo/`)
+- Panorama photo viewer based on photo-sphere-viewer
+- Reads EXIF metadata (exifreader) to correct the initial heading to true north
+
 ### Core Technologies
 - **Frontend**: Vue 3 + TypeScript + Vite
-- **3D Mapping**: Cesium (1.107.2) + Mars3D (3.9.4) for 3D GIS visualization
+- **3D Mapping**: Cesium (^1.133.1; `@fun-gis/plot` pins 1.107.2) + Mars3D (via vite-plugin-mars3d in draw's dev config) for 3D GIS visualization
 - **Build**: Vite, with rolldown-vite for plot package
 - **Package Manager**: pnpm with workspace configuration (strictly enforced via preinstall hook)
 - **UI**: Ant Design Vue, Pinia state management, Vue Router
@@ -86,8 +90,9 @@ Each package has its own scripts in its `package.json`:
 # Work on a specific package
 pnpm -F @fun-gis/draw dev      # Start draw package dev server
 pnpm -F @fun-gis/draw build    # Build draw package
-pnpm -F plot dev                # Start plot package dev server
-pnpm -F playground dev          # Start playground app
+pnpm -F @fun-gis/plot dev      # Start plot package dev server
+pnpm -F @fun-gis/map-core dev  # Start map-core package dev server
+pnpm -F playground dev         # Start playground app
 ```
 
 ## Configuration Files
