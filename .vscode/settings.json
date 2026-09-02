@@ -1,0 +1,13 @@
+{
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    // 开启 ESLint 保存时自动修复
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "codingcopilot.enableCompletionLanguage": {
+    "scmInput": false
+  },
+}
+
