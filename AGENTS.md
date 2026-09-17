@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Personal learning/sharing monorepo for **Fang-Cesium**: Cesium-based 3D GIS
+Personal learning/sharing monorepo for **fun-gis**: Cesium-based 3D GIS
 visualization libraries (Vue 3 + TypeScript + Vite), managed with pnpm
 workspaces. Goal is reusable, publishable packages plus demo apps.
 
@@ -76,6 +76,8 @@ workspaces. Goal is reusable, publishable packages plus demo apps.
   history once — commit `ded3bab`).
 - Always destroy Cesium viewers/resources to avoid leaks; Cesium uses radians
   internally, degrees for UI. Prefer DataSource over raw Entity for large data.
+- Code should handle WebGL context loss; test WebGL support across browsers,
+  especially on mobile.
 
 ## Conventions
 
@@ -96,9 +98,11 @@ workspaces. Goal is reusable, publishable packages plus demo apps.
   `31dd7f3`); `@fun-gis/plot` merged into `@fun-gis/draw` as `src/plot/`
   (branch `refactor/draw-unification`). Expect the old names in older
   branches or code.
-- `CLAUDE.md` and `.cursor/rules/*.mdc` have deeper architecture notes but
-  can lag behind the real `packages/` layout — verify paths against the
-  actual `package.json`s.
+- `CLAUDE.md` is a one-line shim (`@AGENTS.md`) that imports this file for
+  Claude Code — maintain docs here only, never in `CLAUDE.md`.
+- `.cursor/rules/*.mdc` may have deeper architecture notes but can lag behind
+  the real `packages/` layout — verify paths against the actual
+  `package.json`s.
 - Project-specific agent skills are vendored in `.agents/skills/`
   (vue, pinia, vite, pnpm, unocss, vue-best-practices, ...) — locked via
   `skills-lock.json`.
