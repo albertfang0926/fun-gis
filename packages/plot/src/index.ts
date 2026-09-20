@@ -1,3 +1,5 @@
+import type { Cartesian3, Viewer } from "cesium"
+
 import AssaultDirection from "./arrow/assault-direction"
 import AttackArrow from "./arrow/attack-arrow"
 import CurvedArrow from "./arrow/curved-arrow"
@@ -10,12 +12,13 @@ import SwallowtailSquadCombat from "./arrow/swallowtail-squad-combat"
 import type { GeometryStyle } from "./interface"
 import Curve from "./line/curve"
 import FreehandLine from "./line/freehand-line"
+import { createFromData, placeShape } from "./plot-manager"
 import Circle from "./polygon/circle"
 import Ellipse from "./polygon/ellipse"
 import FreehandPolygon from "./polygon/freehand-polygon"
 import Lune from "./polygon/lune"
 import Polygon from "./polygon/polygon"
-import Reactangle from "./polygon/rectangle"
+import Rectangle from "./polygon/rectangle"
 import Sector from "./polygon/sector"
 import Triangle from "./polygon/triangle"
 
@@ -24,6 +27,7 @@ export type {
   EventType,
   GeometryStyle,
   LineStyle,
+  PlotData,
   Point,
   PolygonStyle,
   State
@@ -33,6 +37,7 @@ export {
   AssaultDirection,
   AttackArrow,
   Circle,
+  Curve,
   CurvedArrow,
   DoubleArrow,
   Ellipse,
@@ -41,7 +46,8 @@ export {
   FreehandPolygon,
   Lune,
   Polygon,
-  Reactangle,
+  Rectangle as Reactangle,
+  Rectangle,
   Sector,
   SquadCombat,
   StraightArrow,
@@ -50,13 +56,56 @@ export {
   Triangle
 }
 
+export type {
+  MapEventSource,
+  MoveEvent,
+  PositionEvent,
+  ScreenEventKey,
+  ScreenEventListener,
+  ScreenEventPayload
+} from "./event-source"
+export { CesiumEventSource, destroySharedEventSource, getSharedEventSource }
+
+export type { PlotEventData, PlotManagerOptions } from "./plot-manager"
+export {
+  createFromData,
+  placeShape,
+  PlotManager,
+  positionsToCartesians
+} from "./plot-manager"
+export type {
+  ShapeCategory,
+  ShapeConstructor,
+  ShapeDefinition
+} from "./registry"
+export { defaultRegistry, ShapeRegistry } from "./registry"
+
+/**
+ * 兼容旧签名:由 Cartesian3 点位直接落图(跳过交互绘制)。
+ * 落图后为 static 状态,点击图形可进入编辑。
+ * 新代码建议使用 `PlotManager.createFromData` 或 `createFromData`(经纬度)。
+ */
 export type CreateGeometryFromDataOpts = {
   type: string
-  cartesianPoints: import("cesium").Cartesian3[]
-  style: GeometryStyle
+  cartesianPoints: Cartesian3[]
+  style?: GeometryStyle
 }
 
-const CesiumPlot: any = {
+export function createGeometryFromData(
+  viewer: Viewer,
+  opts: CreateGeometryFromDataOpts
+) {
+  return placeShape(viewer, opts.type, opts.cartesianPoints, opts.style)
+}
+
+/** 按图形名索引的图形注册表(兼容旧默认导出形态) */
+export interface CesiumPlotRegistry
+  extends Record<string, import("./registry").ShapeConstructor> {
+  createGeometryFromData: typeof createGeometryFromData
+  createFromData: typeof createFromData
+}
+
+const CesiumPlot: CesiumPlotRegistry = {
   FineArrow,
   AttackArrow,
   SwallowtailAttackArrow,
@@ -71,36 +120,14 @@ const CesiumPlot: any = {
   Curve,
   Ellipse,
   Lune,
-  Reactangle,
+  Rectangle,
+  Reactangle: Rectangle,
   Triangle,
   Polygon,
   Circle,
-  Sector
+  Sector,
+  createGeometryFromData,
+  createFromData
 }
-
-/**
- * 根据点位数据生成几何图形（跳过交互绘制，直接落图）
- */
-export function createGeometryFromData(
-  viewer: any,
-  opts: CreateGeometryFromDataOpts
-) {
-  const { type, style, cartesianPoints } = opts
-  const geometry = new CesiumPlot[type](viewer, style)
-
-  geometry.points = cartesianPoints
-  const geometryPoints = geometry.createGraphic(cartesianPoints)
-  geometry.setGeometryPoints(geometryPoints)
-  if (geometry.type == "polygon") {
-    geometry.drawPolygon()
-  } else {
-    geometry.drawLine()
-  }
-  geometry.finishDrawing()
-  geometry.onClick()
-  return geometry
-}
-
-CesiumPlot.createGeometryFromData = createGeometryFromData
 
 export default CesiumPlot

@@ -2,7 +2,8 @@
 import { Cartesian3 } from "kmap-3d-engine"
 
 import Base from "../base"
-import { LineStyle } from "../interface"
+import type { MapEventSource } from "../event-source"
+import { GeometryStyle } from "../interface"
 import * as Utils from "../utils"
 
 export default class Curve extends Base {
@@ -11,8 +12,12 @@ export default class Curve extends Base {
   maxArrowLength: number = 3000000
   t: number
 
-  constructor(viewer: CesiumTypeOnly.Viewer, style?: LineStyle) {
-    super(viewer, style)
+  constructor(
+    viewer: CesiumTypeOnly.Viewer,
+    style?: GeometryStyle,
+    eventSource?: MapEventSource
+  ) {
+    super(viewer, style, eventSource)
     this.t = 0.3
     this.setState("drawing")
     this.onDoubleClick()

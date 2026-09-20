@@ -24,7 +24,21 @@ export type EventType =
   | "drawEnd"
   | "editEnd"
   | "editStart"
+  | "drawCancel"
 export type EventListener = (eventData?: any) => void
+
+/**
+ * 可序列化的图形数据(经纬度),数据驱动绘制的输入/输出契约。
+ * id 在 getData() 输出时为 Cesium 实体 id;createFromData 输入时忽略。
+ */
+export interface PlotData {
+  /** 注册表键,如 "AttackArrow" */
+  type: string
+  /** 控制(关键)点,[lng, lat] */
+  positions: Point[]
+  style?: GeometryStyle
+  id?: string
+}
 
 export type VisibleAnimationOpts = {
   duration?: number

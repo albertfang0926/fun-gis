@@ -1,7 +1,8 @@
 // @ts-ignore
 import { Cartesian3 } from "cesium"
 
-import { PolygonStyle } from "../interface"
+import type { MapEventSource } from "../event-source"
+import { GeometryStyle } from "../interface"
 import * as Utils from "../utils"
 import AttackArrow from "./attack-arrow"
 
@@ -16,8 +17,12 @@ export default class SwallowtailAttackArrow extends AttackArrow {
   swallowTailFactor: number
   swallowTailPnt: [number, number]
 
-  constructor(viewer: CesiumTypeOnly.Viewer, style: PolygonStyle) {
-    super(viewer, style)
+  constructor(
+    viewer: CesiumTypeOnly.Viewer,
+    style?: GeometryStyle,
+    eventSource?: MapEventSource
+  ) {
+    super(viewer, style, eventSource)
     this.headHeightFactor = 0.18
     this.headWidthFactor = 0.3
     this.neckHeightFactor = 0.85

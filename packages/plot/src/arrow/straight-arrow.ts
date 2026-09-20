@@ -2,7 +2,8 @@
 import { Cartesian3 } from "cesium"
 
 import Base from "../base"
-import { LineStyle } from "../interface"
+import type { MapEventSource } from "../event-source"
+import { GeometryStyle } from "../interface"
 import * as Utils from "../utils"
 
 export default class StraightArrow extends Base {
@@ -11,8 +12,12 @@ export default class StraightArrow extends Base {
   maxArrowLength: number = 3000000
   declare minPointsForShape: number
 
-  constructor(viewer: CesiumTypeOnly.Viewer, style?: LineStyle) {
-    super(viewer, style)
+  constructor(
+    viewer: CesiumTypeOnly.Viewer,
+    style?: GeometryStyle,
+    eventSource?: MapEventSource
+  ) {
+    super(viewer, style, eventSource)
     this.minPointsForShape = 2
     this.setState("drawing")
   }

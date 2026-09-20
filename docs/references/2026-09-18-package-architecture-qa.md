@@ -3,6 +3,20 @@
 - 日期:2026-09-18
 - 形式:围绕 fun-gis monorepo 包架构的四轮问答,所有结论均基于对仓库实际代码的核查
 - 涉及包:`@fun-gis/draw`、`@fun-gis/entity-manager`、`@fun-gis/map-core`
+- **路径勘误(2026-09-20,commit `e8c1a7e`)**:`packages/draw` 目录已更名
+  为 `packages/plot`(npm 包名仍为 `@fun-gis/draw`)。本文提到的
+  `packages/draw/src/plot` 现为 `packages/plot/src`;
+  `packages/draw/src/drawTool`、`packages/draw/src/drawMethods` 现为
+  `packages/plot/src/references/` 下的同名目录,且 `DrawTool` 门面已不再
+  从包入口导出。本文其余内容为当时快照,保持原样。
+- **落地记录(2026-09-20)**:问题三推荐的"注入式事件源"已实现——
+  `packages/plot/src/event-source.ts` 定义 `MapEventSource` 契约(事件键
+  直接复用 Cesium `ScreenSpaceEventType` 成员而非字符串,多播语义),
+  默认实现为 viewer 级共享单 handler(`getSharedEventSource`);
+  `Base` 已不再自建 `ScreenSpaceEventHandler`。统一门面按本问答的方向
+  重建为 entity 单后端的 `PlotManager`(`src/plot-manager.ts`,含
+  activate/deactivate/cancel/createFromData/getData 与图形注册表
+  `src/registry.ts`),未恢复 primitive/entity 双后端的旧 `DrawTool`。
 
 ---
 

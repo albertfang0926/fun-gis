@@ -2,13 +2,18 @@
 import { Cartesian3 } from "cesium"
 
 import Base from "../base"
-import { PolygonStyle } from "../interface"
+import type { MapEventSource } from "../event-source"
+import { GeometryStyle } from "../interface"
 
 export default class FreehandPolygon extends Base {
   points: Cartesian3[] = []
 
-  constructor(viewer: CesiumTypeOnly.Viewer, style?: PolygonStyle) {
-    super(viewer, style)
+  constructor(
+    viewer: CesiumTypeOnly.Viewer,
+    style?: GeometryStyle,
+    eventSource?: MapEventSource
+  ) {
+    super(viewer, style, eventSource)
     this.freehand = true
     this.setState("drawing")
   }

@@ -5,7 +5,7 @@ import {
   getCoordinateArea,
   getDestination,
   getDistance
-} from "../src/drawMethods/utils/geometry"
+} from "../src/references/drawMethods/utils/geometry"
 
 const coor = (longitude: number, latitude: number) => ({
   longitude,
@@ -26,13 +26,7 @@ describe("getDistance", () => {
 
 describe("getCoordinateArea", () => {
   it("赤道附近 1°×1° 闭合正方形面积约 1.2e10 平方米", () => {
-    const square = [
-      coor(0, 0),
-      coor(1, 0),
-      coor(1, 1),
-      coor(0, 1),
-      coor(0, 0)
-    ]
+    const square = [coor(0, 0), coor(1, 0), coor(1, 1), coor(0, 1), coor(0, 0)]
     const area = getCoordinateArea(square)
     expect(area).toBeGreaterThan(1e10)
     expect(area).toBeLessThan(1.5e10)

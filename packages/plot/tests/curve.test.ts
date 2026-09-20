@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { linearSplineCurve } from "../src/drawMethods/utils/curve"
+import { linearSplineCurve } from "../src/references/drawMethods/utils/curve"
 
 const coor = (longitude: number, latitude: number) => ({
   longitude,

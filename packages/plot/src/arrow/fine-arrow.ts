@@ -2,7 +2,8 @@
 import { Cartesian3 } from "cesium"
 
 import Base from "../base"
-import { PolygonStyle } from "../interface"
+import type { MapEventSource } from "../event-source"
+import { GeometryStyle } from "../interface"
 import * as Utils from "../utils"
 
 export default class FineArrow extends Base {
@@ -16,8 +17,12 @@ export default class FineArrow extends Base {
   declare neckAngle: number
   declare minPointsForShape: number
 
-  constructor(viewer: CesiumTypeOnly.Viewer, style?: PolygonStyle) {
-    super(viewer, style)
+  constructor(
+    viewer: CesiumTypeOnly.Viewer,
+    style?: GeometryStyle,
+    eventSource?: MapEventSource
+  ) {
+    super(viewer, style, eventSource)
     this.tailWidthFactor = 0.1
     this.neckWidthFactor = 0.2
     this.headWidthFactor = 0.25

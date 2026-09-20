@@ -1,8 +1,16 @@
-// @ts-ignore
 import * as CesiumTypeOnly from "cesium"
 import * as Cesium from "cesium"
 import { cloneDeep } from "lodash"
 
+import {
+  getSharedEventSource,
+  MapEventSource,
+  MoveEvent,
+  PositionEvent,
+  ScreenEventKey,
+  ScreenEventListener,
+  ScreenEventPayload
+} from "./event-source"
 import EventDispatcher from "./events"
 import {
   EventListener,
@@ -17,32 +25,47 @@ import {
 // import merge from 'lodash.merge';
 import * as Utils from "./utils"
 
+type SourceSubscription = {
+  type: ScreenEventKey
+  listener: ScreenEventListener
+}
+
 export default class Base {
   cesium: typeof CesiumTypeOnly = Cesium
   viewer: CesiumTypeOnly.Viewer
-  eventHandler: CesiumTypeOnly.ScreenSpaceEventHandler
+  eventSource: MapEventSource
   polygonEntity: CesiumTypeOnly.Entity
   geometryPoints: CesiumTypeOnly.Cartesian3[] = []
   state: State = "drawing"
   controlPoints: CesiumTypeOnly.Entity[] = []
-  controlPointsEventHandler: CesiumTypeOnly.ScreenSpaceEventHandler
   lineEntity: CesiumTypeOnly.Entity
   type!: "polygon" | "line"
   freehand!: boolean
   style: GeometryStyle | undefined
   outlineEntity: CesiumTypeOnly.Entity
   eventDispatcher: EventDispatcher
-  dragEventHandler: CesiumTypeOnly.ScreenSpaceEventHandler
   entityId: string = ""
   points: CesiumTypeOnly.Cartesian3[] = []
   // 过渡期：样式缓存承载用户传入的动态样式对象，M2 统一架构时收紧类型
   styleCache: any
   minPointsForShape: number = 0
   tempLineEntity: CesiumTypeOnly.Entity
+  private sourceSubs: SourceSubscription[] = []
+  private clickSub?: SourceSubscription
+  private moveSub?: SourceSubscription
+  private doubleClickSub?: SourceSubscription
+  private controlPointSubs: SourceSubscription[] = []
+  private dragSubs: SourceSubscription[] = []
 
-  constructor(viewer: CesiumTypeOnly.Viewer, style?: GeometryStyle) {
+  constructor(
+    viewer: CesiumTypeOnly.Viewer,
+    style?: GeometryStyle,
+    eventSource?: MapEventSource
+  ) {
     this.viewer = viewer
     this.type = this.getType()
+    // 缺省订阅 viewer 级共享事件源:整个 viewer 只存在一个 ScreenSpaceEventHandler
+    this.eventSource = eventSource ?? getSharedEventSource(viewer)
 
     this.mergeStyle(style)
     this.cartesianToLnglat = this.cartesianToLnglat.bind(this)
@@ -93,17 +116,40 @@ export default class Base {
     return this.state
   }
 
+  private subscribe(
+    type: ScreenEventKey,
+    listener: ScreenEventListener
+  ): SourceSubscription {
+    this.eventSource.on(type, listener)
+    const sub = { type, listener }
+    this.sourceSubs.push(sub)
+    return sub
+  }
+
+  private unsubscribe(sub: SourceSubscription | undefined) {
+    if (!sub) {
+      return
+    }
+    const index = this.sourceSubs.indexOf(sub)
+    if (index >= 0) {
+      this.sourceSubs.splice(index, 1)
+    }
+    this.eventSource.off(sub.type, sub.listener)
+  }
+
+  private unsubscribeAll(subs: SourceSubscription[]) {
+    subs.forEach((sub) => this.unsubscribe(sub))
+  }
+
   /**
    * Bind a global click event that responds differently based on the state. When in the drawing state,
    * a click will add points for geometric shapes. During editing, selecting a drawn shape puts it in an
    *  editable state. Clicking on empty space sets it to a static state.
    */
   onClick() {
-    this.eventHandler = new this.cesium.ScreenSpaceEventHandler(
-      this.viewer.canvas
-    )
-    this.eventHandler.setInputAction((evt: any) => {
-      const pickedObject = this.viewer.scene.pick(evt.position)
+    const listener = (evt: ScreenEventPayload) => {
+      const position = (evt as PositionEvent).position
+      const pickedObject = this.viewer.scene.pick(position)
       const hitEntities =
         this.cesium.defined(pickedObject) &&
         pickedObject.id instanceof this.cesium.Entity
@@ -114,7 +160,7 @@ export default class Base {
 
       if (this.state === "drawing") {
         // In the drawing state, the points clicked are key nodes of the shape, and they are saved in this.points.
-        const cartesian = this.pixelToCartesian(evt.position)
+        const cartesian = this.pixelToCartesian(position)
         const points = this.getPoints()
         // If the click is outside the sphere, position information cannot be obtained.
         if (!cartesian) {
@@ -161,13 +207,21 @@ export default class Base {
           }
         }
       }
-    }, this.cesium.ScreenSpaceEventType.LEFT_CLICK)
+    }
+    this.unsubscribe(this.clickSub)
+    this.clickSub = this.subscribe(
+      this.cesium.ScreenSpaceEventType.LEFT_CLICK,
+      listener
+    )
   }
 
   onMouseMove() {
-    this.eventHandler.setInputAction((evt: any) => {
+    if (this.moveSub) {
+      return
+    }
+    const listener = (evt: ScreenEventPayload) => {
       const points = this.getPoints()
-      const cartesian = this.pixelToCartesian(evt.endPosition)
+      const cartesian = this.pixelToCartesian((evt as MoveEvent).endPosition)
       if (!cartesian) {
         return
       }
@@ -175,15 +229,26 @@ export default class Base {
         // Synchronize data to subclasses.If the distance is less than 10 meters, do not proceed
         this.updateMovingPoint(cartesian, points.length)
       }
-    }, this.cesium.ScreenSpaceEventType.MOUSE_MOVE)
+    }
+    this.moveSub = this.subscribe(
+      this.cesium.ScreenSpaceEventType.MOUSE_MOVE,
+      listener
+    )
   }
 
   onDoubleClick() {
-    this.eventHandler.setInputAction((_evt: any) => {
+    if (this.doubleClickSub) {
+      return
+    }
+    const listener = () => {
       if (this.state === "drawing") {
         this.finishDrawing()
       }
-    }, this.cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK)
+    }
+    this.doubleClickSub = this.subscribe(
+      this.cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK,
+      listener
+    )
   }
 
   /**
@@ -233,21 +298,18 @@ export default class Base {
   }
 
   removeClickListener() {
-    this.eventHandler.removeInputAction(
-      this.cesium.ScreenSpaceEventType.LEFT_CLICK
-    )
+    this.unsubscribe(this.clickSub)
+    this.clickSub = undefined
   }
 
   removeMoveListener() {
-    this.eventHandler.removeInputAction(
-      this.cesium.ScreenSpaceEventType.MOUSE_MOVE
-    )
+    this.unsubscribe(this.moveSub)
+    this.moveSub = undefined
   }
 
   removeDoubleClickListener() {
-    this.eventHandler.removeInputAction(
-      this.cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK
-    )
+    this.unsubscribe(this.doubleClickSub)
+    this.doubleClickSub = undefined
   }
 
   setGeometryPoints(geometryPoints: CesiumTypeOnly.Cartesian3[]) {
@@ -370,79 +432,73 @@ export default class Base {
     let draggedIcon: any = null
     let dragStartPosition: CesiumTypeOnly.Cartesian3
 
-    this.controlPointsEventHandler = new this.cesium.ScreenSpaceEventHandler(
-      this.viewer.canvas
-    )
+    // 已订阅时直接复用(旧实现重复调用会泄漏一个 handler)
+    if (this.controlPointSubs.length === 0) {
+      this.controlPointSubs = [
+        // Listen for left mouse button press events
+        this.subscribe(this.cesium.ScreenSpaceEventType.LEFT_DOWN, (evt) => {
+          const position = (evt as PositionEvent).position
+          const pickedObject = this.viewer.scene.pick(position)
 
-    // Listen for left mouse button press events
-    this.controlPointsEventHandler.setInputAction((clickEvent: any) => {
-      const pickedObject = this.viewer.scene.pick(clickEvent.position)
-
-      if (this.cesium.defined(pickedObject)) {
-        for (let i = 0; i < this.controlPoints.length; i++) {
-          if (pickedObject.id === this.controlPoints[i]) {
-            isDragging = true
-            draggedIcon = this.controlPoints[i]
-            dragStartPosition = (draggedIcon.position as any)._value
-            //Save the index of dragged points for dynamic updates during movement
-            draggedIcon.index = i
-            break
+          if (this.cesium.defined(pickedObject)) {
+            for (let i = 0; i < this.controlPoints.length; i++) {
+              if (pickedObject.id === this.controlPoints[i]) {
+                isDragging = true
+                draggedIcon = this.controlPoints[i]
+                dragStartPosition = (draggedIcon.position as any)._value
+                //Save the index of dragged points for dynamic updates during movement
+                draggedIcon.index = i
+                break
+              }
+            }
+            // Disable default camera interaction.
+            this.viewer.scene.screenSpaceCameraController.enableRotate = false
           }
-        }
-        // Disable default camera interaction.
-        this.viewer.scene.screenSpaceCameraController.enableRotate = false
-      }
-    }, this.cesium.ScreenSpaceEventType.LEFT_DOWN)
-
-    // Listen for mouse movement events
-    this.controlPointsEventHandler.setInputAction((moveEvent: any) => {
-      if (isDragging && draggedIcon) {
-        const cartesian = this.viewer.camera.pickEllipsoid(
-          moveEvent.endPosition,
-          this.viewer.scene.globe.ellipsoid
-        )
-        if (cartesian) {
-          draggedIcon.position.setValue(cartesian)
-          this.updateDraggingPoint(cartesian, draggedIcon.index)
-        }
-      }
-    }, this.cesium.ScreenSpaceEventType.MOUSE_MOVE)
-
-    // Listen for left mouse button release events
-    this.controlPointsEventHandler.setInputAction(() => {
-      // Trigger 'drawUpdate' when there is a change in coordinates before and after dragging.
-      if (
-        draggedIcon &&
-        !this.cesium.Cartesian3.equals(
-          dragStartPosition,
-          draggedIcon.position._value
-        )
-      ) {
-        this.eventDispatcher.dispatchEvent(
-          "drawUpdate",
-          draggedIcon.position._value
-        )
-      }
-      isDragging = false
-      draggedIcon = null
-      this.viewer.scene.screenSpaceCameraController.enableRotate = true
-    }, this.cesium.ScreenSpaceEventType.LEFT_UP)
+        }),
+        // Listen for mouse movement events
+        this.subscribe(this.cesium.ScreenSpaceEventType.MOUSE_MOVE, (evt) => {
+          if (isDragging && draggedIcon) {
+            const cartesian = this.viewer.camera.pickEllipsoid(
+              (evt as MoveEvent).endPosition,
+              this.viewer.scene.globe.ellipsoid
+            )
+            if (cartesian) {
+              draggedIcon.position.setValue(cartesian)
+              this.updateDraggingPoint(cartesian, draggedIcon.index)
+            }
+          }
+        }),
+        // Listen for left mouse button release events
+        this.subscribe(this.cesium.ScreenSpaceEventType.LEFT_UP, () => {
+          // Trigger 'drawUpdate' when there is a change in coordinates before and after dragging.
+          if (
+            draggedIcon &&
+            !this.cesium.Cartesian3.equals(
+              dragStartPosition,
+              draggedIcon.position._value
+            )
+          ) {
+            this.eventDispatcher.dispatchEvent(
+              "drawUpdate",
+              draggedIcon.position._value
+            )
+          }
+          isDragging = false
+          draggedIcon = null
+          this.viewer.scene.screenSpaceCameraController.enableRotate = true
+        })
+      ]
+    }
   }
 
   removeControlPoints() {
+    this.unsubscribeAll(this.controlPointSubs)
+    this.controlPointSubs = []
     if (this.controlPoints.length > 0) {
       this.controlPoints.forEach((entity: CesiumTypeOnly.Entity) => {
         this.viewer.entities.remove(entity)
       })
-      this.controlPointsEventHandler.removeInputAction(
-        this.cesium.ScreenSpaceEventType.LEFT_DOWN
-      )
-      this.controlPointsEventHandler.removeInputAction(
-        this.cesium.ScreenSpaceEventType.MOUSE_MOVE
-      )
-      this.controlPointsEventHandler.removeInputAction(
-        this.cesium.ScreenSpaceEventType.LEFT_UP
-      )
+      this.controlPoints = []
     }
   }
 
@@ -450,131 +506,131 @@ export default class Base {
    * Allow the entire shape to be dragged while in edit mode.
    */
   draggable() {
+    // 已订阅时直接复用(旧实现重复调用会泄漏一个 handler)
+    if (this.dragSubs.length > 0) {
+      return
+    }
     let dragging = false
     let startPosition: CesiumTypeOnly.Cartesian3 | undefined
-    this.dragEventHandler = new this.cesium.ScreenSpaceEventHandler(
-      this.viewer.canvas
-    )
-    this.dragEventHandler.setInputAction((event: any) => {
-      const pickRay = this.viewer.scene.camera.getPickRay(event.position)
-      if (pickRay) {
-        const cartesian = this.viewer.scene.globe.pick(
-          pickRay,
-          this.viewer.scene
-        )
-        const pickedObject = this.viewer.scene.pick(event.position)
-        if (
-          this.cesium.defined(pickedObject) &&
-          pickedObject.id instanceof this.cesium.Entity
-        ) {
-          const clickedEntity = pickedObject.id
-          if (this.isCurrentEntity(clickedEntity.id)) {
-            //Clicking on the current instance's entity initiates drag logic.
-            dragging = true
-            startPosition = cartesian
-            this.viewer.scene.screenSpaceCameraController.enableRotate = false
-          }
-        }
-      }
-    }, this.cesium.ScreenSpaceEventType.LEFT_DOWN)
-
-    this.dragEventHandler.setInputAction((event: any) => {
-      if (dragging && startPosition) {
-        // Retrieve the world coordinates of the current mouse position.
-        const newPosition = this.pixelToCartesian(event.endPosition)
-        if (newPosition) {
-          // Calculate the displacement vector.
-          const translation = this.cesium.Cartesian3.subtract(
-            newPosition,
-            startPosition,
-            new this.cesium.Cartesian3()
-          )
-          const newPoints = this.geometryPoints.map((p) => {
-            return this.cesium.Cartesian3.add(
-              p,
-              translation,
-              new this.cesium.Cartesian3()
-            )
-          })
-
-          //Move all key points according to a vector.
-          this.points = this.points.map((p) => {
-            return this.cesium.Cartesian3.add(
-              p,
-              translation,
-              new this.cesium.Cartesian3()
-            )
-          })
-
-          // Move control points in the same manner.
-          this.controlPoints.map((p: CesiumTypeOnly.Entity) => {
-            const position = p.position?.getValue(this.cesium.JulianDate.now())
-            const newPosition = this.cesium.Cartesian3.add(
-              position,
-              translation,
-              new this.cesium.Cartesian3()
-            )
-            ;(p.position as any)?.setValue(newPosition)
-          })
-
-          this.setGeometryPoints(newPoints)
-          if (this.minPointsForShape === 4) {
-            // 双箭头在整体被拖拽时，需要同步更新生长动画的插值点
-            const _this = this as any
-            _this.curveControlPointLeft = this.cesium.Cartesian3.add(
-              _this.curveControlPointLeft,
-              translation,
-              new this.cesium.Cartesian3()
-            )
-            _this.curveControlPointRight = this.cesium.Cartesian3.add(
-              _this.curveControlPointRight,
-              translation,
-              new this.cesium.Cartesian3()
-            )
-          }
-          startPosition = newPosition
-        }
-      } else {
-        const pickRay = this.viewer.scene.camera.getPickRay(event.endPosition)
+    this.dragSubs = [
+      this.subscribe(this.cesium.ScreenSpaceEventType.LEFT_DOWN, (evt) => {
+        const position = (evt as PositionEvent).position
+        const pickRay = this.viewer.scene.camera.getPickRay(position)
         if (pickRay) {
-          const pickedObject = this.viewer.scene.pick(event.endPosition)
+          const cartesian = this.viewer.scene.globe.pick(
+            pickRay,
+            this.viewer.scene
+          )
+          const pickedObject = this.viewer.scene.pick(position)
           if (
             this.cesium.defined(pickedObject) &&
             pickedObject.id instanceof this.cesium.Entity
           ) {
             const clickedEntity = pickedObject.id
-            // TODO 绘制的图形，需要特殊id标识，可在创建entity时指定id
             if (this.isCurrentEntity(clickedEntity.id)) {
-              this.viewer.scene.canvas.style.cursor = "move"
+              //Clicking on the current instance's entity initiates drag logic.
+              dragging = true
+              startPosition = cartesian
+              this.viewer.scene.screenSpaceCameraController.enableRotate = false
+            }
+          }
+        }
+      }),
+      this.subscribe(this.cesium.ScreenSpaceEventType.MOUSE_MOVE, (evt) => {
+        if (dragging && startPosition) {
+          // Retrieve the world coordinates of the current mouse position.
+          const newPosition = this.pixelToCartesian(
+            (evt as MoveEvent).endPosition
+          )
+          if (newPosition) {
+            // Calculate the displacement vector.
+            const translation = this.cesium.Cartesian3.subtract(
+              newPosition,
+              startPosition,
+              new this.cesium.Cartesian3()
+            )
+            const newPoints = this.geometryPoints.map((p) => {
+              return this.cesium.Cartesian3.add(
+                p,
+                translation,
+                new this.cesium.Cartesian3()
+              )
+            })
+
+            //Move all key points according to a vector.
+            this.points = this.points.map((p) => {
+              return this.cesium.Cartesian3.add(
+                p,
+                translation,
+                new this.cesium.Cartesian3()
+              )
+            })
+
+            // Move control points in the same manner.
+            this.controlPoints.map((p: CesiumTypeOnly.Entity) => {
+              const position = p.position?.getValue(
+                this.cesium.JulianDate.now()
+              )
+              const newPosition = this.cesium.Cartesian3.add(
+                position,
+                translation,
+                new this.cesium.Cartesian3()
+              )
+              ;(p.position as any)?.setValue(newPosition)
+            })
+
+            this.setGeometryPoints(newPoints)
+            if (this.minPointsForShape === 4) {
+              // 双箭头在整体被拖拽时，需要同步更新生长动画的插值点
+              const _this = this as any
+              _this.curveControlPointLeft = this.cesium.Cartesian3.add(
+                _this.curveControlPointLeft,
+                translation,
+                new this.cesium.Cartesian3()
+              )
+              _this.curveControlPointRight = this.cesium.Cartesian3.add(
+                _this.curveControlPointRight,
+                translation,
+                new this.cesium.Cartesian3()
+              )
+            }
+            startPosition = newPosition
+          }
+        } else {
+          const endPosition = (evt as MoveEvent).endPosition
+          const pickRay = this.viewer.scene.camera.getPickRay(endPosition)
+          if (pickRay) {
+            const pickedObject = this.viewer.scene.pick(endPosition)
+            if (
+              this.cesium.defined(pickedObject) &&
+              pickedObject.id instanceof this.cesium.Entity
+            ) {
+              const clickedEntity = pickedObject.id
+              // TODO 绘制的图形，需要特殊id标识，可在创建entity时指定id
+              if (this.isCurrentEntity(clickedEntity.id)) {
+                this.viewer.scene.canvas.style.cursor = "move"
+              } else {
+                this.viewer.scene.canvas.style.cursor = "default"
+              }
             } else {
               this.viewer.scene.canvas.style.cursor = "default"
             }
-          } else {
-            this.viewer.scene.canvas.style.cursor = "default"
           }
         }
-      }
-    }, this.cesium.ScreenSpaceEventType.MOUSE_MOVE)
-
-    // Listen for the mouse release event to end dragging.
-    this.dragEventHandler.setInputAction(() => {
-      dragging = false
-      startPosition = undefined
-      this.viewer.scene.screenSpaceCameraController.enableRotate = true
-    }, this.cesium.ScreenSpaceEventType.LEFT_UP)
+      }),
+      // Listen for the mouse release event to end dragging.
+      this.subscribe(this.cesium.ScreenSpaceEventType.LEFT_UP, () => {
+        dragging = false
+        startPosition = undefined
+        this.viewer.scene.screenSpaceCameraController.enableRotate = true
+      })
+    ]
   }
 
   // Finish editing, disable dragging."
   disableDrag() {
-    this.dragEventHandler.removeInputAction(
-      this.cesium.ScreenSpaceEventType.LEFT_DOWN
-    )
-    this.dragEventHandler.removeInputAction(
-      this.cesium.ScreenSpaceEventType.MOUSE_MOVE
-    )
-    this.dragEventHandler.removeInputAction(
-      this.cesium.ScreenSpaceEventType.LEFT_UP
-    )
+    this.unsubscribeAll(this.dragSubs)
+    this.dragSubs = []
   }
 
   show(opts: VisibleAnimationOpts) {
@@ -766,6 +822,7 @@ export default class Base {
             ;(graphics as any).color.setValue(newColor)
           }
 
+          this.requestRenderIfNeeded()
           requestAnimationFrame(animate)
         } else {
           // Animation Ended
@@ -895,6 +952,7 @@ export default class Base {
         const geometryPoints = this.createGraphic(tempPoints)
         this.setGeometryPoints(geometryPoints)
         this.showWithAnimation(0, 0, undefined)
+        this.requestRenderIfNeeded()
       }
       this.viewer.clock.onTick.addEventListener(frameListener)
     }, delay)
@@ -982,6 +1040,7 @@ export default class Base {
         const geometryPoints = this.createGraphic(tempPoints)
         this.setGeometryPoints(geometryPoints)
         this.showWithAnimation(0, 0, undefined)
+        this.requestRenderIfNeeded()
       }
       this.viewer.clock.onTick.addEventListener(frameListener)
     }, delay)
@@ -1015,18 +1074,38 @@ export default class Base {
 
   remove() {
     if (this.type === "polygon") {
-      this.viewer.entities.remove(this.polygonEntity)
-      this.viewer.entities.remove(this.outlineEntity)
+      if (this.polygonEntity) {
+        this.viewer.entities.remove(this.polygonEntity)
+      }
+      if (this.outlineEntity) {
+        this.viewer.entities.remove(this.outlineEntity)
+      }
+      if (this.lineEntity) {
+        this.viewer.entities.remove(this.lineEntity)
+      }
       this.polygonEntity = null
       this.outlineEntity = null
       this.lineEntity = null
     } else if (this.type === "line") {
-      this.viewer.entities.remove(this.lineEntity)
+      if (this.lineEntity) {
+        this.viewer.entities.remove(this.lineEntity)
+      }
+      this.lineEntity = null
     }
+    this.removeTempLine()
+    this.tempLineEntity = null
     this.removeClickListener()
     this.removeMoveListener()
     this.removeDoubleClickListener()
     this.removeControlPoints()
+    this.disableDrag()
+  }
+
+  /** requestRenderMode 宿主下动画帧需要手动请求渲染 */
+  private requestRenderIfNeeded() {
+    if (this.viewer.scene.requestRenderMode) {
+      this.viewer.scene.requestRender()
+    }
   }
 
   on(eventType: EventType, listener: EventListener) {

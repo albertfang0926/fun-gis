@@ -2,7 +2,8 @@
 import { Cartesian3 } from "cesium"
 
 import Base from "../base"
-import { PolygonStyle } from "../interface"
+import type { MapEventSource } from "../event-source"
+import { GeometryStyle } from "../interface"
 import * as Utils from "../utils"
 type Position = [number, number]
 
@@ -23,8 +24,12 @@ export default class DoubleArrow extends Base {
   curveControlPointRight: Cartesian3
   isClockWise: boolean
 
-  constructor(viewer: CesiumTypeOnly.Viewer, style?: PolygonStyle) {
-    super(viewer, style)
+  constructor(
+    viewer: CesiumTypeOnly.Viewer,
+    style?: GeometryStyle,
+    eventSource?: MapEventSource
+  ) {
+    super(viewer, style, eventSource)
     this.headHeightFactor = 0.25
     this.headWidthFactor = 0.3
     this.neckHeightFactor = 0.85

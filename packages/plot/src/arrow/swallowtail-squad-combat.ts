@@ -1,7 +1,8 @@
 // @ts-ignore
 import { Cartesian3 } from "cesium"
 
-import { PolygonStyle } from "../interface"
+import type { MapEventSource } from "../event-source"
+import { GeometryStyle } from "../interface"
 import * as Utils from "../utils"
 import SquadCombat from "./squad-combat"
 
@@ -14,8 +15,12 @@ export default class SwallowtailSquadCombat extends SquadCombat {
   declare tailWidthFactor: number
   swallowTailFactor: number
 
-  constructor(viewer: CesiumTypeOnly.Viewer, style?: PolygonStyle) {
-    super(viewer, style)
+  constructor(
+    viewer: CesiumTypeOnly.Viewer,
+    style?: GeometryStyle,
+    eventSource?: MapEventSource
+  ) {
+    super(viewer, style, eventSource)
 
     this.headHeightFactor = 0.18
     this.headWidthFactor = 0.3
