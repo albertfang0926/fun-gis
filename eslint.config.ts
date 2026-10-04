@@ -35,6 +35,13 @@ export default defineConfig([
     languageOptions: { parserOptions: { parser: tseslint.parser } }
   },
   {
+    // shadcn-vue 生成的组件目录约定为单文件名(Button.vue 等),放开多词命名限制
+    files: ["**/src/components/ui/**/*.{ts,vue}"],
+    rules: {
+      "vue/multi-word-component-names": "off"
+    }
+  },
+  {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,vue}"],
     plugins: {
       "simple-import-sort": simpleImportSort,
