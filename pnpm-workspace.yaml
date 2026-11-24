@@ -1,8 +1,10 @@
 packages:
   - apps/**
+  - "!apps/**/dist/**"
   - packages/**
   - docs
 allowBuilds:
+  "@parcel/watcher": false
   core-js: true
   esbuild: true
   exifreader: true

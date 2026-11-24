@@ -2,12 +2,12 @@
   <div class="volume-bar-container">
     <div class="volume-bar-column">
       <div
-        v-for="(segment, index) in segments"
+        v-for="index in segmentCount"
         :key="index"
         class="volume-segment"
-        :class="{ active: index <= activeIndex }"
+        :class="{ active: index <= activeCount }"
         :style="{
-          animationDelay: `${index * 0.05}s`
+          animationDelay: `${(index - 1) * 0.05}s`
         }"
       ></div>
     </div>
@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { computed } from "vue"
 
 const props = withDefaults(
   defineProps<{
@@ -28,35 +28,12 @@ const props = withDefaults(
   }
 )
 
-const segments = ref<number[]>([])
-const activeIndex = ref(0)
-
-// 初始化分段
-const initSegments = () => {
-  segments.value = Array.from({ length: props.segmentCount }, (_, i) => i)
-}
-
-// 更新激活的分段索引
-const updateActiveIndex = () => {
-  activeIndex.value = Math.floor((props.volume / 100) * (props.segmentCount - 1))
-}
-
-// 监听音量变化
-watch(
-  () => props.volume,
-  () => {
-    updateActiveIndex()
-  },
-  { immediate: true }
+const activeCount = computed(() =>
+  Math.round((props.volume / 100) * props.segmentCount)
 )
-
-onMounted(() => {
-  initSegments()
-  updateActiveIndex()
-})
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .volume-bar-container {
   position: absolute;
   top: 50%;
@@ -65,7 +42,6 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  //   padding: 20px;
 }
 
 .volume-bar-column {
@@ -90,7 +66,7 @@ onMounted(() => {
   transition: all 0.3s ease;
   position: relative;
 
-  // 渐变效果：顶部和底部较暗，中间较亮
+  /* 顶部和底部较暗，中间较亮 */
   &:nth-child(1),
   &:nth-child(2),
   &:nth-child(3) {
@@ -113,7 +89,7 @@ onMounted(() => {
     );
   }
 
-  // 激活状态：发光效果和更亮的颜色
+  /* 激活状态 */
   &.active {
     opacity: 1;
     background: linear-gradient(
@@ -122,13 +98,11 @@ onMounted(() => {
       rgba(0, 150, 255, 1) 50%,
       rgba(0, 100, 200, 0.9) 100%
     );
-    box-shadow:
-      0 0 8px rgba(0, 150, 255, 0.8),
-      0 0 16px rgba(0, 150, 255, 0.4);
+    box-shadow: 0 0 8px rgba(0, 150, 255, 0.8), 0 0 16px rgba(0, 150, 255, 0.4);
     animation: segment-glow 2s ease-in-out infinite;
   }
 
-  // 中间部分更亮
+  /* 中间部分更亮 */
   &:nth-child(n + 10):nth-child(-n + 20).active {
     background: linear-gradient(
       90deg,
@@ -136,9 +110,7 @@ onMounted(() => {
       rgba(0, 180, 255, 1) 50%,
       rgba(0, 120, 220, 0.95) 100%
     );
-    box-shadow:
-      0 0 10px rgba(0, 180, 255, 1),
-      0 0 20px rgba(0, 180, 255, 0.6);
+    box-shadow: 0 0 10px rgba(0, 180, 255, 1), 0 0 20px rgba(0, 180, 255, 0.6);
   }
 }
 
@@ -154,26 +126,9 @@ onMounted(() => {
   }
 }
 
-// // 流动动画效果
-// .volume-segment.active {
-//   &::before {
-//     content: '';
-//     position: absolute;
-//     top: 0;
-//     left: -100%;
-//     width: 100%;
-//     height: 100%;
-//     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-//     animation: flow 2s linear infinite;
-//   }
-// }
-
-// @keyframes flow {
-//   0% {
-//     left: -100%;
-//   }
-//   100% {
-//     left: 100%;
-//   }
-// }
+@media (prefers-reduced-motion: reduce) {
+  .volume-segment.active {
+    animation: none;
+  }
+}
 </style>

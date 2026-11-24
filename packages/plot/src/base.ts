@@ -241,7 +241,11 @@ export default class Base {
       return
     }
     const listener = () => {
-      if (this.state === "drawing") {
+      if (
+        this.state === "drawing" &&
+        this.getPoints().length >= this.minPointsForShape &&
+        (this.polygonEntity || this.lineEntity)
+      ) {
         this.finishDrawing()
       }
     }

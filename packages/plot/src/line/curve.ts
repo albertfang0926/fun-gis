@@ -8,6 +8,7 @@ import * as Utils from "../utils"
 
 export default class Curve extends Base {
   points: Cartesian3[] = []
+  minPointsForShape = 2
   arrowLengthScale: number = 5
   maxArrowLength: number = 3000000
   t: number
@@ -34,8 +35,10 @@ export default class Curve extends Base {
     this.points.push(cartesian)
     if (this.points.length < 2) {
       this.onMouseMove()
-    } else if (this.points.length === 2) {
-      this.setGeometryPoints(this.points)
+    } else {
+      const geometry =
+        this.points.length === 2 ? this.points : this.createGraphic(this.points)
+      this.setGeometryPoints(geometry)
       this.drawLine()
     }
   }

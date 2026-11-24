@@ -1,0 +1,25 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "noCheck": true,
+    "rootDir": "../../packages",
+    "outDir": "./node_modules/.tmp/package-types",
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.packages.tsbuildinfo",
+    "paths": {
+      "vue": ["./node_modules/vue"],
+      "@fun-gis/entity-manager": ["../../packages/entity-manager/src/index.ts"]
+    }
+  },
+  "include": [
+    "../../packages/effect/VolumeBar.vue",
+    "../../packages/entity-manager/src",
+    "../../packages/map-core/src",
+    "../../packages/panoramic-photo/src",
+    "../../packages/plot/src"
+  ],
+  "exclude": ["../../packages/plot/src/references"]
+}

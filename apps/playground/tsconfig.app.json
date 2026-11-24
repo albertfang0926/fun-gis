@@ -3,7 +3,13 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@fun-gis/draw": ["../../packages/plot/src/index.ts"],
+      "@fun-gis/entity-manager": ["../../packages/entity-manager/src/index.ts"],
+      "@fun-gis/map-core": ["../../packages/map-core/src/index.ts"],
+      "@fun-gis/panoramic-photo": [
+        "../../packages/panoramic-photo/src/index.ts"
+      ]
     },
 
     /* Linting */
@@ -14,5 +20,6 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "references": [{ "path": "./tsconfig.packages.json" }]
 }

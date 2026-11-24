@@ -64,7 +64,11 @@ export type {
   ScreenEventListener,
   ScreenEventPayload
 } from "./event-source"
-export { CesiumEventSource, destroySharedEventSource, getSharedEventSource }
+export {
+  CesiumEventSource,
+  destroySharedEventSource,
+  getSharedEventSource
+} from "./event-source"
 
 export type { PlotEventData, PlotManagerOptions } from "./plot-manager"
 export {

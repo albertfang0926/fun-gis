@@ -27,6 +27,9 @@ export default class Circle extends Base {
    * Add points only on click events
    */
   addPoint(cartesian: Cartesian3) {
+    if (this.points.length === 1) {
+      this.updateMovingPoint(cartesian)
+    }
     this.points.push(cartesian)
     if (this.points.length === 1) {
       this.onMouseMove()

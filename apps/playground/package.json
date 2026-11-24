@@ -9,8 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fun-gis/draw": "workspace:*",
+    "@fun-gis/entity-manager": "workspace:*",
+    "@fun-gis/map-core": "workspace:*",
+    "@fun-gis/panoramic-photo": "workspace:*",
     "@lucide/vue": "^1.39.0",
     "@tailwindcss/vite": "^4.3.3",
+    "cesium": "^1.144.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "reka-ui": "^2.10.4",
@@ -27,6 +32,7 @@
     "@vue/tsconfig": "^0.9.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vite": "^6.3.5",
+    "vite-plugin-cesium": "^1.2.23",
     "vue-tsc": "^3.3.11"
   }
 }

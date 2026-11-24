@@ -1,4 +1,5 @@
 import "./style.css"
+import "./playground.css"
 
 import { createApp } from "vue"
 
