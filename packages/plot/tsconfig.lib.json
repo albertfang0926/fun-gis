@@ -6,10 +6,12 @@
     "types": ["vite/client", "index.d.ts"],
     "lib": ["esnext", "dom"],
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     },
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
+    "strict": false,
+    "rootDir": "./src",
     "outDir": "./dist/types",
     "declaration": true,
     "emitDeclarationOnly": true

@@ -23,8 +23,9 @@
     "cesium": "^1.133.1"
   },
   "devDependencies": {
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vitejs/plugin-vue": "^4.2.3",
-    "typescript": "^5.4.5",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "unplugin-vue-components": "^0.25.2",
     "vite": "^7.1.9",
     "vite-plugin-cesium": "^1.2.22",

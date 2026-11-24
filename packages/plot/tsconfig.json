@@ -11,6 +11,7 @@
     },
     "module": "esnext",
     "moduleResolution": "bundler",
+    "strict": false,
     "outDir": "./dist/types",
     "declaration": true,
     "emitDeclarationOnly": true
