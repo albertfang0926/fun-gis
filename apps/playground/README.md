@@ -6,12 +6,13 @@
 在地图旁切换功能模块。地图核心演示底图样式和 GeoJSON 航线，
 图形标绘演示曲线、多边形和圆形，实体管理演示地标显隐与定位。
 全景照片使用仓库自带的 `sphere.jpg`，可视化特效使用 `VolumeBar`。
-
-默认场景为旧金山湾区。底图随项目打包，可在本地查看。航线用于演示图层管理。
 交互地图和全景照片需要浏览器支持 WebGL。
 
-Contains modified Copernicus Sentinel data 2024. 底图由
-`S2A_10SEG_20240702_0_L2A` 和 `S2A_10SEH_20240702_0_L2A`
-的真彩色影像重投影、裁切和调色得到。
-[Earth Search 数据目录](https://registry.opendata.aws/sentinel-2-l2a-cogs/) ·
-[Copernicus Sentinel 数据许可](https://ewds.climate.copernicus.eu/licences/ec-sentinel)
+默认场景为合肥高新区蜀西湖。地图中心是蜀西湖，地标和航线位于蜀西湖周边，
+坐标均为 WGS-84。
+
+## 底图说明
+
+底图使用 Esri World Imagery 的公开瓦片接口，无需密钥，版权信息由 Cesium
+显示在地图左下角。它不是 Esri 文档中需要令牌的正式接口，对外发布前请确认
+符合 Esri 的使用条款。

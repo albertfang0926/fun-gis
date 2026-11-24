@@ -22,7 +22,7 @@ import { defineAsyncComponent, onBeforeUnmount, onMounted, ref } from "vue"
 
 import VolumeBar from "../../../packages/effect/VolumeBar.vue"
 import panoramaUrl from "../../../packages/panoramic-photo/playground/src/assets/sphere.jpg"
-import { createMapScene, IMAGERY_URL, STATIONS } from "./map-scene"
+import { createMapScene, SceneMessageError, STATIONS } from "./map-scene"
 
 const PanoramicPhoto = defineAsyncComponent(async () => {
   const { PanoramicPhoto } = await import("@fun-gis/panoramic-photo")
@@ -61,6 +61,7 @@ const tools = [
   }
 ]
 
+const RENDER_ERROR_MESSAGE = "交互地图无法加载，请确认浏览器支持 WebGL。"
 const mapContainer = ref<HTMLElement>()
 const activeModule = ref(0)
 const activeTool = ref<(typeof tools)[number]>()
@@ -72,14 +73,16 @@ const routeVisible = ref(true)
 const stationsVisible = ref(STATIONS.map(() => true))
 const volume = ref(74)
 const mapState = ref<"loading" | "ready" | "error">("loading")
+const mapError = ref("")
 const status = ref("")
-const longitude = ref(-122.417)
-const latitude = ref(37.821)
+const longitude = ref(117.115804)
+const latitude = ref(31.83891)
 const heading = ref(0)
 const yaw = ref(0)
 const fov = ref<number>()
 const panoramaOptions = { navbar: ["zoom", "fullscreen"] }
-let scene: ReturnType<typeof createMapScene> | undefined
+let scene: Awaited<ReturnType<typeof createMapScene>> | undefined
+let disposed = false
 
 function coordinate(value: number, positive: string, negative: string) {
   return `${Math.abs(value).toFixed(4)}° ${value < 0 ? negative : positive}`
@@ -92,7 +95,7 @@ function selectModule(index: number) {
   status.value = ""
 }
 
-function returnToBay() {
+function returnToLake() {
   selectModule(0)
   scene?.home()
 }
@@ -132,9 +135,9 @@ function clearDrawings() {
   status.value = "已清除全部标绘。"
 }
 
-onMounted(() => {
+onMounted(async () => {
   try {
-    scene = createMapScene(mapContainer.value!, {
+    const created = await createMapScene(mapContainer.value!, {
       onReady() {
         if (mapState.value === "loading") mapState.value = "ready"
       },
@@ -157,14 +160,23 @@ onMounted(() => {
       },
       onRenderError() {
         mapState.value = "error"
+        mapError.value = RENDER_ERROR_MESSAGE
       }
     })
-  } catch {
+    if (disposed) created.destroy()
+    else scene = created
+  } catch (error) {
+    console.error("[playground] Failed to create the map scene", error)
     mapState.value = "error"
+    mapError.value =
+      error instanceof SceneMessageError ? error.message : RENDER_ERROR_MESSAGE
   }
 })
 
-onBeforeUnmount(() => scene?.destroy())
+onBeforeUnmount(() => {
+  disposed = true
+  scene?.destroy()
+})
 </script>
 
 <template>
@@ -220,18 +232,15 @@ onBeforeUnmount(() => scene?.destroy())
           type="button"
           class="location-button"
           :disabled="mapState !== 'ready'"
-          @click="returnToBay"
+          @click="returnToLake"
         >
-          <MapPin :size="17" /> 旧金山湾区
+          <MapPin :size="17" /> 合肥高新区
         </button>
       </header>
 
       <div class="workbench">
         <section class="map-frame" aria-label="交互地图">
-          <div
-            class="map-stage"
-            :style="{ backgroundImage: 'url(' + IMAGERY_URL + ')' }"
-          >
+          <div class="map-stage">
             <div
               ref="mapContainer"
               class="map-canvas"
@@ -241,7 +250,7 @@ onBeforeUnmount(() => scene?.destroy())
               <div class="map-caption">
                 <span class="caption-line"></span>
                 <div>
-                  <strong>旧金山湾区</strong><small>San Francisco Bay</small>
+                  <strong>合肥高新区 · 蜀西湖</strong><small>Shuxi Lake</small>
                 </div>
               </div>
               <div class="mode-control" role="group" aria-label="地图视图模式">
@@ -301,11 +310,7 @@ onBeforeUnmount(() => scene?.destroy())
                 </button>
               </div>
               <div v-if="mapState !== 'ready'" class="map-notice" role="status">
-                {{
-                  mapState === "loading"
-                    ? "正在加载交互地图…"
-                    : "交互地图无法加载，当前显示静态影像。"
-                }}
+                {{ mapState === "loading" ? "正在加载交互地图…" : mapError }}
               </div>
               <div v-else-if="activeTool" class="map-notice draw-notice">
                 <span role="status">{{ activeTool.instruction }}</span>
@@ -317,14 +322,6 @@ onBeforeUnmount(() => scene?.destroy())
                 >
                   完成
                 </button>
-              </div>
-              <div class="map-credit">
-                <a
-                  href="https://registry.opendata.aws/sentinel-2-l2a-cogs/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  >Contains modified Copernicus Sentinel data 2024</a
-                >
               </div>
             </template>
             <div v-else class="panorama-stage">
@@ -393,7 +390,6 @@ onBeforeUnmount(() => scene?.destroy())
                 <span
                   class="basemap-preview"
                   :class="{ grayscale: index }"
-                  :style="{ backgroundImage: 'url(' + IMAGERY_URL + ')' }"
                 ></span>
                 {{ label }}
               </button>
@@ -402,7 +398,7 @@ onBeforeUnmount(() => scene?.destroy())
               <h3>叠加图层</h3>
               <label class="toggle-row">
                 <Route :size="18" />
-                <span>湾区示例航线</span>
+                <span>蜀西湖示例航线</span>
                 <input
                   :checked="routeVisible"
                   type="checkbox"
@@ -460,9 +456,9 @@ onBeforeUnmount(() => scene?.destroy())
           </div>
           <div v-else-if="activeModule === 2" class="inspector-body">
             <p class="description">
-              管理湾区地标的可见性。点击名称，飞到地标上方。
+              管理蜀西湖周边地标的可见性。点击名称，飞到地标上方。
             </p>
-            <h3>湾区地标</h3>
+            <h3>蜀西湖周边地标</h3>
             <div
               v-for="(station, index) in STATIONS"
               :key="station.name"

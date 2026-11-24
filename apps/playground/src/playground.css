@@ -243,7 +243,7 @@ body:has(.playground) {
   position: relative;
   isolation: isolate;
   height: clamp(420px, calc(100dvh - 267px), 900px);
-  background: #233b35 center / cover no-repeat;
+  background: #233b35;
 }
 
 .map-canvas,
@@ -359,21 +359,6 @@ body:has(.playground) {
 }
 .zoom-controls button + button {
   border-top: 1px solid var(--rule);
-}
-
-.map-credit {
-  position: absolute;
-  right: 9px;
-  bottom: 5px;
-  color: #fffefa;
-  background: var(--map-control);
-  padding: 1px 5px;
-  border-radius: 3px;
-  font-size: 9px;
-}
-
-.map-credit a:hover {
-  text-decoration: underline;
 }
 
 .map-notice,
@@ -521,7 +506,7 @@ body:has(.playground) {
   width: 100%;
   height: 54px;
   border-radius: 4px;
-  background: #25463f center 47% / 175%;
+  background: linear-gradient(135deg, #2b5a4c, #6f8f63 55%, #b39a6b);
 }
 .basemap-preview.grayscale {
   filter: grayscale(1);
@@ -753,8 +738,5 @@ body:has(.playground) {
 @media (max-width: 370px) {
   .map-status .desktop-only {
     display: none;
-  }
-  .map-credit {
-    bottom: 24px;
   }
 }

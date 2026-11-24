@@ -8,27 +8,36 @@ import {
 } from "@fun-gis/entity-manager"
 import { LayerDataSourceType, LayerManager } from "@fun-gis/map-core"
 import {
+  ArcGisMapServerImageryProvider,
   Cartesian2,
   Cartesian3,
   Cartographic,
   Color,
   LabelStyle,
   Math as CesiumMath,
-  Rectangle,
   SceneMode,
-  SingleTileImageryProvider,
   Viewer
 } from "cesium"
 
-export const IMAGERY_URL = import.meta.env.BASE_URL + "bay-imagery.jpg"
+// The newer services.arcgisonline.com host is not reachable from every network.
+const IMAGERY_URL =
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"
+const IMAGERY_ERROR_MESSAGE = "地图影像加载失败，请检查网络连接。"
+
+// WGS-84 coordinates, as Cesium expects (not the GCJ-02 used by Chinese map apps).
 export const STATIONS = [
-  { name: "金门大桥", longitude: -122.4784, latitude: 37.8199 },
-  { name: "恶魔岛", longitude: -122.423, latitude: 37.8267 },
-  { name: "海湾大桥", longitude: -122.361, latitude: 37.816 }
+  { name: "中安创谷", longitude: 117.094209, latitude: 31.834718 },
+  {
+    name: "合肥科技馆（蜀西湖馆区）",
+    longitude: 117.122265,
+    latitude: 31.84175
+  },
+  { name: "中科大先研院", longitude: 117.123906, latitude: 31.829588 }
 ]
 
-const CENTER = { longitude: -122.417, latitude: 37.821 }
-const ROUTE_ID = "bay-route"
+// 蜀西湖, center of the lake.
+const CENTER = { longitude: 117.115804, latitude: 31.83891 }
+const ROUTE_ID = "shuxi-lake-route"
 const COLOR = Color.fromCssColorString("#C73E3A")
 
 interface ISceneEvents {
@@ -40,7 +49,28 @@ interface ISceneEvents {
   onRenderError: () => void
 }
 
-export function createMapScene(container: HTMLElement, events: ISceneEvents) {
+// Error whose message is meant to be shown on the page.
+export class SceneMessageError extends Error {}
+
+async function createImagery() {
+  try {
+    const provider = await ArcGisMapServerImageryProvider.fromUrl(IMAGERY_URL, {
+      enablePickFeatures: false
+    })
+    // Esri's attribution comes from the service metadata. Show it on the map, not in a popover.
+    provider.credit.showOnScreen = true
+    return provider
+  } catch (error) {
+    console.error("[playground] Esri World Imagery failed to load", error)
+    throw new SceneMessageError(IMAGERY_ERROR_MESSAGE)
+  }
+}
+
+export async function createMapScene(
+  container: HTMLElement,
+  events: ISceneEvents
+) {
+  const imageryProvider = await createImagery()
   const viewer = new Viewer(container, {
     animation: false,
     baseLayer: false,
@@ -64,23 +94,12 @@ export function createMapScene(container: HTMLElement, events: ISceneEvents) {
   viewer.scene.screenSpaceCameraController.minimumZoomDistance = 800
   viewer.scene.screenSpaceCameraController.maximumZoomDistance = 65000
 
-  const imagery = viewer.imageryLayers.addImageryProvider(
-    new SingleTileImageryProvider({
-      url: IMAGERY_URL,
-      rectangle: Rectangle.fromDegrees(-122.76, 37.44, -121.99, 38.13),
-      tileWidth: 2464,
-      tileHeight: 2208
-    })
-  )
-  viewer.scene.globe.cartographicLimitRectangle =
-    imagery.imageryProvider.rectangle
-  imagery.contrast = 1.04
-  imagery.saturation = 0.85
+  const imagery = viewer.imageryLayers.addImageryProvider(imageryProvider)
 
   const layers = new LayerManager()
   layers.createLayer({
     id: ROUTE_ID,
-    name: "湾区示例航线",
+    name: "蜀西湖示例航线",
     dataSourceType: LayerDataSourceType.GeoJson,
     sourceConfig: {
       type: LayerDataSourceType.GeoJson,
@@ -106,7 +125,7 @@ export function createMapScene(container: HTMLElement, events: ISceneEvents) {
   const entities = new DataManager(viewer)
   const stationGroup = entities.createEntity<CompositeEntity>("composite", {
     type: CompositeType.Planning,
-    name: "湾区地标"
+    name: "蜀西湖周边地标"
   })
   const stations = STATIONS.map((station) => {
     const entity = entities.createEntity<DrawEntity>("draw", {
@@ -138,7 +157,6 @@ export function createMapScene(container: HTMLElement, events: ISceneEvents) {
 
   let plot = makePlotManager()
   viewer.scene.renderError.addEventListener(events.onRenderError)
-  imagery.imageryProvider.errorEvent.addEventListener(events.onRenderError)
   const stopWaiting = viewer.scene.postRender.addEventListener(() => {
     if (viewer.scene.globe.tilesLoaded) {
       stopWaiting()
@@ -162,7 +180,7 @@ export function createMapScene(container: HTMLElement, events: ISceneEvents) {
 
   function home() {
     viewer.camera.cancelFlight()
-    const height = viewer.canvas.clientWidth < 600 ? 25500 : 22500
+    const height = viewer.canvas.clientWidth < 600 ? 5400 : 4000
     viewer.camera.setView({
       destination: Cartesian3.fromDegrees(
         CENTER.longitude,
@@ -211,7 +229,7 @@ export function createMapScene(container: HTMLElement, events: ISceneEvents) {
       home()
     },
     setMonochrome(monochrome: boolean) {
-      imagery.saturation = monochrome ? 0 : 0.85
+      imagery.saturation = monochrome ? 0 : 1
       viewer.scene.requestRender()
     },
     setRouteVisible(visible: boolean) {
@@ -225,7 +243,7 @@ export function createMapScene(container: HTMLElement, events: ISceneEvents) {
     focusStation(index: number) {
       const { longitude, latitude } = STATIONS[index]
       viewer.camera.flyTo({
-        destination: Cartesian3.fromDegrees(longitude, latitude, 4600),
+        destination: Cartesian3.fromDegrees(longitude, latitude, 1500),
         orientation: { heading: 0, pitch: -Math.PI / 2, roll: 0 },
         duration: 0.8
       })
