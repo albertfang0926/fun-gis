@@ -51,12 +51,11 @@ workspaces. Goal is reusable, publishable packages plus demo apps.
   like draw (`vite.dev.config.ts` dev server port 9152 vs lib build + dts).
   Exports `./style` CSS alongside JS.
 - `packages/effect` — work in progress; only `VolumeBar.vue`, no package.json.
-- `apps/playground`, `apps/gh-pages-demo` — demo apps; the latter is the
-  unified online demo for the three publishable packages (draw 标绘 /
-  entity-manager 实体管理 / panoramic-photo 全景, tab-switched, deploy to
-  GitHub Pages via root `pnpm predeploy && pnpm deploy`). Note: the draw
-  tab still imports the retired `drawTool` facade — pending migration to
-  the plot-only API.
+- `apps/playground` — the demo app deployed to GitHub Pages via root
+  `pnpm predeploy && pnpm deploy`.
+- `apps/gh-pages-demo` — the tabbed demo for draw, entity-manager, and
+  panoramic-photo. Its draw tab still imports the retired `drawTool`
+  facade and is pending migration to the plot-only API.
 
 ## Commands
 
@@ -67,7 +66,7 @@ workspaces. Goal is reusable, publishable packages plus demo apps.
   - `pnpm -F @fun-gis/entity-manager build`
   - `pnpm -F @fun-gis/map-core dev|build`
   - `pnpm -F @fun-gis/panoramic-photo dev|build`
-  - `pnpm -F playground dev`, `pnpm -F gh-pages-demo build`
+  - `pnpm -F playground dev|build`, `pnpm -F gh-pages-demo build`
 - Versioning/publish for `@fun-gis/draw` runs through changesets:
   `pnpm changeset` → `pnpm version` → `pnpm release`; GitHub Pages demo
   deploys via `pnpm predeploy && pnpm deploy`.

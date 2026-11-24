@@ -7,8 +7,8 @@
     "dev": "pnpm -F playground run dev",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-pattern .gitignore",
     "preinstall": "npx only-allow pnpm",
-    "predeploy": "pnpm -F gh-pages-demo run build",
-    "deploy": "gh-pages -d apps/gh-pages-demo/dist",
+    "predeploy": "pnpm -F playground run build --base ./",
+    "deploy": "gh-pages -d apps/playground/dist --nojekyll",
     "changeset": "changeset",
     "version": "changeset version",
     "release": "changeset publish"
