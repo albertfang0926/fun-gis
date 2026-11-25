@@ -1,7 +1,7 @@
 /**
  * @license
  * Cesium - https://github.com/CesiumGS/cesium
- * Version 1.144.0
+ * Version 1.147.0
  *
  * Copyright 2011-2022 Cesium Contributors
  *
@@ -23,4 +23,5 @@
  * See https://github.com/CesiumGS/cesium/blob/main/LICENSE.md for full licensing details.
  */
 
-import{a as w}from"./chunk-PZM5FOOW.js";var C={};C.computePositions=function(I,f,b,n,e){let m=I*.5,i=-m,s=n+n,P=e?2*s:s,t=new Float64Array(P*3),r,c=0,o=0,p=e?s*3:0,a=e?(s+n)*3:n*3;for(r=0;r<n;r++){let y=r/n*w.TWO_PI,x=Math.cos(y),h=Math.sin(y),u=x*b,M=h*b,O=x*f,d=h*f;t[o+p]=u,t[o+p+1]=M,t[o+p+2]=i,t[o+a]=O,t[o+a+1]=d,t[o+a+2]=m,o+=3,e&&(t[c++]=u,t[c++]=M,t[c++]=i,t[c++]=O,t[c++]=d,t[c++]=m)}return t};var Y=C;export{Y as a};
+import{Fa as a}from"./chunk-FZYUOFLY.js";function i(n){async function t({data:s}){let o=[],r={id:s.id,result:void 0,error:void 0};self.CESIUM_BASE_URL=s.baseUrl;try{let e=await n(s.parameters,o);r.result=e}catch(e){e instanceof Error?r.error={name:e.name,message:e.message,stack:e.stack}:r.error=e}s.canTransferArrayBuffer||(o.length=0);try{postMessage(r,o)}catch(e){r.result=void 0,r.error=`postMessage failed with error: ${a(e)}
+  with responseMessage: ${JSON.stringify(r)}`,postMessage(r)}}function f(s){postMessage({id:s.data?.id,error:`postMessage failed with error: ${JSON.stringify(s)}`})}return self.onmessage=t,self.onmessageerror=f,self}var l=i;export{l as a};
